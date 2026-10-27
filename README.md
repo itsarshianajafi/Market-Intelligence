@@ -9,21 +9,35 @@ models, agent recommendations, or marketing allocation.
 
 ### Official data source
 
-Use **DLD Transactions**, published by Dubai Land Department on the official
-[Dubai Pulse catalogue](https://www.dubaipulse.gov.ae/data/dld-transactions/dld_transactions-open).
-Search the portal for `dld_transactions-open` if the catalogue path changes.
-Download the official CSV resource and retain its source and download date.
-Do not use private listing websites. Check the portal's current license and
-attribution requirements before redistributing exports.
+Use **Real Estate Transactions**, published by Dubai Land Department on
+[Data Dubai](https://data.dubai/en/l/470061). The legacy
+[Dubai Pulse catalogue](https://www.dubaipulse.gov.ae/data/dld-transactions/dld_transactions-open)
+now redirects to Data Dubai. Retain the source and download date and check the
+portal's current license and attribution requirements before redistribution.
+Do not use private listing websites.
 
-During implementation, this cloud environment's proxy returned HTTP 403 for
-the Dubai Pulse portal and API. Consequently, the current resource URL, API
-authentication requirements, and real-data execution could not be verified.
+Access rechecked on 27 October 2026 after enabling the official domains:
+
+- Data Dubai responds HTTP 200, but its body is an HTML **Request Rejected**
+  page, including for the dataset URL. This is not a successful data download.
+- The official Dubai Pulse endpoint
+  `https://api.dubaipulse.gov.ae/open/dld/dld_transactions-open-api`
+  responds HTTP 401 with **Unauthorized application request**. No DLD/Pulse
+  credential variables are currently configured in the workspace. The provider's
+  current authentication contract and API pagination remain unverified.
+- The portal offers the export in multiple CSV parts, as shown in the user's
+  browser. A single part is partial coverage; download and process all relevant
+  parts before claiming complete coverage. Cross-part deduplication is not yet
+  implemented by this single-file workflow.
+
 No real records are bundled and no synthetic records replace official data.
 The supported baseline is a manually downloaded official CSV. An optional
-URL downloader works only with direct HTTPS CSV links on official Dubai Pulse
-or DLD hosts; it does not discover resources or implement an authenticated API.
-If a resource uses another host, download it manually after verifying its provenance.
+URL downloader works only with direct HTTPS CSV links on official Data Dubai,
+Dubai Pulse or DLD hosts; it does not discover resources or implement an
+authenticated API. `blob:` links are browser-local and cannot be downloaded by
+this Python process. Provider-denied access and HTML responses fail clearly,
+without being saved as transaction data. Full automated source retrieval remains
+outstanding until a supported public download or authorized API contract is available.
 
 ### Install and run
 
