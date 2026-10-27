@@ -1,5 +1,7 @@
 """Artificial test cases only: these are not real property transactions."""
 import tempfile
+import io
+from urllib.error import HTTPError
 from pathlib import Path
 import unittest
 from unittest.mock import patch
@@ -60,6 +62,34 @@ class PreparationTests(unittest.TestCase):
             self.assertTrue((root / 'out/quality_report.json').exists())
             with self.assertRaisesRegex(ValueError, 'already exist'):
                 prepare(root / 'raw.csv', root / 'out')
+
+    def test_official_current_domain_download(self):
+        with tempfile.TemporaryDirectory() as folder:
+            response = io.BytesIO(b'transaction_id,actual_worth\nTEST-1,100\n')
+            response.url = 'https://data.dubai/test.csv'
+            response.headers = {'Content-Type': 'text/csv'}
+            destination = Path(folder) / 'download.csv'
+            with patch('src.dld_data.pipeline.urlopen', return_value=response):
+                download_csv(response.url, destination)
+            self.assertTrue(destination.read_bytes().startswith(b'transaction_id,'))
+
+    def test_rejected_portal_html_is_not_saved(self):
+        with tempfile.TemporaryDirectory() as folder:
+            response = io.BytesIO(b'<html>Request Rejected</html>')
+            response.url = 'https://data.dubai/en/l/470061'
+            response.headers = {'Content-Type': 'text/html; charset=utf-8'}
+            with patch('src.dld_data.pipeline.urlopen', return_value=response):
+                with self.assertRaisesRegex(ValueError, 'HTML'):
+                    download_csv(response.url, Path(folder) / 'data.csv')
+            self.assertEqual(list(Path(folder).iterdir()), [])
+
+    def test_api_access_denied_is_clear(self):
+        with tempfile.TemporaryDirectory() as folder:
+            url = 'https://api.dubaipulse.gov.ae/open/dld/dld_transactions-open-api'
+            with patch('src.dld_data.pipeline.urlopen', side_effect=HTTPError(url, 401, 'Unauthorized', {}, None)):
+                with self.assertRaisesRegex(ValueError, 'registered API access'):
+                    download_csv(url, Path(folder) / 'data.csv')
+            self.assertEqual(list(Path(folder).iterdir()), [])
 
     def test_download_rejects_unofficial_source(self):
         with patch('src.dld_data.pipeline.urlopen') as request:

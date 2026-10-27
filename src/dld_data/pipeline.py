@@ -7,10 +7,11 @@ from pathlib import Path
 import tempfile
 from urllib.parse import urlsplit
 from urllib.request import urlopen
+from urllib.error import HTTPError
 
 import pandas as pd
 
-CATALOGUE = "https://www.dubaipulse.gov.ae/data/dld-transactions/dld_transactions-open"
+CATALOGUE = "https://data.dubai/en/l/470061"
 COLUMNS = ["transaction_id", "transaction_date", "area", "property_type", "unit_type",
            "transaction_group", "price_aed", "year", "month"]
 
@@ -20,7 +21,7 @@ def download_csv(url, destination):
     def official(value):
         parsed = urlsplit(value)
         return (parsed.scheme == "https" and parsed.hostname in {
-            "www.dubaipulse.gov.ae", "dubaipulse.gov.ae", "api.dubaipulse.gov.ae",
+            "data.dubai", "www.dubaipulse.gov.ae", "dubaipulse.gov.ae", "api.dubaipulse.gov.ae",
             "dubailand.gov.ae", "www.dubailand.gov.ae"}
             and not parsed.username and not parsed.password and parsed.port in (None, 443))
     if not official(url):
@@ -45,6 +46,14 @@ def download_csv(url, destination):
                         raise ValueError("Download exceeds 1 GiB; download manually")
                     output.write(chunk)
         os.replace(temp, destination)
+    except HTTPError as exc:
+        if exc.code in (401, 403):
+            raise ValueError(
+                f"Official source denied access (HTTP {exc.code}). "
+                "The provider may require registered API access; a portal or blob URL "
+                "is not a public CSV download. No transaction data was downloaded."
+            ) from exc
+        raise
     finally:
         if temp is not None:
             temp.unlink(missing_ok=True)
