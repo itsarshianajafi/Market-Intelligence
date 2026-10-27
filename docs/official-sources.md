@@ -27,13 +27,16 @@ and whether dataset subscriptions remain available have not been verified.
 
 - The real official source remains DLD, through Data Dubai or DLD's own export.
 - No accessible, unattended historical transaction download was established.
-- The CLI supports manual Dubai Pulse-schema CSVs or an explicitly supplied
-  official direct CSV URL. It does not automatically discover the portal's
+- The CLI supports manual English Dubai Pulse/DLD-schema CSVs, ZIP archives,
+  multiple export parts, or an explicitly supplied official direct CSV URL. It does
+  not automatically discover the portal's
   exports, solve CAPTCHA, or implement an authenticated API.
 - DLD's own export uses a different presentation schema: its public UI references
   fields such as TRANSACTION_NUMBER, INSTANCE_DATE, TRANS_VALUE and English
   labels. Its exported CSV header/data types have not been retrieved or validated.
-  Do not claim that this export is already compatible with the existing cleaner.
+  The importer now maps these published native keys and the corresponding English
+  display headers. Tests verify these mappings on artificial records; actual
+  export compatibility remains unverified.
 - No private listings, fabricated transactions, browser session tokens, or
   dashboard aggregates were used to make the pipeline appear complete.
 - Source discovery and real-export validation remain outstanding. A documented
