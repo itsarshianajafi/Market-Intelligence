@@ -116,3 +116,11 @@ not a claim that the input's origin has been independently authenticated.
 Real-export validation remains outstanding until the official CSV is available.
 The tests validate the documented schema and preparation rules, not current
 portal availability or the source's complete data quality.
+
+### Alternative official sources checked
+
+See [official source investigation](docs/official-sources.md) for the checks and
+limitations. DLD's own Real Estate Data page is accessible and offers a CSV
+export, but its current transaction-search interface requires CAPTCHA. Its CSV
+schema has not been validated against this cleaner. No unattended historical
+transaction download has yet been established from the alternatives tested.
