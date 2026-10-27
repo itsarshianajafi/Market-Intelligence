@@ -1,17 +1,18 @@
 """Prepare official DLD CSV exports without estimating missing transactions."""
 import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
 import tempfile
+from zipfile import BadZipFile
 from urllib.parse import urlsplit
 from urllib.request import urlopen
 from urllib.error import HTTPError
 
 import pandas as pd
 
-CATALOGUE = "https://data.dubai/en/l/470061"
+from .sources import load_inputs, normalize_schema
+
 COLUMNS = ["transaction_id", "transaction_date", "area", "property_type", "unit_type",
            "transaction_group", "price_aed", "year", "month"]
 
@@ -66,26 +67,21 @@ def clean_transactions(raw):
     Exact duplicate normalized rows and conflicting repeated IDs are removed.
     All rows of a conflicting ID are excluded instead of choosing arbitrarily.
     """
-    raw = raw.copy()
-    raw.columns = raw.columns.str.strip().str.lower()
-    if raw.columns.duplicated().any():
-        raise ValueError("Duplicate column names after normalization")
-    required = {'transaction_id', 'instance_date', 'area_name_en',
-                'property_type_en', 'actual_worth'}
-    missing = required - set(raw.columns)
-    if missing:
-        raise ValueError(f"Missing DLD columns: {', '.join(sorted(missing))}")
+    raw, _ = normalize_schema(raw)
     df = pd.DataFrame(index=raw.index)
     for source, target in [('transaction_id', 'transaction_id'),
                            ('area_name_en', 'area'), ('property_type_en', 'property_type'),
                            ('property_sub_type_en', 'unit_type'),
                            ('trans_group_en', 'transaction_group')]:
         values = raw[source] if source in raw else pd.Series(pd.NA, index=raw.index, dtype='string')
-        df[target] = values.astype('string').str.strip().str.replace(r'\s+', ' ', regex=True).replace('', pd.NA)
+        normalized = values.astype('string').str.strip().str.replace(r'\s+', ' ', regex=True)
+        df[target] = normalized.mask(normalized.str.casefold().isin(['', 'null', 'none', 'n/a', 'nan']))
     # DLD exports use day-first dates; ISO YYYY-MM-DD is also accepted explicitly.
     dates = raw['instance_date'].astype('string').str.strip()
     parsed = pd.Series(pd.NaT, index=raw.index, dtype='datetime64[ns]')
-    for fmt in ('%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d'):
+    for fmt in ('%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d',
+                '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
+                '%Y-%m-%d %H:%M:%S'):
         parsed = parsed.fillna(pd.to_datetime(dates, format=fmt, errors='coerce'))
     df['transaction_date'] = parsed
     prices = raw['actual_worth'].astype('string').str.strip()
@@ -93,7 +89,8 @@ def clean_transactions(raw):
     valid_number = prices.str.fullmatch(r'[+]?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?', na=False)
     df['price_aed'] = pd.to_numeric(prices.where(valid_number).str.replace(',', '', regex=False), errors='coerce')
     invalid = (df[['transaction_id', 'area', 'property_type']].isna().any(axis=1)
-               | df.transaction_date.isna() | df.price_aed.isna() | (df.price_aed <= 0))
+               | df.transaction_date.isna() | df.price_aed.isna()
+               | (df.price_aed <= 0) | ~df.price_aed.lt(float('inf')))
     stats = {'input_rows': len(df), 'invalid_rows': int(invalid.sum())}
     df = df.loc[~invalid].copy()
     duplicates = df.duplicated()
@@ -110,17 +107,18 @@ def clean_transactions(raw):
     return df, stats
 
 
-def prepare(input_path, output_dir, source_url=CATALOGUE):
+def prepare(input_path, output_dir, source_url=None):
     """Write reusable transactions, monthly sales aggregates, and audit metadata."""
-    input_path, output_dir = Path(input_path), Path(output_dir)
-    raw = pd.read_csv(input_path, dtype='string', encoding='utf-8-sig', keep_default_na=False)
+    paths = [input_path] if isinstance(input_path, (str, Path)) else list(input_path)
+    output_dir = Path(output_dir)
+    targets = ['transactions_clean.csv', 'monthly_sales.csv', 'quality_report.json']
+    if any((output_dir / name).exists() for name in targets):
+        raise ValueError("Output files already exist; choose a new output directory")
+    raw, manifests = load_inputs(paths)
     clean, stats = clean_transactions(raw)
     if clean.empty:
         raise ValueError(f"No valid transactions; nothing written. Counts: {stats}")
     output_dir.mkdir(parents=True, exist_ok=True)
-    targets = ['transactions_clean.csv', 'monthly_sales.csv', 'quality_report.json']
-    if any((output_dir / name).exists() for name in targets):
-        raise ValueError("Output files already exist; choose a new output directory")
     # Sales only: mortgages and gifts are not comparable market sale prices.
     sales = clean.loc[clean.transaction_group.str.casefold().eq('sales').fillna(False)]
     monthly = (sales.groupby(['area', 'property_type', 'unit_type', 'month'], dropna=False)
@@ -129,12 +127,17 @@ def prepare(input_path, output_dir, source_url=CATALOGUE):
                     median_price_aed=('price_aed', 'median')).reset_index())
     clean.to_csv(output_dir / targets[0], index=False)
     monthly.to_csv(output_dir / targets[1], index=False)
-    with input_path.open('rb') as source:
-        digest = hashlib.file_digest(source, 'sha256').hexdigest()
     report = {**stats, 'monthly_sales_rows': len(monthly), 'sales_transactions': len(sales),
-              'source_url': source_url, 'input_file': input_path.name, 'sha256': digest,
+              'inputs': manifests,
+              'date_min': clean.transaction_date.min(), 'date_max': clean.transaction_date.max(),
+              'missing_transaction_group_rows': int(clean.transaction_group.isna().sum()),
+              'coverage_note': 'Only supplied records; completeness is not established.',
               'prepared_at_utc': pd.Timestamp.now(tz='UTC').isoformat(),
               'pandas_version': pd.__version__}
+    if source_url:
+        # A signed URL may contain credentials in its query; never persist them.
+        parsed = urlsplit(source_url)
+        report['download_source'] = parsed._replace(query='', fragment='').geturl()
     (output_dir / targets[2]).write_text(json.dumps(report, indent=2) + '\n')
     return report
 
@@ -142,15 +145,18 @@ def prepare(input_path, output_dir, source_url=CATALOGUE):
 def main():
     """Run manual CSV preparation or download an explicitly supplied official CSV."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--input', type=Path, required=True, help='Official CSV path (download destination with --url)')
+    parser.add_argument('--input', type=Path, nargs='+', required=True,
+                        help='Official CSV/ZIP paths; supply all export parts together')
     parser.add_argument('--url', help='Optional verified official HTTPS CSV URL; not the catalogue page')
     parser.add_argument('--output-dir', type=Path, default=Path('data/processed'))
     args = parser.parse_args()
     try:
         if args.url:
-            download_csv(args.url, args.input)
-        report = prepare(args.input, args.output_dir, args.url or CATALOGUE)
-    except (ValueError, OSError, pd.errors.ParserError) as exc:
+            if len(args.input) != 1 or args.input[0].suffix.lower() != '.csv':
+                raise ValueError('--url requires exactly one .csv input destination')
+            download_csv(args.url, args.input[0])
+        report = prepare(args.input, args.output_dir, args.url)
+    except (ValueError, OSError, BadZipFile, pd.errors.ParserError) as exc:
         parser.exit(1, f"Pipeline failed: {exc}\n")
     print(json.dumps(report, indent=2))
 
