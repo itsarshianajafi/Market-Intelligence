@@ -167,3 +167,34 @@ python -m unittest discover -s tests -v
 
 Tests demonstrate preparation behaviour on artificial inputs. They do not verify
 portal availability, the complete market history, or actual export compatibility.
+
+
+## Validation (real-data test)
+
+Tested on 28 Oct 2026 against a real Data Dubai export
+(https://data.dubai/en/l/470061, two CSV parts in one ZIP).
+
+Command:
+    python -m src.dld_data.pipeline --input data/raw/<export>.zip --output-dir data/processed/full-run
+
+Results (pandas 2.3.3): 1,808,832 rows in, 4 invalid rows rejected
+(impossible dates, years 1416-1422), 0 duplicates, 0 conflicting IDs,
+1,808,828 rows out, 1,383,411 sales transactions, 51,446 monthly sales rows.
+All 19 unit tests pass.
+
+Notes:
+- Keep pandas below 3.0. Pandas 3.0 crashes on the 4 invalid dates.
+- Data before ~2019 is sparse. Model from 2019/2020 onwards.
+- 2026 volumes look lower than 2025; completeness of the 2026 export is being confirmed.
+
+## How to update the data
+
+The pipeline is semi-automated. Downloading is manual (the DLD portal needs a
+CAPTCHA); cleaning, validation and organisation are automated.
+
+1. Download a new export from DLD or Data Dubai.
+2. Put the file(s) in data/raw/.
+3. Run the pipeline command above with a NEW --output-dir name (e.g. run-2026-11).
+4. Copy the new monthly_sales.csv and quality_report.json to data/shared/ and push.
+
+Overlapping exports are fine, duplicates across files are removed.
