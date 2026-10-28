@@ -1,0 +1,35 @@
+{
+  "input_rows": 1808832,
+  "invalid_rows": 4,
+  "duplicate_rows": 0,
+  "conflicting_id_rows": 0,
+  "output_rows": 1808828,
+  "monthly_sales_rows": 51446,
+  "sales_transactions": 1383411,
+  "inputs": [
+    {
+      "input_file": "transactions_2026-10-27_19-03-09_0001_0002.zip",
+      "sha256": "fea6714a85fcab702dbaf99443d459e1fc5cf0d0ca2810a9d47ca799c98f1c1f",
+      "tables": [
+        {
+          "name": "transactions_2026-10-27_19-03-09_0001.csv",
+          "schema": "dubai_pulse",
+          "rows": 904416,
+          "catalogue_url": "https://data.dubai/en/l/470061"
+        },
+        {
+          "name": "transactions_2026-10-27_19-03-09_0002.csv",
+          "schema": "dubai_pulse",
+          "rows": 904416,
+          "catalogue_url": "https://data.dubai/en/l/470061"
+        }
+      ]
+    }
+  ],
+  "date_min": "1966-01-18",
+  "date_max": "2026-10-26",
+  "missing_transaction_group_rows": 0,
+  "coverage_note": "Only supplied records; completeness is not established.",
+  "prepared_at_utc": "2026-10-28T05:45:34.772359+00:00",
+  "pandas_version": "2.3.3"
+}
