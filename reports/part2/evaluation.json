@@ -1,0 +1,115 @@
+{
+  "last_complete_quarter": "2026Q3",
+  "rows": 4123,
+  "ok_rows": 1729,
+  "sales_share_ok": 0.889323398008006,
+  "scales": {
+    "price": [
+      0.060514312969613154,
+      0.20095354500357954
+    ],
+    "volume": [
+      0.1865859555804122,
+      0.7932306391169278
+    ],
+    "volatility": [
+      0.06279993028370852,
+      0.1716956699580582
+    ]
+  },
+  "label_counts": {
+    "trend_label": {
+      "Stable": 1010,
+      "Rising": 646,
+      "Declining": 73
+    },
+    "baseline_label": {
+      "Stable": 924,
+      "Rising": 707,
+      "Declining": 98
+    },
+    "kmeans_label": {
+      "Stable": 1022,
+      "Declining": 629,
+      "Rising": 72
+    }
+  },
+  "agreement": {
+    "fuzzy_vs_crisp": {
+      "rows": 1729,
+      "agreement": 0.9502602660497398,
+      "kappa": 0.9066183097043631
+    },
+    "fuzzy_vs_kmeans": {
+      "rows": 1723,
+      "agreement": 0.3337202553685432,
+      "kappa": -0.07039540153004564
+    },
+    "crisp_vs_kmeans": {
+      "rows": 1723,
+      "agreement": 0.3406848520023215,
+      "kappa": -0.022152500276775733
+    }
+  },
+  "score_correlation_next_year": {
+    "rows": 1212,
+    "trend_score": -0.013742085342597098,
+    "price_change_only": -0.068348141999026
+  },
+  "persistence_next_quarter": {
+    "trend_label": 0.6758349705304518,
+    "baseline_label": 0.673215455140799,
+    "kmeans_label": 0.7365661861074705
+  },
+  "bootstrap": {
+    "agreement_with_full_fit": {
+      "mean": 0.9879872758820127,
+      "std": 0.007722874273940942,
+      "runs": 200
+    },
+    "share_rising": {
+      "mean": 0.37398207056101795,
+      "std": 0.01056891460823579,
+      "runs": 200
+    },
+    "share_declining": {
+      "mean": 0.042518796992481206,
+      "std": 0.002303994495053567,
+      "runs": 200
+    }
+  },
+  "kmeans_seeds": {
+    "agreement_with_reference": {
+      "mean": 0.7238247243180499,
+      "std": 0.2855579160249581,
+      "runs": 20
+    }
+  },
+  "config": {
+    "input": "data/shared/monthly_sales.csv",
+    "quality_report": "data/shared/quality_report.json",
+    "output": "data/shared/market_trends.csv",
+    "report_dir": "reports/part2",
+    "start_quarter": "2020Q1",
+    "property_types": [
+      "Unit",
+      "Villa"
+    ],
+    "min_sales": 30,
+    "min_cell_sales": 3,
+    "min_coverage": 0.5,
+    "volatility_window": 4,
+    "provisional_quarters": 1,
+    "scale_percentiles": [
+      25,
+      75
+    ],
+    "volatility_percentiles": [
+      50,
+      90
+    ],
+    "seed": 42,
+    "bootstrap_runs": 200,
+    "kmeans_runs": 20
+  }
+}
