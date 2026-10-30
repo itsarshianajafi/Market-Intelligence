@@ -152,7 +152,7 @@ Files: `reports/part2/evaluation.json`, `forward_check.csv`, `sensitivity.csv` a
 - Bootstrap: I resampled the data 200 times (seed 42), refit the breakpoints and relabelled.
   98.8% +- 0.8% of labels stayed the same. The percentile-based sets are stable.
 - Sensitivity: changing one setting at a time (min sales 10/50, percentiles 20-70 or 30-80,
-  volatility percentiles, min cell sales) keeps 93-99% of labels.
+  volatility percentiles, min cell sales) keeps 92-99% of labels.
 - Over time: Rising share peaked near 60% in early 2024, was 37% in 2026Q1 and 8% in 2026Q3. That
   matches the slowdown we found in the raw data.
 
