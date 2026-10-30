@@ -1,0 +1,7 @@
+setting,value,ok_rows,share_rising,share_declining,agreement_with_default
+min_sales,10,2172,0.3582,0.0557,0.9815
+min_sales,50,1449,0.3823,0.0373,0.9917
+scale_percentiles,"[20, 70]",1729,0.4164,0.0521,0.9335
+scale_percentiles,"[30, 80]",1729,0.3274,0.0376,0.926
+volatility_percentiles,"[50, 80]",1729,0.3736,0.0416,0.9994
+min_cell_sales,1,1738,0.374,0.0426,0.9954
