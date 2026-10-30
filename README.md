@@ -162,7 +162,8 @@ storing signed URL credentials.
 - `src/dld_data/pipeline.py`: `download_csv` retrieves a supplied public official
   URL; `clean_transactions` validates and normalizes records; `prepare` combines
   inputs and writes datasets/audit information; `main` exposes the CLI.
-- `requirements.txt`: pandas dependency; other code uses Python's standard library.
+- `requirements.txt`: pandas (Part 1) plus numpy, scikit-learn and matplotlib (Part 2);
+  `requirements-lock.txt` pins the exact versions the results were produced with.
 - `tests/test_pipeline.py` and `tests/test_sources.py`: artificial validation cases,
   source schemas, cross-part conflicts/duplicates, ZIP handling and CLI integration.
 - `docs/official-sources.md`: source research, access evidence and remaining limits.
@@ -217,6 +218,69 @@ CAPTCHA); cleaning, validation and organisation are automated.
 1. Download a new export from DLD or Data Dubai.
 2. Put the file(s) in data/raw/.
 3. Run the pipeline command above with a NEW --output-dir name (e.g. run-2026-11).
-4. Copy the new monthly_sales.csv and quality_report.json to data/shared/ and push.
+4. Copy the new monthly_sales.csv and quality_report.json to data/shared/.
+5. Rerun Part 2 (`python -m src.trend_analysis.run`) so market_trends.csv matches, then push.
 
 Overlapping exports are fine, duplicates across files are removed.
+
+## Member 2: Market Trend Analysis
+
+Labels every area's market as **Rising**, **Stable** or **Declining** each quarter, using a
+fuzzy logic classifier. Input is `data/shared/monthly_sales.csv` from Part 1; output is
+`data/shared/market_trends.csv` for Parts 3 and 4.
+
+```bash
+python -m src.trend_analysis.run                      # default settings
+python -m src.trend_analysis.run --config my.json     # same keys as src/trend_analysis/config.json
+```
+
+It takes a few seconds and also writes the evaluation and figures to `reports/part2/`.
+Design decisions and limitations are explained in `src/trend_analysis/NOTES.md`.
+
+### Method
+
+- **Segment** = area + off-plan/ready, per calendar quarter, from 2020Q1. Units and villas only
+  (land and whole-building sales are a different market). Only complete quarters are used
+  (the end date comes from `quality_report.json`); the latest one is marked provisional.
+- **Inputs** (year on year): price change per m2, sales volume change, and volatility (spread of
+  the last four quarter-on-quarter price changes). Price change is mix-adjusted: each property
+  and unit type is compared with itself a year earlier, so a shift from flats to villas is not a
+  price change.
+- **Enough data:** at least 30 sales in the quarter and in the same quarter last year, and at least
+  50% of sales in property types that can be compared. Otherwise `Insufficient data`.
+- **Fuzzy classifier** (own numpy code, `fuzzy.py`): membership functions set from percentiles of the
+  data, 8 weighted Mamdani rules, centroid defuzzification to a trend score from -1 to 1.
+- **Baselines:** crisp price-only thresholds at the same crossover point, and k-means (k = 3).
+
+### market_trends.csv
+
+One row per segment and quarter that had sales in that quarter or the same quarter last year.
+Percentages are fractions (0.05 = 5%).
+
+| Column | Meaning |
+|---|---|
+| `area`, `registration_type`, `quarter` | Segment and quarter (`2026Q3`) |
+| `sales_count`, `sales_count_prev_year` | Unit/villa sales this quarter and the same quarter last year |
+| `price_change_yoy` | Mix-adjusted change in price per m2 vs the same quarter last year |
+| `volume_change_yoy` | Change in number of sales vs the same quarter last year |
+| `volatility` | Std of the last 4 quarter-on-quarter log price changes |
+| `price_coverage` | Share of sales in property types compared with last year |
+| `status` | `ok` or `insufficient_data` |
+| `provisional` | True for the latest quarter (DLD may still correct records) |
+| `trend_label` | Fuzzy label: Rising, Stable, Declining or Insufficient data |
+| `trend_score` | -1 (declining) to 1 (rising) |
+| `rising_degree`, `stable_degree`, `declining_degree` | Fuzzy membership of each label, 0 to 1 |
+| `baseline_label`, `kmeans_label` | Labels from the comparison methods |
+
+### Results (28 Oct 2026 export)
+
+- 4,123 segment quarters, 1,729 with enough data, covering 89% of unit and villa sales.
+- Fuzzy labels: 1,010 Stable, 646 Rising, 73 Declining. The share of Rising segments
+  peaked near 60% in early 2024, was 37% in 2026Q1 and fell to 8% in 2026Q3 (the 2026 slowdown).
+- Agreement with crisp rules 95% (Cohen's kappa 0.91); with k-means 33% (kappa -0.07): k-means
+  groups segments by volume rather than direction, and changes a lot between seeds (72% +- 29%).
+- Bootstrap (200 seeded refits of the membership functions): 98.8% +- 0.8% of labels unchanged.
+- Sensitivity (one setting changed at a time): 93-99% of labels unchanged.
+- **Forward check:** labels describe the current market; they do **not** predict next year.
+  Correlation of trend score with the next year's price change is -0.01. Use them for "what is
+  happening now", not as a forecast.
