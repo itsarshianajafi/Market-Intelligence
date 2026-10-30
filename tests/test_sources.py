@@ -120,7 +120,7 @@ class SourceTests(unittest.TestCase):
             self.assertFalse((root / 'bad-out').exists())
 
     def test_native_area_and_offplan_fields(self):
-        first = native_row(PROCEDURE_AREA='100', IS_OFFPLAN_EN='Off-Plan')
+        first = native_row(PROCEDURE_AREA='100', IS_OFFPLAN_EN='Off-Plan', PROCEDURE_EN='Sell')
         second = {**native_row(PROCEDURE_AREA='80', IS_OFFPLAN_EN='Ready'),
                   'TRANSACTION_NUMBER': 'ARTIFICIAL-2'}
         clean, _ = clean_transactions(pd.DataFrame([first, second]))
@@ -128,6 +128,7 @@ class SourceTests(unittest.TestCase):
         self.assertEqual(clean.iloc[1]['registration_type'], 'Ready')
         self.assertEqual(clean.iloc[0]['price_per_m2_aed'], 10000)
         self.assertEqual(clean.iloc[1]['area_m2'], 80)
+        self.assertEqual(clean.iloc[0]['procedure'], 'Sell')
 
 
 if __name__ == '__main__':
