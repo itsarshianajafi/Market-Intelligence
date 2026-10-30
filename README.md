@@ -26,10 +26,7 @@ are bypassed. An optional downloader accepts an already known public official
 HTTPS CSV URL; a catalogue page or browser-local `blob:` URL is not such a URL.
 See [source investigation](docs/official-sources.md) for observed access results.
 
-No real transactions or prepared market datasets are bundled. The importer is
-tested against fields confirmed in DLD's public export JavaScript, not a retrieved
-DLD export. **Real-export validation remains outstanding.** Tests use artificial
-records explicitly labelled as test data, never substituted for market records.
+Real-export validation is done (see Real-data validation below): the pipeline was run on a full Data Dubai export (1.8M transactions) and on a DLD native export. Raw exports and the large transaction-level file are not stored in Git; only the prepared monthly sales summary and quality report are shared, in data/shared/. Unit tests use artificial records labelled as test data.
 
 ### Install
 
@@ -78,7 +75,7 @@ clearly. This is not a registered API client and does not handle CAPTCHA.
 
 Inputs are never modified. Existing output filenames are refused; choose a new
 output directory for each run. ZIP files are read without extracting paths;
-CSV members must total at most 2 GiB per archive. Only the seven relevant fields
+CSV members must total at most 2 GiB per archive. Only the nine relevant fields
 are loaded, reducing memory for wide exports. All selected records are still
 combined in RAM for global deduplication: this is not an out-of-core pipeline,
 and full 550 MB exports have not been benchmarked. Datasets are ignored by Git.
@@ -98,11 +95,12 @@ map into a single internal representation:
 | Consideration in AED (required) | actual_worth | TRANS_VALUE | Amount |
 | Unit/subtype (optional) | property_sub_type_en | PROP_SB_TYPE_EN | Property Sub Type |
 | Transaction group (optional) | trans_group_en | GROUP_EN | Transaction Type |
+| Area in m2 (optional) | procedure_area | PROCEDURE_AREA | not confirmed |
+| Off-plan / ready (optional) | reg_type_en | IS_OFFPLAN_EN | not confirmed |
 
 Native keys are confirmed by DLD's `getExportHeader` and Transactions grid in
 its public `scripts/publicData.js`. The display headers are from its English
-Transactions table. Actual exported CSV encoding, delimiters and values remain
-to be checked on a real export. An unrecognized, ambiguous, duplicate-header or
+Transactions table. The Data Dubai and DLD native schemas were checked against real exports; the display-header schema was not. An unrecognized, ambiguous, duplicate-header or
 Arabic-only schema fails with an error rather than guessing columns. Different
 recognized schemas can be supplied as separate files in the same run.
 
@@ -117,33 +115,39 @@ recognized schemas can be supplied as separate files in the same run.
   separators. Reject missing, zero, negative, malformed and nonnumeric prices.
 - Reject impossible dates or missing required ID, area or property type values.
   Leave optional labels empty; never estimate prices or locations.
+- Years outside 1900-2100 are rejected before parsing (old mortgage rows carry Hijri years 1416-1422; counted in invalid_rows and implausible_year_rows).
 - Normalize each source, combine all supplied parts, remove exact normalized
   duplicates, then exclude all remaining records with conflicting transaction IDs.
   This avoids choosing a conflicting row arbitrarily. Review these exclusions:
   the pipeline assumes one reusable record per ID, which needs real-source validation.
+- Sales below 10,000 AED are dropped (--min-sale-price changes it; mortgages and gifts not filtered; applied last).
+- Area must be positive and finite, price per m2 = price_aed / area_m2 (equals the export's meter_sale_price on every sales row).
 
 ### Outputs for teammates
 
 `transactions_clean.csv` contains `transaction_id`, `transaction_date`, `area`,
-`property_type`, `unit_type`, `transaction_group`, `price_aed`, `year`, `month`.
+`property_type`, `unit_type`, `transaction_group`, `price_aed`, `year`, `month`,
+`area_m2`, `price_per_m2_aed`, `registration_type` (Off-Plan/Ready).
 Rows are sorted by date, area and ID. Dates use YYYY-MM-DD and months YYYY-MM.
 All transaction groups are retained. Select the relevant group before modelling;
-prices are whole-transaction amounts, not AED per square metre. Property size
-and ready/off-plan distinctions are not retained by this basic shared dataset.
+prices are whole-transaction amounts, not AED per square metre.
 
 `monthly_sales.csv` groups only `Sales` records (case insensitive) by area,
 property type, unit type and month. It contains `transaction_count`,
-`total_price_aed`, and `median_price_aed`. It does not invent zero-activity
+`total_price_aed`, `median_price_aed`, `median_area_m2`, `median_price_per_m2_aed`,
+`offplan_transactions`, and `ready_transactions`. It does not invent zero-activity
 months. Missing group labels are excluded; no group column yields an empty
 summary with headers. This summary is descriptive preparation, not forecasting.
 
 `quality_report.json` records mutually exclusive invalid, duplicate, conflicting-ID
 and retained row counts that reconcile to input rows. It also contains sales
 coverage, observed date bounds, per-input SHA-256 hashes, each CSV member's schema,
-row count and catalogue reference, preparation time, and pandas version. Catalogue
-references are based on the detected schema, not authenticated proof of input
-origin. Observed date bounds do not establish coverage completeness. Download URL
-queries are omitted from the report to avoid storing signed URL credentials.
+row count and catalogue reference, preparation time, and pandas version. It also
+includes `implausible_year_rows` (subset of `invalid_rows`), `low_price_sales_rows`,
+and `min_sale_price_aed`. Catalogue references are based on the detected schema,
+not authenticated proof of input origin. Observed date bounds do not establish
+coverage completeness. Download URL queries are omitted from the report to avoid
+storing signed URL credentials.
 
 ### Files and functions
 
@@ -165,27 +169,35 @@ queries are omitted from the report to avoid storing signed URL credentials.
 python -m unittest discover -s tests -v
 ```
 
-Tests demonstrate preparation behaviour on artificial inputs. They do not verify
-portal availability, the complete market history, or actual export compatibility.
+Tests demonstrate preparation behaviour on artificial inputs. Real-export compatibility and end-to-end data validation are verified in the Real-data validation section below.
 
 
-## Validation (real-data test)
+## Real-data validation
 
-Tested on 28 Oct 2026 against a real Data Dubai export
-(https://data.dubai/en/l/470061, two CSV parts in one ZIP).
+Tested against a full real Data Dubai export (https://data.dubai/en/l/470061, two CSV parts in one ZIP) and on a DLD native export.
 
 Command:
-    python -m src.dld_data.pipeline --input data/raw/<export>.zip --output-dir data/processed/full-run
+```bash
+python -m src.dld_data.pipeline --input data/raw/transactions_2026-10-27_19-03-09_0001_0002.zip --output-dir data/processed/full-run-v2
+```
 
-Results (pandas 2.3.3): 1,808,832 rows in, 4 invalid rows rejected
-(impossible dates, years 1416-1422), 0 duplicates, 0 conflicting IDs,
-1,808,828 rows out, 1,383,411 sales transactions, 51,446 monthly sales rows.
-All 19 unit tests pass.
+Results:
+- `input_rows`: 1,808,832
+- `invalid_rows`: 4 (impossible dates, years 1416-1422)
+- `implausible_year_rows`: 4 (subset of invalid rows)
+- `duplicate_rows`: 0
+- `conflicting_id_rows`: 0
+- `low_price_sales_rows`: 417
+- `output_rows`: 1,808,411
+- `sales_transactions`: 1,382,994
+- `monthly_sales_rows`: 51,439
+- All 24 unit tests pass.
 
 Notes:
-- Keep pandas below 3.0. Pandas 3.0 crashes on the 4 invalid dates.
-- Data before ~2019 is sparse. Model from 2019/2020 onwards.
-- 2026 volumes look lower than 2025; completeness of the 2026 export is being confirmed.
+- The 2026 slowdown is real: existing/ready sales fell from ~6.5k to under 4k a month since March 2026, and off-plan fell from ~13k to ~7.5-8.5k (an independent second export matched).
+- Data before ~2019 is sparse; model from 2019/2020 onwards.
+- October 2026 is partial (ends 26 Oct 2026).
+- `transactions_clean.csv` (~190 MB) is shared outside GitHub.
 
 ## How to update the data
 

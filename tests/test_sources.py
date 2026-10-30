@@ -14,7 +14,7 @@ from src.dld_data.sources import load_inputs
 
 def native_row(**changes):
     return dict(TRANSACTION_NUMBER='ARTIFICIAL-1', INSTANCE_DATE='2026-01-31T00:00:00',
-                AREA_EN='Test Area', PROP_TYPE_EN='Unit', TRANS_VALUE='1000',
+                AREA_EN='Test Area', PROP_TYPE_EN='Unit', TRANS_VALUE='1000000',
                 PROP_SB_TYPE_EN='Flat', GROUP_EN='Sales', **changes)
 
 
@@ -22,13 +22,13 @@ class SourceTests(unittest.TestCase):
     def test_native_source_mapping_and_timestamp(self):
         clean, _ = clean_transactions(pd.DataFrame([native_row()]))
         self.assertEqual(clean.iloc[0]['transaction_id'], 'ARTIFICIAL-1')
-        self.assertEqual(clean.iloc[0]['price_aed'], 1000)
+        self.assertEqual(clean.iloc[0]['price_aed'], 1000000)
         self.assertEqual(clean.iloc[0]['transaction_date'], '2026-01-31')
 
     def test_display_header_mapping(self):
         frame = pd.DataFrame([{
             'Transaction Number': 'ARTIFICIAL-1', 'Transaction Date': '31/01/2026',
-            'Area': 'Test Area', 'Property Type': 'Unit', 'Amount': '1,000',
+            'Area': 'Test Area', 'Property Type': 'Unit', 'Amount': '1,000,000',
             'Property Sub Type': 'Flat', 'Transaction Type': 'Sales',
         }])
         clean, report = clean_transactions(frame)
@@ -37,8 +37,8 @@ class SourceTests(unittest.TestCase):
 
     def test_ambiguous_schema_rejected(self):
         frame = pd.DataFrame([{**native_row(), 'transaction_id': 'ARTIFICIAL-2',
-                               'area_name_en': 'Test Area', 'property_type_en': 'Unit',
-                               'actual_worth': '1000'}])
+                                'area_name_en': 'Test Area', 'property_type_en': 'Unit',
+                                'actual_worth': '1000'}])
         with self.assertRaisesRegex(ValueError, 'ambiguous'):
             clean_transactions(frame)
 
@@ -52,7 +52,7 @@ class SourceTests(unittest.TestCase):
                 # Paths stay inside the archive, never extracted onto disk.
                 archive.writestr('../part1.csv', pd.DataFrame([first, conflicting]).to_csv(index=False))
                 archive.writestr('part2.csv', pd.DataFrame([first, second]).to_csv(index=False))
-            pd.DataFrame([{**conflicting, 'TRANS_VALUE': '2000'}]).to_csv(root / 'part3.csv', index=False)
+            pd.DataFrame([{**conflicting, 'TRANS_VALUE': '2000000'}]).to_csv(root / 'part3.csv', index=False)
             report = prepare([root / 'parts.zip', root / 'part3.csv'], root / 'out')
             self.assertEqual(report['input_rows'], 5)
             self.assertEqual(report['duplicate_rows'], 1)
@@ -118,6 +118,16 @@ class SourceTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('No valid transactions', result.stderr)
             self.assertFalse((root / 'bad-out').exists())
+
+    def test_native_area_and_offplan_fields(self):
+        first = native_row(PROCEDURE_AREA='100', IS_OFFPLAN_EN='Off-Plan')
+        second = {**native_row(PROCEDURE_AREA='80', IS_OFFPLAN_EN='Ready'),
+                  'TRANSACTION_NUMBER': 'ARTIFICIAL-2'}
+        clean, _ = clean_transactions(pd.DataFrame([first, second]))
+        self.assertEqual(clean.iloc[0]['registration_type'], 'Off-Plan')
+        self.assertEqual(clean.iloc[1]['registration_type'], 'Ready')
+        self.assertEqual(clean.iloc[0]['price_per_m2_aed'], 10000)
+        self.assertEqual(clean.iloc[1]['area_m2'], 80)
 
 
 if __name__ == '__main__':

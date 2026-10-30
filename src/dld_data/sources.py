@@ -11,7 +11,8 @@ DLD_CATALOGUE = 'https://dubailand.gov.ae/en/open-data/real-estate-data/'
 PULSE_CATALOGUE = 'https://data.dubai/en/l/470061'
 REQUIRED = {'transaction_id', 'instance_date', 'area_name_en',
             'property_type_en', 'actual_worth'}
-CANONICAL = [*sorted(REQUIRED), 'property_sub_type_en', 'trans_group_en']
+CANONICAL = [*sorted(REQUIRED), 'property_sub_type_en', 'trans_group_en',
+             'procedure_area', 'reg_type_en']
 # Native CSV keys are supplied to DLD's export service by getExportHeader in
 # https://dubailand.gov.ae/scripts/publicData.js. Display labels are taken from
 # its English Transactions table. No private API or credentials are used.
@@ -22,7 +23,9 @@ SCHEMAS = {
         'area_name_en': 'area_en', 'property_type_en': 'prop_type_en',
         'actual_worth': 'trans_value', 'property_sub_type_en': 'prop_sb_type_en',
         'trans_group_en': 'group_en',
+        'procedure_area': 'procedure_area', 'reg_type_en': 'is_offplan_en',
     },
+    # Header names for procedure_area and reg_type_en in dld_display are unconfirmed.
     'dld_display': {
         'transaction_id': 'transaction number', 'instance_date': 'transaction date',
         'area_name_en': 'area', 'property_type_en': 'property type',
@@ -57,7 +60,7 @@ def normalize_schema(raw):
 
 
 def read_table(binary_stream):
-    """Check the original header and load only seven relevant fields into pandas."""
+    """Check the original header and load only relevant fields into pandas."""
     with io.TextIOWrapper(binary_stream, encoding='utf-8-sig', newline='') as text:
         header = next(csv.reader(text), None)
         if not header:
