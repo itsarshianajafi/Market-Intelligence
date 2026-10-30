@@ -280,7 +280,7 @@ Percentages are fractions (0.05 = 5%).
 - Agreement with crisp rules 95% (Cohen's kappa 0.91); with k-means 33% (kappa -0.07): k-means
   groups segments by volume rather than direction, and changes a lot between seeds (72% +- 29%).
 - Bootstrap (200 seeded refits of the membership functions): 98.8% +- 0.8% of labels unchanged.
-- Sensitivity (one setting changed at a time): 93-99% of labels unchanged.
+- Sensitivity (one setting changed at a time): 92-99% of labels unchanged.
 - **Forward check:** labels describe the current market; they do **not** predict next year.
   Correlation of trend score with the next year's price change is -0.01. Use them for "what is
   happening now", not as a forecast.
