@@ -1,5 +1,6 @@
 """Artificial test cases only: these are not real property transactions."""
 import tempfile
+from datetime import date, timedelta
 import io
 from urllib.error import HTTPError
 from pathlib import Path
@@ -86,7 +87,9 @@ class PreparationTests(unittest.TestCase):
     def test_api_access_denied_is_clear(self):
         with tempfile.TemporaryDirectory() as folder:
             url = 'https://api.dubaipulse.gov.ae/open/dld/dld_transactions-open-api'
-            with patch('src.dld_data.pipeline.urlopen', side_effect=HTTPError(url, 401, 'Unauthorized', {}, None)):
+            error = HTTPError(url, 401, 'Unauthorized', {}, None)
+            self.addCleanup(error.close)
+            with patch('src.dld_data.pipeline.urlopen', side_effect=error):
                 with self.assertRaisesRegex(ValueError, 'registered API access'):
                     download_csv(url, Path(folder) / 'data.csv')
             self.assertEqual(list(Path(folder).iterdir()), [])
@@ -135,18 +138,37 @@ class PreparationTests(unittest.TestCase):
         self.assertTrue(pd.isna(row3['price_per_m2_aed']))
         self.assertTrue(pd.isna(row3['registration_type']))
 
-    def test_monthly_sales_has_price_per_m2_and_offplan_counts(self):
+    def test_monthly_sales_splits_offplan_and_ready(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             r1 = row(transaction_id='T-1', actual_worth='1,200,000', procedure_area='100', reg_type_en='Ready')
             r2 = row(transaction_id='T-2', actual_worth='1,000,000', procedure_area='50', reg_type_en='Off-Plan')
-            pd.DataFrame([r1, r2]).to_csv(root / 'raw.csv', index=False)
+            r3 = row(transaction_id='T-3', actual_worth='1,400,000', procedure_area='50', reg_type_en='Off-Plan')
+            pd.DataFrame([r1, r2, r3]).to_csv(root / 'raw.csv', index=False)
             prepare(root / 'raw.csv', root / 'out')
-            monthly = pd.read_csv(root / 'out/monthly_sales.csv')
-            self.assertEqual(monthly.iloc[0]['median_price_per_m2_aed'], 16000)
-            self.assertEqual(monthly.iloc[0]['median_area_m2'], 75)
-            self.assertEqual(monthly.iloc[0]['offplan_transactions'], 1)
-            self.assertEqual(monthly.iloc[0]['ready_transactions'], 1)
+            monthly = pd.read_csv(root / 'out/monthly_sales.csv').set_index('registration_type')
+            self.assertEqual(len(monthly), 2)
+            self.assertEqual(monthly.loc['Ready', 'median_price_per_m2_aed'], 12000)
+            self.assertEqual(monthly.loc['Off-Plan', 'transaction_count'], 2)
+            self.assertEqual(monthly.loc['Off-Plan', 'median_price_per_m2_aed'], 24000)
+
+    def test_future_dates_rejected(self):
+        future = (date.today() + timedelta(days=2)).isoformat()
+        df, report = clean_transactions(pd.DataFrame([row(), row(transaction_id='TEST-FUTURE', instance_date=future)]))
+        self.assertEqual(list(df.transaction_id), ['TEST-1'])
+        self.assertEqual(report['invalid_rows'], 1)
+        self.assertEqual(report['future_date_rows'], 1)
+
+    def test_small_area_keeps_row_but_no_price_per_m2(self):
+        df, report = clean_transactions(pd.DataFrame([row(procedure_area='2')]))
+        self.assertEqual(len(df), 1)
+        self.assertEqual(df.iloc[0]['area_m2'], 2)
+        self.assertTrue(pd.isna(df.iloc[0]['price_per_m2_aed']))
+        self.assertEqual(report['small_area_rows'], 1)
+
+    def test_procedure_name_is_kept(self):
+        df, _ = clean_transactions(pd.DataFrame([row(procedure_name_en='Lease to Own Registration')]))
+        self.assertEqual(df.iloc[0]['procedure'], 'Lease to Own Registration')
 
 
 if __name__ == '__main__':
