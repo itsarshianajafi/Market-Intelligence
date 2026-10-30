@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from . import evaluate
+from . import evaluate, figures
 from .baselines import crisp_labels, kmeans_labels
 from .features import build_features, last_complete_quarter, load_monthly
 from .fuzzy import classify, fit_scales
@@ -72,6 +72,8 @@ def run(cfg):
         'config': cfg,
     }
     (report_dir / 'evaluation.json').write_text(json.dumps(result, indent=2, default=str) + '\n')
+    if cfg.get('figures', True):
+        figures.make_all(ok, scales, forward, last_quarter, report_dir)
     return df, result
 
 
