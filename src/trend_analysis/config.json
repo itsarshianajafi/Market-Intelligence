@@ -1,0 +1,18 @@
+{
+  "input": "data/shared/monthly_sales.csv",
+  "quality_report": "data/shared/quality_report.json",
+  "output": "data/shared/market_trends.csv",
+  "report_dir": "reports/part2",
+  "start_quarter": "2020Q1",
+  "property_types": ["Unit", "Villa"],
+  "min_sales": 30,
+  "min_cell_sales": 3,
+  "min_coverage": 0.5,
+  "volatility_window": 4,
+  "provisional_quarters": 1,
+  "scale_percentiles": [25, 75],
+  "volatility_percentiles": [50, 90],
+  "seed": 42,
+  "bootstrap_runs": 200,
+  "kmeans_runs": 20
+}
