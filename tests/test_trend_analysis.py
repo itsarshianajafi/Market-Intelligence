@@ -14,7 +14,7 @@ from src.trend_analysis.fuzzy import classify, three_sets
 from src.trend_analysis.run import DEFAULT_CONFIG, OUTPUT_COLUMNS, run
 
 CFG = {**json.loads(DEFAULT_CONFIG.read_text()), 'start_quarter': '2021Q1', 'min_sales': 10,
-       'bootstrap_runs': 3, 'kmeans_runs': 2}
+       'bootstrap_runs': 3, 'kmeans_runs': 2, 'figures': False}
 Q = pd.Period('2022Q2', freq='Q')
 SCALES = {'price': (0.05, 0.2), 'volume': (0.2, 0.8), 'volatility': (0.05, 0.15)}
 
