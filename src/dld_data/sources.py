@@ -12,7 +12,7 @@ PULSE_CATALOGUE = 'https://data.dubai/en/l/470061'
 REQUIRED = {'transaction_id', 'instance_date', 'area_name_en',
             'property_type_en', 'actual_worth'}
 CANONICAL = [*sorted(REQUIRED), 'property_sub_type_en', 'trans_group_en',
-             'procedure_area', 'reg_type_en']
+             'procedure_area', 'reg_type_en', 'procedure_name_en']
 # Native CSV keys are supplied to DLD's export service by getExportHeader in
 # https://dubailand.gov.ae/scripts/publicData.js. Display labels are taken from
 # its English Transactions table. No private API or credentials are used.
@@ -24,6 +24,7 @@ SCHEMAS = {
         'actual_worth': 'trans_value', 'property_sub_type_en': 'prop_sb_type_en',
         'trans_group_en': 'group_en',
         'procedure_area': 'procedure_area', 'reg_type_en': 'is_offplan_en',
+        'procedure_name_en': 'procedure_en',
     },
     # Header names for procedure_area and reg_type_en in dld_display are unconfirmed.
     'dld_display': {

@@ -15,11 +15,13 @@ from .sources import load_inputs, normalize_schema
 
 COLUMNS = ["transaction_id", "transaction_date", "area", "property_type", "unit_type",
            "transaction_group", "price_aed", "year", "month",
-           "area_m2", "price_per_m2_aed", "registration_type"]
+           "area_m2", "price_per_m2_aed", "registration_type", "procedure"]
 
 # Some old mortgage rows carry Hijri years 1416-1422.
 MIN_YEAR, MAX_YEAR = 1900, 2100
 MIN_SALE_PRICE_AED = 10_000
+# Below this size price per m2 is unreliable (1,789 sales since 2020, some above 1M AED/m2).
+MIN_AREA_M2 = 10
 
 
 def download_csv(url, destination):
@@ -79,7 +81,8 @@ def clean_transactions(raw, min_sale_price=MIN_SALE_PRICE_AED):
     for source, target in [('transaction_id', 'transaction_id'),
                            ('area_name_en', 'area'), ('property_type_en', 'property_type'),
                            ('property_sub_type_en', 'unit_type'),
-                           ('trans_group_en', 'transaction_group')]:
+                           ('trans_group_en', 'transaction_group'),
+                           ('procedure_name_en', 'procedure')]:
         values = raw[source] if source in raw else pd.Series(pd.NA, index=raw.index, dtype='string')
         normalized = values.astype('string').str.strip().str.replace(r'\s+', ' ', regex=True)
         df[target] = normalized.mask(normalized.str.casefold().isin(['', 'null', 'none', 'n/a', 'nan']))
@@ -101,7 +104,8 @@ def clean_transactions(raw, min_sale_price=MIN_SALE_PRICE_AED):
                 '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
                 '%Y-%m-%d %H:%M:%S'):
         parsed = parsed.fillna(pd.to_datetime(dates, format=fmt, errors='coerce'))
-    df['transaction_date'] = parsed
+    future = parsed.gt(pd.Timestamp.now(tz='Asia/Dubai').tz_localize(None).normalize())
+    df['transaction_date'] = parsed.mask(future)
     prices = raw['actual_worth'].astype('string').str.strip()
     # Only accept plain numbers or correctly grouped thousands, optionally decimal.
     valid_number = prices.str.fullmatch(r'[+]?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?', na=False)
@@ -109,7 +113,8 @@ def clean_transactions(raw, min_sale_price=MIN_SALE_PRICE_AED):
     invalid = (df[['transaction_id', 'area', 'property_type']].isna().any(axis=1)
                | df.transaction_date.isna() | df.price_aed.isna()
                | (df.price_aed <= 0) | ~df.price_aed.lt(float('inf')))
-    stats = {'input_rows': len(df), 'invalid_rows': int(invalid.sum()), 'implausible_year_rows': int(implausible.sum())}
+    stats = {'input_rows': len(df), 'invalid_rows': int(invalid.sum()), 'implausible_year_rows': int(implausible.sum()),
+             'future_date_rows': int(future.sum())}
     df = df.loc[~invalid].copy()
     duplicates = df.duplicated()
     stats['duplicate_rows'] = int(duplicates.sum())
@@ -121,7 +126,9 @@ def clean_transactions(raw, min_sale_price=MIN_SALE_PRICE_AED):
     low_price = is_sale & df.price_aed.lt(min_sale_price)
     stats['low_price_sales_rows'] = int(low_price.sum())
     df = df.loc[~low_price].copy()
-    df['price_per_m2_aed'] = (df.price_aed / df.area_m2).round(2)
+    small_area = df.area_m2.lt(MIN_AREA_M2)
+    stats['small_area_rows'] = int(small_area.sum())
+    df['price_per_m2_aed'] = (df.price_aed / df.area_m2).round(2).mask(small_area)
     df['year'] = df.transaction_date.dt.year
     df['month'] = df.transaction_date.dt.strftime('%Y-%m')
     df['transaction_date'] = df.transaction_date.dt.strftime('%Y-%m-%d')
@@ -144,21 +151,18 @@ def prepare(input_path, output_dir, source_url=None, min_sale_price=MIN_SALE_PRI
     output_dir.mkdir(parents=True, exist_ok=True)
     # Sales only: mortgages and gifts are not comparable market sale prices.
     sales = clean.loc[clean.transaction_group.str.casefold().eq('sales').fillna(False)]
-    sales = sales.assign(
-        offplan=sales.registration_type.eq('Off-Plan').fillna(False).astype(int),
-        ready=sales.registration_type.eq('Ready').fillna(False).astype(int))
-    monthly = (sales.groupby(['area', 'property_type', 'unit_type', 'month'], dropna=False).agg(
+    # Off-plan and ready sales are priced differently, so they are never mixed in one median.
+    monthly = (sales.groupby(['area', 'property_type', 'unit_type', 'registration_type', 'month'],
+                             dropna=False).agg(
         transaction_count=('transaction_id', 'size'),
         total_price_aed=('price_aed', 'sum'),
         median_price_aed=('price_aed', 'median'),
         median_area_m2=('area_m2', 'median'),
-        median_price_per_m2_aed=('price_per_m2_aed', 'median'),
-        offplan_transactions=('offplan', 'sum'),
-        ready_transactions=('ready', 'sum')).reset_index())
+        median_price_per_m2_aed=('price_per_m2_aed', 'median')).reset_index())
     clean.to_csv(output_dir / targets[0], index=False)
     monthly.to_csv(output_dir / targets[1], index=False)
     report = {**stats, 'monthly_sales_rows': len(monthly), 'sales_transactions': len(sales),
-              'min_sale_price_aed': min_sale_price,
+              'min_sale_price_aed': min_sale_price, 'min_area_m2': MIN_AREA_M2,
               'inputs': manifests,
               'date_min': clean.transaction_date.min(), 'date_max': clean.transaction_date.max(),
               'missing_transaction_group_rows': int(clean.transaction_group.isna().sum()),
