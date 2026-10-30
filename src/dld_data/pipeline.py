@@ -14,7 +14,12 @@ import pandas as pd
 from .sources import load_inputs, normalize_schema
 
 COLUMNS = ["transaction_id", "transaction_date", "area", "property_type", "unit_type",
-           "transaction_group", "price_aed", "year", "month"]
+           "transaction_group", "price_aed", "year", "month",
+           "area_m2", "price_per_m2_aed", "registration_type"]
+
+# Some old mortgage rows carry Hijri years 1416-1422.
+MIN_YEAR, MAX_YEAR = 1900, 2100
+MIN_SALE_PRICE_AED = 10_000
 
 
 def download_csv(url, destination):
@@ -60,12 +65,14 @@ def download_csv(url, destination):
             temp.unlink(missing_ok=True)
 
 
-def clean_transactions(raw):
+def clean_transactions(raw, min_sale_price=MIN_SALE_PRICE_AED):
     """Normalize DLD fields and return valid records plus mutually exclusive counts.
 
     Invalid required values are rejected; missing optional labels stay empty.
     Exact duplicate normalized rows and conflicting repeated IDs are removed.
     All rows of a conflicting ID are excluded instead of choosing arbitrarily.
+    Sales below min_sale_price are dropped as data errors after conflict removal.
+    implausible_year_rows is an informational subset of invalid_rows.
     """
     raw, _ = normalize_schema(raw)
     df = pd.DataFrame(index=raw.index)
@@ -76,8 +83,19 @@ def clean_transactions(raw):
         values = raw[source] if source in raw else pd.Series(pd.NA, index=raw.index, dtype='string')
         normalized = values.astype('string').str.strip().str.replace(r'\s+', ' ', regex=True)
         df[target] = normalized.mask(normalized.str.casefold().isin(['', 'null', 'none', 'n/a', 'nan']))
+    area = (raw['procedure_area'] if 'procedure_area' in raw else pd.Series(pd.NA, index=raw.index, dtype='string'))
+    area = pd.to_numeric(area.astype('string').str.strip().str.replace(',', '', regex=False), errors='coerce').astype('float64')
+    df['area_m2'] = area.where(area.gt(0) & area.lt(float('inf')))
+    reg = (raw['reg_type_en'] if 'reg_type_en' in raw else pd.Series(pd.NA, index=raw.index, dtype='string'))
+    reg = reg.astype('string').str.casefold()
+    df['registration_type'] = (pd.Series(pd.NA, index=raw.index, dtype='string')
+        .mask(reg.str.contains('ready|existing', na=False), 'Ready')
+        .mask(reg.str.contains('off', na=False), 'Off-Plan'))
     # DLD exports use day-first dates; ISO YYYY-MM-DD is also accepted explicitly.
     dates = raw['instance_date'].astype('string').str.strip()
+    year = pd.to_numeric(dates.str.extract(r'(\d{4})')[0], errors='coerce')
+    implausible = year.notna() & ~year.between(MIN_YEAR, MAX_YEAR)
+    dates = dates.mask(implausible)
     parsed = pd.Series(pd.NaT, index=raw.index, dtype='datetime64[ns]')
     for fmt in ('%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d',
                 '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f',
@@ -91,7 +109,7 @@ def clean_transactions(raw):
     invalid = (df[['transaction_id', 'area', 'property_type']].isna().any(axis=1)
                | df.transaction_date.isna() | df.price_aed.isna()
                | (df.price_aed <= 0) | ~df.price_aed.lt(float('inf')))
-    stats = {'input_rows': len(df), 'invalid_rows': int(invalid.sum())}
+    stats = {'input_rows': len(df), 'invalid_rows': int(invalid.sum()), 'implausible_year_rows': int(implausible.sum())}
     df = df.loc[~invalid].copy()
     duplicates = df.duplicated()
     stats['duplicate_rows'] = int(duplicates.sum())
@@ -99,6 +117,11 @@ def clean_transactions(raw):
     conflicts = df.transaction_id.duplicated(keep=False)
     stats['conflicting_id_rows'] = int(conflicts.sum())
     df = df.loc[~conflicts].copy()
+    is_sale = df.transaction_group.str.casefold().eq('sales').fillna(False).astype(bool)
+    low_price = is_sale & df.price_aed.lt(min_sale_price)
+    stats['low_price_sales_rows'] = int(low_price.sum())
+    df = df.loc[~low_price].copy()
+    df['price_per_m2_aed'] = (df.price_aed / df.area_m2).round(2)
     df['year'] = df.transaction_date.dt.year
     df['month'] = df.transaction_date.dt.strftime('%Y-%m')
     df['transaction_date'] = df.transaction_date.dt.strftime('%Y-%m-%d')
@@ -107,7 +130,7 @@ def clean_transactions(raw):
     return df, stats
 
 
-def prepare(input_path, output_dir, source_url=None):
+def prepare(input_path, output_dir, source_url=None, min_sale_price=MIN_SALE_PRICE_AED):
     """Write reusable transactions, monthly sales aggregates, and audit metadata."""
     paths = [input_path] if isinstance(input_path, (str, Path)) else list(input_path)
     output_dir = Path(output_dir)
@@ -115,19 +138,27 @@ def prepare(input_path, output_dir, source_url=None):
     if any((output_dir / name).exists() for name in targets):
         raise ValueError("Output files already exist; choose a new output directory")
     raw, manifests = load_inputs(paths)
-    clean, stats = clean_transactions(raw)
+    clean, stats = clean_transactions(raw, min_sale_price=min_sale_price)
     if clean.empty:
         raise ValueError(f"No valid transactions; nothing written. Counts: {stats}")
     output_dir.mkdir(parents=True, exist_ok=True)
     # Sales only: mortgages and gifts are not comparable market sale prices.
     sales = clean.loc[clean.transaction_group.str.casefold().eq('sales').fillna(False)]
-    monthly = (sales.groupby(['area', 'property_type', 'unit_type', 'month'], dropna=False)
-               .agg(transaction_count=('transaction_id', 'size'),
-                    total_price_aed=('price_aed', 'sum'),
-                    median_price_aed=('price_aed', 'median')).reset_index())
+    sales = sales.assign(
+        offplan=sales.registration_type.eq('Off-Plan').fillna(False).astype(int),
+        ready=sales.registration_type.eq('Ready').fillna(False).astype(int))
+    monthly = (sales.groupby(['area', 'property_type', 'unit_type', 'month'], dropna=False).agg(
+        transaction_count=('transaction_id', 'size'),
+        total_price_aed=('price_aed', 'sum'),
+        median_price_aed=('price_aed', 'median'),
+        median_area_m2=('area_m2', 'median'),
+        median_price_per_m2_aed=('price_per_m2_aed', 'median'),
+        offplan_transactions=('offplan', 'sum'),
+        ready_transactions=('ready', 'sum')).reset_index())
     clean.to_csv(output_dir / targets[0], index=False)
     monthly.to_csv(output_dir / targets[1], index=False)
     report = {**stats, 'monthly_sales_rows': len(monthly), 'sales_transactions': len(sales),
+              'min_sale_price_aed': min_sale_price,
               'inputs': manifests,
               'date_min': clean.transaction_date.min(), 'date_max': clean.transaction_date.max(),
               'missing_transaction_group_rows': int(clean.transaction_group.isna().sum()),
@@ -149,13 +180,15 @@ def main():
                         help='Official CSV/ZIP paths; supply all export parts together')
     parser.add_argument('--url', help='Optional verified official HTTPS CSV URL; not the catalogue page')
     parser.add_argument('--output-dir', type=Path, default=Path('data/processed'))
+    parser.add_argument('--min-sale-price', type=float, default=MIN_SALE_PRICE_AED,
+                        help='Drop Sales below this AED value as data errors (default 10000)')
     args = parser.parse_args()
     try:
         if args.url:
             if len(args.input) != 1 or args.input[0].suffix.lower() != '.csv':
                 raise ValueError('--url requires exactly one .csv input destination')
             download_csv(args.url, args.input[0])
-        report = prepare(args.input, args.output_dir, args.url)
+        report = prepare(args.input, args.output_dir, args.url, min_sale_price=args.min_sale_price)
     except (ValueError, OSError, BadZipFile, pd.errors.ParserError) as exc:
         parser.exit(1, f"Pipeline failed: {exc}\n")
     print(json.dumps(report, indent=2))

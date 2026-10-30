@@ -97,6 +97,57 @@ class PreparationTests(unittest.TestCase):
                 download_csv('https://example.com/data.csv', 'unused.csv')
             request.assert_not_called()
 
+    def test_impossible_hijri_year_is_rejected_not_fatal(self):
+        valid = row()
+        hijri = row(transaction_id='TEST-HIJRI', instance_date='1420-01-30', trans_group_en='Mortgages')
+        df, report = clean_transactions(pd.DataFrame([valid, hijri]))
+        self.assertEqual(len(df), 1)
+        self.assertEqual(report['invalid_rows'], 1)
+        self.assertEqual(report['implausible_year_rows'], 1)
+
+    def test_low_price_sales_dropped_but_other_groups_kept(self):
+        s1 = row(transaction_id='TEST-SALE-1', actual_worth='1,200,000', trans_group_en='Sales')
+        s2 = row(transaction_id='TEST-SALE-2', actual_worth='100', trans_group_en='Sales')
+        m1 = row(transaction_id='TEST-MORT-1', actual_worth='100', trans_group_en='Mortgages')
+        df, report = clean_transactions(pd.DataFrame([s1, s2, m1]))
+        self.assertEqual(report['low_price_sales_rows'], 1)
+        self.assertEqual(set(df['transaction_id']), {'TEST-SALE-1', 'TEST-MORT-1'})
+        self.assertEqual(report['input_rows'],
+                         report['invalid_rows'] + report['duplicate_rows'] +
+                         report['conflicting_id_rows'] + report['low_price_sales_rows'] +
+                         report['output_rows'])
+        df2, report2 = clean_transactions(pd.DataFrame([s1, s2, m1]), min_sale_price=50)
+        self.assertEqual(report2['low_price_sales_rows'], 0)
+
+    def test_area_price_per_m2_and_registration_type(self):
+        r1 = row(transaction_id='TEST-1', actual_worth='1,200,000', procedure_area='100', reg_type_en='Existing Properties')
+        r2 = row(transaction_id='TEST-2', actual_worth='1,200,000', procedure_area='50', reg_type_en='Off-Plan Properties')
+        r3 = row(transaction_id='TEST-3', actual_worth='1,200,000', procedure_area='0', reg_type_en='')
+        df, _ = clean_transactions(pd.DataFrame([r1, r2, r3]))
+        row1 = df.loc[df.transaction_id == 'TEST-1'].iloc[0]
+        row2 = df.loc[df.transaction_id == 'TEST-2'].iloc[0]
+        row3 = df.loc[df.transaction_id == 'TEST-3'].iloc[0]
+        self.assertEqual(row1['price_per_m2_aed'], 12000)
+        self.assertEqual(row1['registration_type'], 'Ready')
+        self.assertEqual(row2['price_per_m2_aed'], 24000)
+        self.assertEqual(row2['registration_type'], 'Off-Plan')
+        self.assertTrue(pd.isna(row3['area_m2']))
+        self.assertTrue(pd.isna(row3['price_per_m2_aed']))
+        self.assertTrue(pd.isna(row3['registration_type']))
+
+    def test_monthly_sales_has_price_per_m2_and_offplan_counts(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            r1 = row(transaction_id='T-1', actual_worth='1,200,000', procedure_area='100', reg_type_en='Ready')
+            r2 = row(transaction_id='T-2', actual_worth='1,000,000', procedure_area='50', reg_type_en='Off-Plan')
+            pd.DataFrame([r1, r2]).to_csv(root / 'raw.csv', index=False)
+            prepare(root / 'raw.csv', root / 'out')
+            monthly = pd.read_csv(root / 'out/monthly_sales.csv')
+            self.assertEqual(monthly.iloc[0]['median_price_per_m2_aed'], 16000)
+            self.assertEqual(monthly.iloc[0]['median_area_m2'], 75)
+            self.assertEqual(monthly.iloc[0]['offplan_transactions'], 1)
+            self.assertEqual(monthly.iloc[0]['ready_transactions'], 1)
+
 
 if __name__ == '__main__':
     unittest.main()
