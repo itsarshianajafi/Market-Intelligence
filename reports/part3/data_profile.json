@@ -1,0 +1,109 @@
+{
+  "source_rows": 59008,
+  "source_hashes": {
+    "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
+    "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
+    "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
+  },
+  "audit_hash_match": {
+    "monthly_sales.csv": true,
+    "quality_report.json": true,
+    "market_trends.csv": true
+  },
+  "missing_subtype_rows": 31364,
+  "nonpositive_price_rows": 0,
+  "missing_price_rows": 104,
+  "quality_report": {
+    "input_rows": 1809472,
+    "invalid_rows": 4,
+    "implausible_year_rows": 4,
+    "future_date_rows": 0,
+    "duplicate_rows": 0,
+    "conflicting_id_rows": 0,
+    "low_price_sales_rows": 417,
+    "small_area_rows": 2788,
+    "output_rows": 1809051,
+    "monthly_sales_rows": 59008,
+    "sales_transactions": 1383409,
+    "min_sale_price_aed": 10000,
+    "min_area_m2": 10,
+    "inputs": [
+      {
+        "input_file": "transactions_2026-10-28_19-12-20_0001.csv",
+        "sha256": "77bf77fda9c8ef282e30fd37a5c1cba6909c66e560babe24352826a4ca37a839",
+        "tables": [
+          {
+            "name": "transactions_2026-10-28_19-12-20_0001.csv",
+            "schema": "dubai_pulse",
+            "rows": 904737,
+            "catalogue_url": "https://data.dubai/en/l/470061"
+          }
+        ]
+      },
+      {
+        "input_file": "transactions_2026-10-28_19-12-20_0002.csv",
+        "sha256": "75d924e90bae38f611d4b14c2493b60e9482d50cc93d6d2b1fb2a3d115071d3b",
+        "tables": [
+          {
+            "name": "transactions_2026-10-28_19-12-20_0002.csv",
+            "schema": "dubai_pulse",
+            "rows": 904735,
+            "catalogue_url": "https://data.dubai/en/l/470061"
+          }
+        ]
+      }
+    ],
+    "date_min": "1966-01-18",
+    "date_max": "2026-10-27",
+    "missing_transaction_group_rows": 0,
+    "coverage_note": "Only supplied records; completeness is not established.",
+    "prepared_at_utc": "2026-10-30T09:37:22.309008+00:00",
+    "pandas_version": "2.3.3"
+  },
+  "source_evidence": {
+    "verified_aggregate_rows": 59008,
+    "verified_aggregate_sales_sum": 1383409,
+    "observed_sales_month_min": "1975-01",
+    "observed_sales_month_max": "2026-10",
+    "reported_clean_record_date_min": "1966-01-18",
+    "reported_clean_record_date_max": "2026-10-27",
+    "reported_prepared_at_utc": "2026-10-30T09:37:22.309008+00:00",
+    "raw_provenance": "Source filenames, hashes and catalogue references are upstream reports; Part 3 has not independently rehashed or authenticated the raw exports.",
+    "extraction_scope": "Observed dates are not proof of the requested export period, query filters, or complete retrieval of all parts.",
+    "market_completeness": "Not established. Aggregate reconciliation and observed months do not prove complete market coverage.",
+    "field_limits": "Monthly cells retain counts, medians and subtypes but omit transaction IDs, procedure and transaction-level valid-price denominators.",
+    "evidence_needed": [
+      "Recorded export query dates, filters and source version or revision timestamp.",
+      "An authenticated export manifest listing every part or page, its row count and hash.",
+      "Reconciliation of the complete raw export and documented exclusions to authoritative totals for the same scope.",
+      "Upstream confirmation of missing-month semantics; archived release vintages for true real-time backtesting."
+    ]
+  },
+  "out_of_population_rows": 19650,
+  "excluded_after_origin_rows": 284,
+  "excluded_before_panel_rows": 20210,
+  "selected_rows": 18864,
+  "segments": 198,
+  "panel_rows": 5346,
+  "selected_sales": 757432,
+  "partial_segment_quarters": 1055,
+  "unknown_segment_quarters": 1511,
+  "supported_target_quarters": {
+    "sales_count": 2780,
+    "weighted_geomean_monthly_median_aed_m2": 2081
+  },
+  "output_status_counts": {
+    "sales_count": {
+      "fallback": 30,
+      "insufficient_data": 4,
+      "missing_input": 72,
+      "ok": 92
+    },
+    "weighted_geomean_monthly_median_aed_m2": {
+      "fallback": 25,
+      "insufficient_data": 33,
+      "missing_input": 72,
+      "ok": 68
+    }
+  }
+}
