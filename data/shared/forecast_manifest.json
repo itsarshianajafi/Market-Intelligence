@@ -1,0 +1,319 @@
+{
+  "schema_version": "1.0",
+  "run_id": "part3-366e2209f118cbd3",
+  "generated_at_utc": "2026-10-31T19:07:51.609556+00:00",
+  "origin_quarter": "2026Q3",
+  "last_eligible_historical_quarter": "2026Q3",
+  "forecast_quarter": "2026Q4",
+  "horizon_quarters": 1,
+  "data_cutoff_date": "2026-10-27",
+  "historical_input_end_date": "2026-09-30",
+  "publication_context": "Q3-based projection generated during Q4; not published in September",
+  "source_hashes": {
+    "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
+    "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
+    "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
+  },
+  "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
+  "code_hashes": {
+    "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
+    "data.py": "1176212f87995cc94d45ae770057fd7d44a5244d36ac462de12ec83f96b4c37d",
+    "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
+    "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
+    "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
+    "models.py": "e57878b304a66ad2de8872a8f102d6855c87cc58a72ee0bb65d81ba39324db48",
+    "run.py": "b3a14ce2e5b677256470718cbd3c6eaca085463e771366c3512089ba5bd2433a"
+  },
+  "versions": {
+    "pandas": "2.2.3",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.7.0",
+    "pillow": "12.3.0",
+    "contourpy": "1.4.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.68.0",
+    "kiwisolver": "1.5.1",
+    "pyparsing": "3.3.3",
+    "python-dateutil": "2.9.0.post0",
+    "six": "1.17.0",
+    "pytz": "2026.5",
+    "tzdata": "2026.5",
+    "narwhals": "2.28.0",
+    "cloudpickle": "3.1.2",
+    "python": "3.12.14"
+  },
+  "selected_methods": {
+    "sales_count": "ridge_log_v1_alpha_10",
+    "weighted_geomean_monthly_median_aed_m2": "ridge_log_v1_alpha_1"
+  },
+  "selected_ridge_alphas": {
+    "sales_count": 10.0,
+    "weighted_geomean_monthly_median_aed_m2": 1.0
+  },
+  "selection_policy": {
+    "primary_metric": "pooled native-unit MAE on common eligible rows",
+    "alpha_selection": "2024 validation only; minimum MAE, then smaller alpha",
+    "method_selection": "2024 validation only; minimum MAE, ties naive then seasonal then Ridge",
+    "test_policy": "Freeze alpha, method and gates before test. Expand fits using labels known at each origin.",
+    "cohort": "Dynamic origin-only eligibility; at least configured min_training_pairs known supported training pairs. No future survival gate.",
+    "scoring": "All compared methods use the same rows. Next actual must satisfy the declared target support rule.",
+    "fallback": "Current supported level and >=min_fallback_quarters valid quarters; no stale-level carry forward. Never used in fair-cohort metrics."
+  },
+  "feature_columns": [
+    "level",
+    "previous",
+    "seasonal",
+    "trailing_mean",
+    "trailing_available",
+    "target_sin",
+    "target_cos",
+    "history_quarters",
+    "area",
+    "registration_type"
+  ],
+  "evaluation_periods": {
+    "train_start": "2021Q1",
+    "validation_start": "2024Q1",
+    "validation_end": "2024Q4",
+    "test_start": "2025Q1",
+    "test_end": "2026Q3"
+  },
+  "transformations": {
+    "sales_count": "log1p target and historical levels, expm1 inverse; clamp negative count predictions to zero",
+    "weighted_geomean_monthly_median_aed_m2": "log target and historical levels, exp inverse; nonpositive/nonfinite predictions unavailable"
+  },
+  "population": {
+    "property_scope": "Unit|Villa",
+    "segment_keys": [
+      "area",
+      "registration_type"
+    ],
+    "universe": "Every segment with a supplied scoped row between panel_start and origin, including unsupported segments",
+    "subtypes": "Retained as source cells; blank subtype remains missing, distinct from literal labels"
+  },
+  "eligibility": {
+    "count": "All three segment months observed; sums exact for supplied rows. Zero requires numeric observed zero rows.",
+    "price": "Count quarter supported, >=min_price_sales, all three months priced, >=min_price_coverage",
+    "history_quarters": "Number of supported target quarters from panel_start through origin",
+    "last_actual": "Supported origin-quarter target only; null if unsupported, never stale",
+    "price_coverage": "Origin positive-median cell count weights / observed counts; blank for count and zero denominator",
+    "thresholds": {
+      "min_training_pairs": 12,
+      "min_fallback_quarters": 4,
+      "min_price_sales": 30,
+      "min_price_coverage": 0.5
+    },
+    "provisional": "Latest 1 historical quarter(s); source corrections remain possible"
+  },
+  "target_definitions": {
+    "sales_count": "Sum transaction_count for supplied Unit/Villa Sales cells in a supported area/registration quarter",
+    "weighted_geomean_monthly_median_aed_m2": "exp(sum(n_i * log(p_i)) / sum(n_i)) over positive monthly median_price_per_m2_aed, weighted by transaction_count"
+  },
+  "units": {
+    "sales_count": "sales_per_quarter",
+    "weighted_geomean_monthly_median_aed_m2": "AED_per_m2"
+  },
+  "status_definitions": {
+    "ok": "Validation-selected method on primary supported cohort",
+    "fallback": "Predeclared supported-current-level naive fallback; outside common evaluation cohort",
+    "insufficient_data": "Inputs exist but history or price-support gates fail",
+    "missing_input": "Origin lacks three observed months or usable price inputs"
+  },
+  "output_columns": [
+    "schema_version",
+    "run_id",
+    "area",
+    "registration_type",
+    "property_scope",
+    "origin_quarter",
+    "forecast_quarter",
+    "horizon_quarters",
+    "target",
+    "forecast_value",
+    "unit",
+    "model_id",
+    "selection_basis",
+    "status",
+    "reason",
+    "data_cutoff_date",
+    "provisional_input",
+    "history_quarters",
+    "last_actual",
+    "price_coverage"
+  ],
+  "output_key": [
+    "schema_version",
+    "run_id",
+    "area",
+    "registration_type",
+    "property_scope",
+    "origin_quarter",
+    "forecast_quarter",
+    "target"
+  ],
+  "source_evidence": {
+    "verified_aggregate_rows": 59008,
+    "verified_aggregate_sales_sum": 1383409,
+    "observed_sales_month_min": "1975-01",
+    "observed_sales_month_max": "2026-10",
+    "reported_clean_record_date_min": "1966-01-18",
+    "reported_clean_record_date_max": "2026-10-27",
+    "reported_prepared_at_utc": "2026-10-30T09:37:22.309008+00:00",
+    "raw_provenance": "Source filenames, hashes and catalogue references are upstream reports; Part 3 has not independently rehashed or authenticated the raw exports.",
+    "extraction_scope": "Observed dates are not proof of the requested export period, query filters, or complete retrieval of all parts.",
+    "market_completeness": "Not established. Aggregate reconciliation and observed months do not prove complete market coverage.",
+    "field_limits": "Monthly cells retain counts, medians and subtypes but omit transaction IDs, procedure and transaction-level valid-price denominators.",
+    "evidence_needed": [
+      "Recorded export query dates, filters and source version or revision timestamp.",
+      "An authenticated export manifest listing every part or page, its row count and hash.",
+      "Reconciliation of the complete raw export and documented exclusions to authoritative totals for the same scope.",
+      "Upstream confirmation of missing-month semantics; archived release vintages for true real-time backtesting."
+    ]
+  },
+  "source_coverage_note": "Only supplied records; completeness is not established.",
+  "upstream_raw_provenance_unverified": [
+    {
+      "input_file": "transactions_2026-10-28_19-12-20_0001.csv",
+      "sha256": "77bf77fda9c8ef282e30fd37a5c1cba6909c66e560babe24352826a4ca37a839",
+      "tables": [
+        {
+          "name": "transactions_2026-10-28_19-12-20_0001.csv",
+          "schema": "dubai_pulse",
+          "rows": 904737,
+          "catalogue_url": "https://data.dubai/en/l/470061"
+        }
+      ]
+    },
+    {
+      "input_file": "transactions_2026-10-28_19-12-20_0002.csv",
+      "sha256": "75d924e90bae38f611d4b14c2493b60e9482d50cc93d6d2b1fb2a3d115071d3b",
+      "tables": [
+        {
+          "name": "transactions_2026-10-28_19-12-20_0002.csv",
+          "schema": "dubai_pulse",
+          "rows": 904735,
+          "catalogue_url": "https://data.dubai/en/l/470061"
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    "Only supplied records; completeness is not established. Three observed months is a support rule, not proof of full coverage.",
+    "Missing rows are unknown, never inferred zero. Unobserved property/subtype cells may remain within observed segment months.",
+    "Price is a count-weighted geometric mean of positive monthly medians, not a pooled quarterly median or mix-adjusted index.",
+    "Price weight coverage is a support proxy, not transaction-level valid-price coverage.",
+    "Unit/Villa can include commercial units. No procedure filter is available.",
+    "Pseudo-real-time backtests use today's revised snapshot, not historical release vintages.",
+    "Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.",
+    "Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.",
+    "Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.",
+    "2026Q4 is a Q3-based projection generated during Q4, excluding October observations.",
+    "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee."
+  ],
+  "output_rows": 396,
+  "status_counts": {
+    "sales_count": {
+      "fallback": 30,
+      "insufficient_data": 4,
+      "missing_input": 72,
+      "ok": 92
+    },
+    "weighted_geomean_monthly_median_aed_m2": {
+      "fallback": 25,
+      "insufficient_data": 33,
+      "missing_input": 72,
+      "ok": 68
+    }
+  },
+  "fallback_evaluation": {
+    "report": "reports/part3/evaluation.json",
+    "section": "fallback_evaluation",
+    "scope": "Input/history-driven fallback policy, evaluated separately from the primary common-row cohort",
+    "runtime_failure_fallbacks": "Not evaluated here; numerical model failures are outside this support-policy experiment",
+    "summaries": [
+      {
+        "split": "validation",
+        "target": "sales_count",
+        "unit": "sales_per_quarter",
+        "model_id": "naive_v1",
+        "cohort": "fallback",
+        "forecast_quarter": "all",
+        "eligible_predictions": 163,
+        "excluded_predictions": 17,
+        "eligible_segments": 60,
+        "scored_segments": 56,
+        "eligible_quarters": 4,
+        "scored_quarters": 4,
+        "n": 146,
+        "mae": 99.58219178082192,
+        "rmse": 225.86650500282636,
+        "wape": 0.5856124380714545
+      },
+      {
+        "split": "validation",
+        "target": "weighted_geomean_monthly_median_aed_m2",
+        "unit": "AED_per_m2",
+        "model_id": "naive_v1",
+        "cohort": "fallback",
+        "forecast_quarter": "all",
+        "eligible_predictions": 123,
+        "excluded_predictions": 5,
+        "eligible_segments": 43,
+        "scored_segments": 39,
+        "eligible_quarters": 4,
+        "scored_quarters": 4,
+        "n": 118,
+        "mae": 1265.2918897931522,
+        "rmse": 1835.7509162006959,
+        "wape": null
+      },
+      {
+        "split": "test",
+        "target": "sales_count",
+        "unit": "sales_per_quarter",
+        "model_id": "naive_v1",
+        "cohort": "fallback",
+        "forecast_quarter": "all",
+        "eligible_predictions": 254,
+        "excluded_predictions": 35,
+        "eligible_segments": 66,
+        "scored_segments": 58,
+        "eligible_quarters": 7,
+        "scored_quarters": 7,
+        "n": 219,
+        "mae": 141.59360730593608,
+        "rmse": 335.9975198321162,
+        "wape": 0.5201543235762811
+      },
+      {
+        "split": "test",
+        "target": "weighted_geomean_monthly_median_aed_m2",
+        "unit": "AED_per_m2",
+        "model_id": "naive_v1",
+        "cohort": "fallback",
+        "forecast_quarter": "all",
+        "eligible_predictions": 192,
+        "excluded_predictions": 17,
+        "eligible_segments": 48,
+        "scored_segments": 43,
+        "eligible_quarters": 7,
+        "scored_quarters": 7,
+        "n": 175,
+        "mae": 1413.2409513444418,
+        "rmse": 2347.1704604837405,
+        "wape": null
+      }
+    ],
+    "limitations": [
+      "Historical, sample-limited evidence; no guarantee for an individual segment or the operational quarter.",
+      "Validation and test cohorts vary by origin and differ from the final operational fallback list.",
+      "Revised source snapshot rather than historical vintages; completeness remains unverified.",
+      "Origin and segment observations are dependent; price scores exclude unsupported next-quarter prices."
+    ]
+  },
+  "output_sha256": "24a524dd71059a74759e9f34054443f945a381aa7ff950baeb1ca19c1b784ce2"
+}

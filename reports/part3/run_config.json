@@ -1,0 +1,76 @@
+{
+  "config": {
+    "input": "data/shared/monthly_sales.csv",
+    "quality_report": "data/shared/quality_report.json",
+    "context": "data/shared/market_trends.csv",
+    "output": "data/shared/forecasts.csv",
+    "manifest": "data/shared/forecast_manifest.json",
+    "report_dir": "reports/part3",
+    "panel_start": "2020Q1",
+    "train_start": "2021Q1",
+    "validation_start": "2024Q1",
+    "validation_end": "2024Q4",
+    "test_start": "2025Q1",
+    "test_end": "2026Q3",
+    "origin_quarter": "2026Q3",
+    "forecast_quarter": "2026Q4",
+    "horizon_quarters": 1,
+    "property_types": [
+      "Unit",
+      "Villa"
+    ],
+    "registration_types": [
+      "Ready",
+      "Off-Plan"
+    ],
+    "min_training_pairs": 12,
+    "min_fallback_quarters": 4,
+    "min_price_sales": 30,
+    "min_price_coverage": 0.5,
+    "provisional_quarters": 1,
+    "ridge_alphas": [
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "figures": true
+  },
+  "source_hashes": {
+    "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
+    "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
+    "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
+  },
+  "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
+  "code_hashes": {
+    "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
+    "data.py": "1176212f87995cc94d45ae770057fd7d44a5244d36ac462de12ec83f96b4c37d",
+    "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
+    "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
+    "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
+    "models.py": "e57878b304a66ad2de8872a8f102d6855c87cc58a72ee0bb65d81ba39324db48",
+    "run.py": "b3a14ce2e5b677256470718cbd3c6eaca085463e771366c3512089ba5bd2433a"
+  },
+  "versions": {
+    "pandas": "2.2.3",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.2",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.7.0",
+    "pillow": "12.3.0",
+    "contourpy": "1.4.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.68.0",
+    "kiwisolver": "1.5.1",
+    "pyparsing": "3.3.3",
+    "python-dateutil": "2.9.0.post0",
+    "six": "1.17.0",
+    "pytz": "2026.5",
+    "tzdata": "2026.5",
+    "narwhals": "2.28.0",
+    "cloudpickle": "3.1.2",
+    "python": "3.12.14"
+  }
+}
