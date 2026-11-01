@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "run_id": "part4-ff3f8113ff047a30",
+  "generated_at_utc": "2026-11-01T07:43:28.162433+00:00",
+  "forecast_quarter": "2026Q4",
+  "forecast_run_id": "part3-366e2209f118cbd3",
+  "agents": 20,
+  "candidates": 95,
+  "segments_used": 8,
+  "areas_used": 7,
+  "feasible": true,
+  "plan_source": "annealing",
+  "annealing_value": 5429975.366991051,
+  "exact_value": 5429975.366991051,
+  "solver_gap": 0.0,
+  "source_hashes": {
+    "data/shared/forecasts.csv": "24a524dd71059a74759e9f34054443f945a381aa7ff950baeb1ca19c1b784ce2",
+    "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924",
+    "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
+    "reports/part3/predictions.csv": "ccb4e01ac56cbfd64a380e523302498140145590307ae2ab0358f84d6eddd1de"
+  },
+  "assumptions_not_from_data": {
+    "agents": 20,
+    "deals_per_agent": 2.0,
+    "max_market_share": 0.05,
+    "commission_rate": {
+      "Ready": 0.02,
+      "Off-Plan": 0.04
+    },
+    "min_team_per_area": 2,
+    "max_area_share": 0.25,
+    "max_areas": 8,
+    "offplan_share": [
+      0.3,
+      0.7
+    ]
+  },
+  "policy": {
+    "use_scenarios": false,
+    "trend_weight": 0.0
+  },
+  "output_sha256": "dfacc6ef87f5440d3c6c0b4496a40decad4d97ec6d17cb76ffe876cb62051334"
+}
