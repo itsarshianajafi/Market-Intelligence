@@ -91,9 +91,11 @@ def output_table(candidates, x, problem, selection, inputs, cfg, run_id):
     forecasts = inputs['forecasts']
     rest = forecasts[forecasts.target.eq('sales_count')].merge(candidates[KEYS], on=KEYS, how='left', indicator=True)
     rest = rest[rest['_merge'].eq('left_only')]
+    # Big enough, but dropped for having no sale in the ticket window (finish_candidates).
+    unpriced = rest.status.isin(['ok', 'fallback']) & rest.forecast_value.ge(cfg['min_forecast_sales'])
     rest = pd.DataFrame({'area': rest.area, 'registration_type': rest.registration_type, 'agents': 0,
                          'forecast_sales': rest.forecast_value, 'forecast_status': rest.status,
-                         'note': rest.status.map(NOTES)})
+                         'note': rest.status.map(NOTES).mask(unpriced, 'No recent sales to value a deal')})
     trends = inputs['trends'][inputs['trends'].quarter.eq(inputs['manifest']['origin_quarter'])]
     rest = rest.merge(trends[KEYS + ['trend_label', 'trend_score']], on=KEYS, how='left')
     rest['trend_label'] = rest.trend_label.fillna('Insufficient data')
@@ -163,7 +165,9 @@ def run(cfg, evaluation=True):
     source = 'annealing' if total_value(problem, searched) >= total_value(problem, best) - 1e-6 else 'exact_check'
     x = searched if source == 'annealing' else best     # annealing has no guarantee; never ship the worse plan
     selection = robustness(candidates, inputs, cfg)
-    identity = json.dumps({k: v for k, v in sorted(cfg.items())}, sort_keys=True, default=str)
+    # Where the files go does not change the plan, so it is not part of the run's identity.
+    identity = json.dumps({k: v for k, v in sorted(cfg.items()) if k not in ('output', 'manifest', 'report_dir')},
+                          sort_keys=True, default=str)
     run_id = 'part4-' + hashlib.sha256((inputs['manifest']['run_id'] + identity).encode()).hexdigest()[:16]
     out = output_table(candidates, x, problem, selection, inputs, cfg, run_id)
     out.to_csv(cfg['output'], index=False)
@@ -202,16 +206,21 @@ def main():
     parser.add_argument('--output-dir', type=Path,
                         help='Write the plan, manifest and reports here instead of the shared files')
     args = parser.parse_args()
-    if (args.agents or args.current or args.max_moves is not None) and not args.output_dir:
-        parser.error('--agents, --current and --max-moves change the plan; add --output-dir so the '
-                     'shared allocation.csv stays the default plan')
     cfg = json.loads(args.config.read_text())
+    if args.agents is not None:
+        cfg['agents'] = args.agents
+    cfg['current_allocation'] = args.current or cfg['current_allocation']
+    cfg['max_moves'] = args.max_moves if args.max_moves is not None else cfg['max_moves']
+    if cfg['agents'] < 1:
+        parser.error('--agents must be at least 1')
+    if cfg['max_moves'] is not None and not cfg['current_allocation']:
+        parser.error('--max-moves needs --current: moves are counted from today\'s allocation')
+    if cfg != json.loads(DEFAULT_CONFIG.read_text()) and not args.output_dir:
+        parser.error('These settings differ from src/allocation/config.json; add --output-dir so the '
+                     'shared allocation.csv stays the default plan')
     if args.output_dir:
         cfg.update(output=args.output_dir / 'allocation.csv', report_dir=args.output_dir,
                    manifest=args.output_dir / 'allocation_manifest.json')
-    cfg['agents'] = args.agents or cfg['agents']
-    cfg['current_allocation'] = args.current or cfg['current_allocation']
-    cfg['max_moves'] = args.max_moves if args.max_moves is not None else cfg['max_moves']
     out, manifest, _ = run(cfg, evaluation=not args.skip_evaluation)
     picked = out[out.agents > 0][['area', 'registration_type', 'agents', 'forecast_sales', 'ticket_aed',
                                   'expected_commission_aed', 'selection_rate', 'trend_label']]
