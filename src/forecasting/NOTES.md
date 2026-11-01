@@ -155,7 +155,7 @@ Python 3.12.14 and pandas 2.2.3 gave the same forecasts to floating-point precis
 source/code hashes and configuration identity are recorded in its manifest and
 `reports/part3/run_config.json`.
 
-The command validates inputs, evaluates models, selects using validation, refits
+`python -m src.forecasting.run --config src/forecasting/config.json` validates inputs, evaluates models, selects using validation, refits
 through Q3, exports forecasts, creates figures and reads back the consumer files.
 Reruns replace Part 3 outputs. They do not modify the shared input files or Parts
 1 and 2. Numeric outputs and run identity are deterministic for unchanged sources,

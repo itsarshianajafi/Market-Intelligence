@@ -62,6 +62,8 @@ py -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
+To get the exact versions the shared outputs were made with, install `requirements-lock.txt` instead.
+
 ### Prepare official data
 
 Keep original downloads in `data/raw/` (ZIP files work directly). Supply all parts of an export
@@ -71,15 +73,16 @@ in one run, so duplicates across parts are removed:
 python -m src.dld_data.pipeline --input data/raw/part1.csv data/raw/part2.csv --output-dir data/processed/run1
 ```
 
-On Windows replace `python` with `.venv\Scripts\python.exe`. Inputs are never modified, and an
-existing output directory is refused. An optional `--url` downloads a known official CSV link
+On Windows replace `python` with `.venv\Scripts\python.exe`. Inputs are never modified, and a
+folder that already has these output files is refused. An optional `--url` downloads a known official CSV link
 (see the docs).
 
 ### Cleaning in short
 
 - Accepts the Data Dubai, DLD native and DLD display column layouts and maps them to one format.
-- Rejects rows with a missing ID, area or property type, an impossible or future date, or a missing,
-  zero or malformed price. Old mortgage rows with Hijri years (1416-1422) are rejected this way.
+- Rejects rows with a missing ID, area or property type, an impossible or future date, a year outside
+  1900-2100 (this catches old mortgage rows with Hijri years, 1416-1422), or a missing, zero,
+  negative or malformed price.
 - Removes exact duplicates, then drops every row whose transaction ID appears with different values.
 - Drops sales under 10,000 AED (`--min-sale-price` changes this).
 - Keeps rows under 10 m2 but leaves their price per m2 empty (tiny areas give absurd values).
@@ -249,8 +252,10 @@ denominator is zero. It is an error measure, not an accuracy percentage.
 - Ridge was picked for both targets on 2024. For sales it is slightly better than repeating last quarter
   on the test years (32.1% against 32.8% error). For price, repeating last quarter did a little better
   on the test, but Ridge stays because the choice was fixed before testing.
-- Segments without enough history get a `fallback` (last quarter's value). Its errors are larger
-  (52% for sales on the test), see the notes.
+- Segments with too little history for the model but at least 4 supported quarters, including the
+  current one, get a `fallback` (last quarter's value). Others are `insufficient_data` with blank values.
+  Fallback was tested on a different set of segments (52% sales error), so it is not directly
+  comparable with the 32% above. See [the Part 3 notes](src/forecasting/NOTES.md).
 - There are no prediction intervals, and big misses happen around project launches (Madinat Al Mataar
   Off-Plan, 2026Q2: 5,101 actual sales against 2,249 forecast).
 
@@ -284,7 +289,7 @@ Unavailable predictions have blank numeric values, never zero. Accept `ok` and
 zero. Activity remains usable when price is unavailable for the same segment.
 For this run, activity has 92 `ok`, 30 `fallback`, 4 `insufficient_data` and 72
 `missing_input` rows. Price has 68 `ok`, 25 `fallback`, 33 `insufficient_data` and
-72 `missing_input` rows. Historical fallback results are in the notes. They
+72 `missing_input` rows. Historical fallback results are in [the Part 3 notes](src/forecasting/NOTES.md). They
 remain sample-limited and do not guarantee performance for a particular segment.
 
 ### Files and checks
