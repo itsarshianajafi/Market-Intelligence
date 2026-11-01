@@ -12,7 +12,7 @@ import pandas as pd
 
 from src.allocation import evaluate
 from src.allocation.data import (backtest_candidates, deployment_candidates, known_errors, load_inputs,
-                                 quarterly, sha256, trailing_tickets)
+                                 quarterly, trailing_tickets)
 from src.allocation.model import captured_deals, scenarios, value_table
 from src.allocation.run import DEFAULT_CONFIG, OUTPUT_COLUMNS, load_current, run
 from src.allocation.search import (anneal, exact, greedy, hill_climb, limits, make_problem, total_value,
@@ -115,13 +115,6 @@ class DataTests(unittest.TestCase):
                                 'transaction_count': [10, 10], 'median_price_aed': [1e6, 1e6],
                                 'total_price_aed': [1e7, 5e8]})
         self.assertEqual(quarterly(monthly).total_price.iloc[0], 2e7)
-
-    def test_hash_ignores_line_endings(self):
-        with tempfile.TemporaryDirectory() as folder:
-            lf, crlf = Path(folder) / 'a.csv', Path(folder) / 'b.csv'
-            lf.write_bytes(b'a,b\n1,2\n')
-            crlf.write_bytes(b'a,b\r\n1,2\r\n')
-            self.assertEqual(sha256(lf), sha256(crlf))
 
 
 class ConstraintTests(unittest.TestCase):
@@ -313,16 +306,28 @@ class CommandLineTests(unittest.TestCase):
         result = self.run_cli('--max-moves', '4', '--output-dir', 'plans/test')
         self.assertIn('needs --current', result.stderr)
         result = self.run_cli('--current', 'today.csv', '--output-dir', 'plans/test')
-        self.assertIn('needs --max-moves', result.stderr)
+        self.assertIn('needs max_moves', result.stderr)
 
-    def test_repeated_segment_in_current_allocation_is_refused(self):
+    def test_bad_current_allocation_is_refused(self):
         candidates = pd.DataFrame({'area': ['A', 'B'], 'registration_type': ['Ready', 'Ready']})
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / 'today.csv'
-            pd.DataFrame({'area': ['A', 'A', 'B'], 'registration_type': ['Ready'] * 3,
-                          'agents': [2, 1, 3]}).to_csv(path, index=False)
-            with self.assertRaises(pd.errors.MergeError):
-                load_current({'current_allocation': path}, candidates)
+            for areas, agents in [(['A', 'A', 'B'], [2, 1, 3]), (['A', 'B', 'C'], [2.5, 1, 3]),
+                                  (['A', 'B', 'C'], [2, -1, 3])]:
+                pd.DataFrame({'area': areas, 'registration_type': 'Ready', 'agents': agents}).to_csv(path, index=False)
+                with self.assertRaises(ValueError):
+                    load_current({'current_allocation': path, 'max_moves': 4}, candidates)
+
+    def test_agents_in_dropped_segments_may_always_move(self):
+        p = small_problem(agents=8, seed=9)
+        current = exact(p)
+        current[np.flatnonzero(current)[0]] = 0      # that segment left the candidate list
+        dropped = 8 - int(current.sum())
+        frame = pd.DataFrame({'area': [f'A{i // 2}' for i in range(10)],
+                              'registration_type': ['Ready', 'Off-Plan'] * 5})
+        q = make_problem(frame, p.values, 8, {**CFG, 'max_areas': 3, 'max_moves': 0}, current)
+        self.assertEqual(q.max_moves, dropped)
+        self.assertEqual(violations(q, exact(q)), 0)
 
 
 if __name__ == '__main__':

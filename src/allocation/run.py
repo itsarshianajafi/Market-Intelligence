@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 from . import evaluate, figures
-from .data import KEYS, SCHEMA_VERSION, deployment_candidates, load_inputs, sha256
+from .data import KEYS, SCHEMA_VERSION, deployment_candidates, load_inputs, fingerprint
 from .model import captured_deals, scenarios, value_table
 from .search import anneal, exact, limits, make_problem, total_value, violations
 
@@ -32,7 +32,13 @@ def load_current(cfg, candidates):
     """Optional CSV (area, registration_type, agents): where the team sits today."""
     if not cfg.get('current_allocation'):
         return None
+    if cfg.get('max_moves') is None:
+        raise ValueError('current_allocation (--current) needs max_moves (--max-moves): '
+                         'today\'s allocation is only used to count moves')
     current = pd.read_csv(cfg['current_allocation'])
+    agents = pd.to_numeric(current.get('agents'), errors='coerce')
+    if agents is None or agents.isna().any() or agents.lt(0).any() or agents.mod(1).ne(0).any():
+        raise ValueError('Today\'s allocation needs an agents column of whole numbers, 0 or more')
     merged = candidates[KEYS].merge(current, on=KEYS, how='left', validate='one_to_one')
     return merged.agents.fillna(0).astype(int).to_numpy()
 
@@ -157,6 +163,7 @@ def run(cfg, evaluation=True):
     report_dir.mkdir(parents=True, exist_ok=True)
     inputs = load_inputs(cfg)
     candidates = deployment_candidates(inputs, cfg)
+    load_current(cfg, candidates)   # check today's allocation before minutes of evaluation
     result = None
     if evaluation:
         cfg, result = evaluate_all(inputs, candidates, cfg, report_dir)
@@ -186,12 +193,12 @@ def run(cfg, evaluation=True):
         'plan_source': source, 'annealing_value': total_value(problem, searched),
         'exact_value': total_value(problem, best),
         'solver_gap': 1 - total_value(problem, searched) / total_value(problem, best),
-        'source_hashes': {str(cfg[k]): sha256(cfg[k]) for k in
+        'source_hashes': {str(cfg[k]): fingerprint(cfg[k]) for k in
                           ['forecasts', 'market_trends', 'monthly_sales', 'predictions']},
         'assumptions_not_from_data': {k: cfg[k] for k in ['agents', 'deals_per_agent', 'max_market_share',
                                                           'commission_rate', 'min_team_per_area', 'max_area_share',
                                                           'max_areas', 'offplan_share']},
-        'policy': options_of(cfg), 'output_sha256': sha256(cfg['output'])}
+        'policy': options_of(cfg), 'max_moves_used': problem.max_moves, 'output_sha256': fingerprint(cfg['output'])}
     Path(cfg['manifest']).write_text(json.dumps(manifest, indent=2, default=float) + '\n')
     return out, manifest, result
 
@@ -215,15 +222,18 @@ def main():
         parser.error('--agents must be at least 1')
     if cfg['max_moves'] is not None and not cfg['current_allocation']:
         parser.error('--max-moves needs --current: moves are counted from today\'s allocation')
-    if cfg['current_allocation'] and cfg['max_moves'] is None:
-        parser.error('--current needs --max-moves: without a limit today\'s allocation changes nothing')
+    if cfg['max_moves'] is not None and cfg['max_moves'] < 0:
+        parser.error('--max-moves cannot be negative')
     if cfg != json.loads(DEFAULT_CONFIG.read_text()) and not args.output_dir:
         parser.error('These settings differ from src/allocation/config.json; add --output-dir so the '
                      'shared allocation.csv stays the default plan')
     if args.output_dir:
         cfg.update(output=args.output_dir / 'allocation.csv', report_dir=args.output_dir,
                    manifest=args.output_dir / 'allocation_manifest.json')
-    out, manifest, _ = run(cfg, evaluation=not args.skip_evaluation)
+    try:
+        out, manifest, _ = run(cfg, evaluation=not args.skip_evaluation)
+    except ValueError as exc:
+        parser.exit(1, f'Allocation failed: {exc}\n')
     picked = out[out.agents > 0][['area', 'registration_type', 'agents', 'forecast_sales', 'ticket_aed',
                                   'expected_commission_aed', 'selection_rate', 'trend_label']]
     print(picked.to_string(index=False))

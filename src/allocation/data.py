@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 # Part 3 hashes forecasts.csv with this; one copy so the check cannot drift.
-from ..forecasting.data import fingerprint as sha256
+from ..forecasting.data import fingerprint
 
 KEYS = ['area', 'registration_type']
 ACTIVITY = 'sales_count'
@@ -20,7 +20,7 @@ def load_inputs(cfg):
     manifest = json.loads(Path(cfg['forecast_manifest']).read_text())
     if manifest['schema_version'] != SCHEMA_VERSION:
         raise ValueError(f"Unsupported forecast schema {manifest['schema_version']}")
-    if sha256(cfg['forecasts']) != manifest['output_sha256']:
+    if fingerprint(cfg['forecasts']) != manifest['output_sha256']:
         raise ValueError('forecasts.csv does not match forecast_manifest.json')
     forecasts = pd.read_csv(cfg['forecasts'], dtype={'schema_version': str})
     monthly = pd.read_csv(cfg['monthly_sales'])

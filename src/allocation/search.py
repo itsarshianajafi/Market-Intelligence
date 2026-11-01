@@ -39,9 +39,13 @@ def make_problem(candidates, values, agents, cfg, current=None):
     if values.shape[1] != max_area + 1:
         raise ValueError('Value table does not match the area limit')
     low, high = cfg['offplan_share']
+    max_moves = None
+    if current is not None and cfg['max_moves'] is not None:
+        # Agents in segments that left the candidate list (or new hires) have to move anyway.
+        max_moves = max(cfg['max_moves'], agents - int(current.sum()))
     problem = Problem(values, area, offplan, agents, cfg['min_team_per_area'], max_area,
                       cfg['max_areas'], math.floor(low * agents), math.ceil(high * agents),
-                      current, cfg['max_moves'] if current is not None else None)
+                      current, max_moves)
     if min(problem.max_areas, area.max() + 1) * max_area < agents:
         raise ValueError('Constraints cannot hold this many agents; raise max_areas or max_area_share')
     return problem
