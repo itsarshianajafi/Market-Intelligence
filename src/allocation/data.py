@@ -1,21 +1,18 @@
 """Load the outputs of Parts 1-3 and turn them into candidate segments for one quarter."""
-import hashlib
 import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+# Part 3 hashes forecasts.csv with this; one copy so the check cannot drift.
+from ..forecasting.data import fingerprint as sha256
+
 KEYS = ['area', 'registration_type']
 ACTIVITY = 'sales_count'
 PRICE = 'weighted_geomean_monthly_median_aed_m2'
 USABLE = {'ok', 'fallback'}
 SCHEMA_VERSION = '1.0'
-
-
-def sha256(path):
-    """Hash ignoring line endings: Git on Windows checks these files out with CRLF."""
-    return hashlib.sha256(Path(path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
 
 
 def load_inputs(cfg):
