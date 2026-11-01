@@ -33,7 +33,7 @@ def load_current(cfg, candidates):
     if not cfg.get('current_allocation'):
         return None
     current = pd.read_csv(cfg['current_allocation'])
-    merged = candidates[KEYS].merge(current, on=KEYS, how='left')
+    merged = candidates[KEYS].merge(current, on=KEYS, how='left', validate='one_to_one')
     return merged.agents.fillna(0).astype(int).to_numpy()
 
 
@@ -215,6 +215,8 @@ def main():
         parser.error('--agents must be at least 1')
     if cfg['max_moves'] is not None and not cfg['current_allocation']:
         parser.error('--max-moves needs --current: moves are counted from today\'s allocation')
+    if cfg['current_allocation'] and cfg['max_moves'] is None:
+        parser.error('--current needs --max-moves: without a limit today\'s allocation changes nothing')
     if cfg != json.loads(DEFAULT_CONFIG.read_text()) and not args.output_dir:
         parser.error('These settings differ from src/allocation/config.json; add --output-dir so the '
                      'shared allocation.csv stays the default plan')

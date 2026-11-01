@@ -14,7 +14,7 @@ from src.allocation import evaluate
 from src.allocation.data import (backtest_candidates, deployment_candidates, known_errors, load_inputs,
                                  quarterly, sha256, trailing_tickets)
 from src.allocation.model import captured_deals, scenarios, value_table
-from src.allocation.run import DEFAULT_CONFIG, OUTPUT_COLUMNS, run
+from src.allocation.run import DEFAULT_CONFIG, OUTPUT_COLUMNS, load_current, run
 from src.allocation.search import (anneal, exact, greedy, hill_climb, limits, make_problem, total_value,
                                    violations)
 
@@ -312,6 +312,17 @@ class CommandLineTests(unittest.TestCase):
     def test_max_moves_needs_current(self):
         result = self.run_cli('--max-moves', '4', '--output-dir', 'plans/test')
         self.assertIn('needs --current', result.stderr)
+        result = self.run_cli('--current', 'today.csv', '--output-dir', 'plans/test')
+        self.assertIn('needs --max-moves', result.stderr)
+
+    def test_repeated_segment_in_current_allocation_is_refused(self):
+        candidates = pd.DataFrame({'area': ['A', 'B'], 'registration_type': ['Ready', 'Ready']})
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'today.csv'
+            pd.DataFrame({'area': ['A', 'A', 'B'], 'registration_type': ['Ready'] * 3,
+                          'agents': [2, 1, 3]}).to_csv(path, index=False)
+            with self.assertRaises(pd.errors.MergeError):
+                load_current({'current_allocation': path}, candidates)
 
 
 if __name__ == '__main__':
