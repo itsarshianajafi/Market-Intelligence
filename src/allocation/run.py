@@ -28,8 +28,12 @@ def options_of(cfg):
     return {'use_scenarios': cfg['use_scenarios'], 'trend_weight': cfg['trend_weight']}
 
 
-def load_current(cfg, candidates):
-    """Optional CSV (area, registration_type, agents): where the team sits today."""
+def load_current(cfg, candidates, segments):
+    """Optional CSV (area, registration_type, agents): where the team sits today.
+
+    A segment missing from `segments` (every segment Part 3 forecast) is a typo, not a segment
+    that dropped out of the candidates, so it is refused rather than read as 0 agents.
+    """
     if not cfg.get('current_allocation'):
         return None
     if cfg.get('max_moves') is None:
@@ -39,18 +43,23 @@ def load_current(cfg, candidates):
     agents = pd.to_numeric(current.get('agents'), errors='coerce')
     if agents is None or agents.isna().any() or agents.lt(0).any() or agents.mod(1).ne(0).any():
         raise ValueError('Today\'s allocation needs an agents column of whole numbers, 0 or more')
+    unknown = current[KEYS].merge(segments[KEYS].drop_duplicates(), on=KEYS, how='left', indicator=True)
+    unknown = unknown[unknown['_merge'].eq('left_only')]
+    if len(unknown):
+        names = ', '.join(f'{a} ({r})' for a, r in zip(unknown.area, unknown.registration_type))
+        raise ValueError(f'Today\'s allocation has segments Part 3 does not know (check spelling): {names}')
     merged = candidates[KEYS].merge(current, on=KEYS, how='left', validate='one_to_one')
     return merged.agents.fillna(0).astype(int).to_numpy()
 
 
-def live_problem(candidates, inputs, cfg, agents=None):
+def live_problem(candidates, inputs, cfg, agents=None, current=None):
     agents = agents or cfg['agents']
     rng = np.random.default_rng(cfg['seed'])
     values = evaluate.planned_values(candidates, inputs['errors'], agents, cfg, rng, **options_of(cfg))
-    return make_problem(candidates, values, agents, cfg, load_current(cfg, candidates)), rng
+    return make_problem(candidates, values, agents, cfg, current), rng
 
 
-def robustness(candidates, inputs, cfg):
+def robustness(candidates, inputs, cfg, current):
     """Replan on single draws of forecast error. How often is each segment still chosen?"""
     rng = np.random.default_rng([cfg['seed'], 1])
     cap = limits(cfg['agents'], cfg)
@@ -58,8 +67,7 @@ def robustness(candidates, inputs, cfg):
     values = evaluate.deal_value(candidates.ticket.to_numpy(), candidates.rate.to_numpy(), cfg)
     for _ in range(cfg['robustness_runs']):
         draw = scenarios(candidates, inputs['errors'], cfg, rng, count=1)[:, 0]
-        problem = make_problem(candidates, value_table(draw, values, cap, cfg), cfg['agents'], cfg,
-                               load_current(cfg, candidates))
+        problem = make_problem(candidates, value_table(draw, values, cap, cfg), cfg['agents'], cfg, current)
         chosen += anneal(problem, evaluate.FAST, rng) > 0
     return chosen / cfg['robustness_runs']
 
@@ -67,7 +75,7 @@ def robustness(candidates, inputs, cfg):
 def team_curve(candidates, inputs, cfg):
     rows = []
     for agents in cfg['team_sizes']:
-        problem, rng = live_problem(candidates, inputs, {**cfg, 'current_allocation': None}, agents)
+        problem, rng = live_problem(candidates, inputs, cfg, agents)
         began = perf_counter()
         x = exact(problem)
         middle = perf_counter()
@@ -114,17 +122,17 @@ def output_table(candidates, x, problem, selection, inputs, cfg, run_id):
                                       'selection_rate': 3, 'trend_score': 3})
 
 
-def plan_for(inputs, candidates):
+def plan_for(inputs, candidates, current):
     """Live plan under a config as {segment: agents}, used to compare assumptions."""
     def live(cfg):
         problem, rng = live_problem(candidates.assign(rate=candidates.registration_type.map(cfg['commission_rate'])),
-                                    inputs, cfg)
+                                    inputs, cfg, current=current)
         x = anneal(problem, evaluate.FAST, rng)
         return {k: int(v) for k, v in zip(zip(candidates.area, candidates.registration_type), x) if v}
     return live
 
 
-def evaluate_all(inputs, candidates, cfg, report_dir):
+def evaluate_all(inputs, candidates, cfg, report_dir, current):
     """Backtest, freeze the policy on 2024, then report 2025-26 and the sensitivity checks."""
     results = evaluate.backtest(inputs, cfg)
     name, validation = evaluate.select_variant(results, cfg)
@@ -142,7 +150,7 @@ def evaluate_all(inputs, candidates, cfg, report_dir):
     curves = evaluate.convergence(inputs, cfg, options)
     curves.to_csv(report_dir / 'convergence.csv', index_label='forecast_quarter')
     figures.convergence(curves, report_dir / 'convergence.png')
-    live = plan_for(inputs, candidates)
+    live = plan_for(inputs, candidates, current)
     sensitivity = evaluate.sensitivity(inputs, cfg, options, name, live)
     sensitivity.to_csv(report_dir / 'sensitivity.csv', index=False)
     result = {'selected_variant': name, 'validation_share_of_oracle': validation,
@@ -163,15 +171,15 @@ def run(cfg, evaluation=True):
     report_dir.mkdir(parents=True, exist_ok=True)
     inputs = load_inputs(cfg)
     candidates = deployment_candidates(inputs, cfg)
-    load_current(cfg, candidates)   # check today's allocation before minutes of evaluation
+    current = load_current(cfg, candidates, inputs['forecasts'])   # read once, before minutes of evaluation
     result = None
     if evaluation:
-        cfg, result = evaluate_all(inputs, candidates, cfg, report_dir)
-    problem, rng = live_problem(candidates, inputs, cfg)
+        cfg, result = evaluate_all(inputs, candidates, cfg, report_dir, current)
+    problem, rng = live_problem(candidates, inputs, cfg, current=current)
     searched, best = anneal(problem, cfg['anneal'], rng), exact(problem)
     source = 'annealing' if total_value(problem, searched) >= total_value(problem, best) - 1e-6 else 'exact_check'
     x = searched if source == 'annealing' else best     # annealing has no guarantee; never ship the worse plan
-    selection = robustness(candidates, inputs, cfg)
+    selection = robustness(candidates, inputs, cfg, current)
     # Where the files go does not change the plan, so it is not part of the run's identity.
     identity = json.dumps({k: v for k, v in sorted(cfg.items()) if k not in ('output', 'manifest', 'report_dir')},
                           sort_keys=True, default=str)

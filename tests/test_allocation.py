@@ -316,7 +316,14 @@ class CommandLineTests(unittest.TestCase):
                                   (['A', 'B', 'C'], [2, -1, 3])]:
                 pd.DataFrame({'area': areas, 'registration_type': 'Ready', 'agents': agents}).to_csv(path, index=False)
                 with self.assertRaises(ValueError):
-                    load_current({'current_allocation': path, 'max_moves': 4}, candidates)
+                    load_current({'current_allocation': path, 'max_moves': 4}, candidates, candidates)
+            pd.DataFrame({'area': ['a'], 'registration_type': ['Ready'], 'agents': [2]}).to_csv(path, index=False)
+            with self.assertRaisesRegex(ValueError, 'check spelling'):
+                load_current({'current_allocation': path, 'max_moves': 4}, candidates, candidates)
+            # A known segment that is no longer a candidate is fine: its agents just have to move.
+            pd.DataFrame({'area': ['C'], 'registration_type': ['Ready'], 'agents': [2]}).to_csv(path, index=False)
+            known = pd.concat([candidates, pd.DataFrame({'area': ['C'], 'registration_type': ['Ready']})])
+            self.assertEqual(load_current({'current_allocation': path, 'max_moves': 4}, candidates, known).tolist(), [0, 0])
 
     def test_agents_in_dropped_segments_may_always_move(self):
         p = small_problem(agents=8, seed=9)

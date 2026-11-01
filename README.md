@@ -136,7 +136,6 @@ Notes:
 - The 2026 slowdown is real: existing/ready sales fell from ~6.5k to under 4k a month since March 2026, and off-plan fell from ~13k to ~7.5-8.5k (an independent second export matched).
 - Data before ~2019 is sparse; model from 2019/2020 onwards.
 - October 2026 is partial (ends 27 Oct 2026).
-- `transactions_clean.csv` (~220 MB) is shared outside GitHub.
 
 ## How to update the data
 

@@ -181,7 +181,7 @@ def anneal(p, settings, rng, start=None, trace=None):
             if trace is not None and step % 500 == 0:
                 trace.append(best_value * top if best_x is not None else math.nan)
     if best_x is None:
-        raise ValueError('No feasible allocation found')
+        raise ValueError('No feasible allocation found; a small --max-moves may not allow fixing a team that breaks the area limits')
     return hill_climb(p, best_x) if settings.get('polish', True) else best_x
 
 
