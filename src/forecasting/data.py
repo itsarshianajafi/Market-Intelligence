@@ -24,13 +24,13 @@ WARNINGS = [
     'Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.',
     'Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.',
     'Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.',
-    '2026Q4 is a Q3-based projection generated during Q4, excluding October observations.',
     'Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee.'
 ]
 
 
 def fingerprint(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    """Hash ignoring line endings, the same way Part 4 checks it (Windows writes CRLF)."""
+    return hashlib.sha256(Path(path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
 
 
 def quarter(value):
