@@ -20,7 +20,7 @@ a browser interaction. Data Dubai returns a Request Rejected page to this cloud
 workspace; its legacy API denies unauthenticated requests. No security controls
 are bypassed. An optional downloader accepts an already known public official
 HTTPS CSV URL; a catalogue page or browser-local `blob:` URL is not such a URL.
-See [source investigation](docs/official-sources.md) for observed access results.
+See [source investigation](official-sources.md) for observed access results.
 
 ## Direct download and input limits
 
