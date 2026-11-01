@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
-  "run_id": "part3-6527f9b3ae845b0f",
-  "generated_at_utc": "2026-11-01T10:06:59.523029+00:00",
+  "run_id": "part3-b6258240f482ef3b",
+  "generated_at_utc": "2026-11-01T11:06:05.907235+00:00",
   "origin_quarter": "2026Q3",
   "last_eligible_historical_quarter": "2026Q3",
   "forecast_quarter": "2026Q4",
   "horizon_quarters": 1,
   "data_cutoff_date": "2026-10-27",
   "historical_input_end_date": "2026-09-30",
-  "publication_context": "Q3-based projection generated during Q4; not published in September",
+  "publication_context": "Projection from 2026Q3 data, generated after that quarter ended",
   "source_hashes": {
     "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
     "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
@@ -17,12 +17,12 @@
   "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
   "code_hashes": {
     "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
-    "data.py": "a825faede6b1f2f4a4570361ebeeb77218dd4b2678ac8aa78bec261a88ec7d08",
+    "data.py": "e1395365cddef85090dc88a3ceed3b3a2cfb71ddd98492016f322155f652863a",
     "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
     "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
     "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
     "models.py": "e57878b304a66ad2de8872a8f102d6855c87cc58a72ee0bb65d81ba39324db48",
-    "run.py": "b3a14ce2e5b677256470718cbd3c6eaca085463e771366c3512089ba5bd2433a"
+    "run.py": "f173d2ce9e14f787293b3db1ededa83138ae5e0bc1f717b484e8e562dd96c2a6"
   },
   "versions": {
     "pandas": "3.1.0",
@@ -211,8 +211,8 @@
     "Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.",
     "Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.",
     "Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.",
-    "2026Q4 is a Q3-based projection generated during Q4, excluding October observations.",
-    "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee."
+    "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee.",
+    "2026Q4 is projected from data up to the end of 2026Q3; later records in the source are excluded."
   ],
   "output_rows": 396,
   "status_counts": {
@@ -315,5 +315,5 @@
       "Origin and segment observations are dependent; price scores exclude unsupported next-quarter prices."
     ]
   },
-  "output_sha256": "20e4af043b9398295931662f9901e10326e66b2559e9dd84db45de69b09064b0"
+  "output_sha256": "2da902a3d8e0a6d45cadd7f1af705f9a538ed72c8cd42e900de99de5ce2967b6"
 }

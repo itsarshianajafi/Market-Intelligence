@@ -1,199 +1,199 @@
 schema_version,run_id,area,registration_type,forecast_quarter,agents,forecast_sales,forecast_status,price_status,ticket_aed,expected_deals,expected_commission_aed,next_agent_value_aed,selection_rate,trend_label,trend_score,note
-1.0,part4-10cec2a51e35921f,Business Bay,Off-Plan,2026Q4,5,594.18,ok,ok,3633067.0,8.491,1233928.0,0.0,1.0,Stable,-0.086,Allocated
-1.0,part4-10cec2a51e35921f,Marsa Dubai,Off-Plan,2026Q4,3,132.61,ok,ok,6454319.0,3.948,1019264.0,180345.0,1.0,Stable,-0.058,Allocated
-1.0,part4-10cec2a51e35921f,Palm Jumeirah,Off-Plan,2026Q4,2,66.68,ok,ok,10624193.0,2.33,989993.0,192559.0,1.0,Stable,-0.095,Allocated
-1.0,part4-10cec2a51e35921f,Palm Jumeirah,Ready,2026Q4,2,155.6,ok,ok,9319842.0,3.127,582942.0,196584.0,0.967,Stable,-0.055,Allocated
-1.0,part4-10cec2a51e35921f,Al Yufrah 1,Off-Plan,2026Q4,2,415.08,ok,ok,2958517.0,3.638,430541.0,186081.0,0.4,Rising,0.212,Allocated
-1.0,part4-10cec2a51e35921f,Al Khairan First,Off-Plan,2026Q4,2,526.16,ok,ok,2880375.0,3.711,427535.0,190592.0,0.367,Stable,-0.008,Allocated
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 6,Ready,2026Q4,2,60.31,ok,ok,8528102.0,2.215,377808.0,66175.0,0.633,Stable,-0.006,Allocated
-1.0,part4-10cec2a51e35921f,Al Thanayah Fourth,Ready,2026Q4,2,99.3,ok,ok,6698581.0,2.747,367966.0,98538.0,0.667,Stable,-0.003,Allocated
-1.0,part4-10cec2a51e35921f,Al Barsha South Fifth,Off-Plan,2026Q4,0,401.39,ok,ok,1264071.0,0.0,0.0,96250.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barsha South Fifth,Ready,2026Q4,0,129.49,ok,ok,1629660.0,0.0,0.0,56080.0,0.0,Stable,-0.013,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barsha South Fourth,Off-Plan,2026Q4,0,1329.32,ok,ok,1215858.0,0.0,0.0,95820.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barsha South Fourth,Ready,2026Q4,0,1135.07,ok,ok,1148008.0,0.0,0.0,45121.0,0.0,Stable,-0.002,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barshaa South Second,Off-Plan,2026Q4,0,185.0,fallback,fallback,1160567.0,0.0,0.0,83494.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barshaa South Second,Ready,2026Q4,0,42.86,ok,ok,1432926.0,0.0,0.0,37263.0,0.0,Declining,-0.144,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barshaa South Third,Off-Plan,2026Q4,0,466.04,ok,ok,1093489.0,0.0,0.0,83830.0,0.0,Rising,0.192,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Barshaa South Third,Ready,2026Q4,0,287.2,ok,ok,924284.0,0.0,0.0,34512.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Fifth,Off-Plan,2026Q4,0,670.0,fallback,fallback,1223547.0,0.0,0.0,95019.0,0.0,Stable,0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Fifth,Ready,2026Q4,0,52.91,ok,ok,1129876.0,0.0,0.0,31713.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah First,Off-Plan,2026Q4,0,664.29,ok,fallback,1322928.0,0.0,0.0,102711.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah First,Ready,2026Q4,0,126.93,ok,ok,1572378.0,0.0,0.0,53949.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Fourth,Off-Plan,2026Q4,0,312.38,ok,ok,1291068.0,0.0,0.0,96946.0,0.0,Stable,-0.025,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Fourth,Ready,2026Q4,0,280.01,ok,ok,1769301.0,0.0,0.0,65949.0,0.0,Stable,-0.031,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Second,Off-Plan,2026Q4,0,289.85,ok,ok,736629.0,0.0,0.0,55045.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Second,Ready,2026Q4,0,91.8,ok,fallback,888416.0,0.0,0.0,28807.0,0.0,Rising,0.29,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Sixth,Ready,2026Q4,0,88.69,ok,ok,3896475.0,0.0,0.0,125451.0,0.0,Stable,0.015,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Third,Off-Plan,2026Q4,0,279.75,ok,ok,1735798.0,0.0,0.0,129393.0,0.0,Stable,0.058,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Hebiah Third,Ready,2026Q4,0,123.68,ok,ok,1707462.0,0.0,0.0,58354.0,0.0,Stable,-0.028,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Jadaf,Off-Plan,2026Q4,0,370.45,ok,ok,1513919.0,0.0,0.0,114804.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Jadaf,Ready,2026Q4,0,117.88,ok,ok,1370096.0,0.0,0.0,46474.0,0.0,Stable,0.055,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Khairan First,Ready,2026Q4,0,262.85,ok,ok,2717196.0,0.0,0.0,100822.0,0.067,Stable,-0.011,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Kifaf,Off-Plan,2026Q4,0,51.0,fallback,fallback,2651135.0,0.0,0.0,146989.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Merkadh,Off-Plan,2026Q4,0,197.89,ok,ok,2168195.0,0.0,0.0,157049.0,0.0,Stable,0.039,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Merkadh,Ready,2026Q4,0,453.68,ok,ok,1801698.0,0.0,0.0,68982.0,0.0,Stable,-0.01,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Safouh First,Off-Plan,2026Q4,0,93.0,fallback,fallback,2486178.0,0.0,0.0,161647.0,0.0,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Safouh Second,Ready,2026Q4,0,36.0,fallback,unavailable,1378744.0,0.0,0.0,33295.0,0.0,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Satwa,Off-Plan,2026Q4,0,128.0,fallback,fallback,1393217.0,0.0,0.0,95723.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Satwa,Ready,2026Q4,0,34.0,fallback,unavailable,2089251.0,0.0,0.0,49130.0,0.0,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Thanyah Fifth,Off-Plan,2026Q4,0,512.2,ok,ok,2330407.0,0.0,0.0,179339.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Thanyah Fifth,Ready,2026Q4,0,377.51,ok,ok,2888208.0,0.0,0.0,109618.0,0.0,Stable,0.024,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Thanyah First,Ready,2026Q4,0,70.95,ok,ok,2088217.0,0.0,0.0,63848.0,0.0,Stable,0.013,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Thanyah Third,Ready,2026Q4,0,116.75,ok,ok,2836308.0,0.0,0.0,96060.0,0.0,Stable,-0.007,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Warsan First,Off-Plan,2026Q4,0,163.92,ok,fallback,920686.0,0.0,0.0,65356.0,0.0,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Warsan First,Ready,2026Q4,0,284.14,ok,ok,525031.0,0.0,0.0,19590.0,0.0,Stable,-0.031,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Wasl,Off-Plan,2026Q4,0,138.77,ok,ok,3404259.0,0.0,0.0,236605.0,0.5,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Wasl,Ready,2026Q4,0,83.39,ok,ok,4182637.0,0.0,0.0,132895.0,0.4,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Yelayiss 1,Off-Plan,2026Q4,0,260.0,fallback,fallback,2933442.0,0.0,0.0,217515.0,0.1,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Yelayiss 1,Ready,2026Q4,0,50.12,ok,ok,3625611.0,0.0,0.0,99909.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Yelayiss 2,Off-Plan,2026Q4,0,162.64,ok,ok,1571514.0,0.0,0.0,111455.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Yelayiss 2,Ready,2026Q4,0,189.33,ok,ok,1755477.0,0.0,0.0,63297.0,0.0,Stable,-0.038,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Al Yufrah 1,Ready,2026Q4,0,74.0,fallback,fallback,2845855.0,0.0,0.0,87937.0,0.0,Stable,0.023,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Bukadra,Off-Plan,2026Q4,0,383.0,fallback,fallback,2348668.0,0.0,0.0,178415.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Burj Khalifa,Off-Plan,2026Q4,0,135.81,ok,ok,3048142.0,0.0,0.0,211222.0,0.133,Stable,0.008,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Burj Khalifa,Ready,2026Q4,0,376.68,ok,ok,3539568.0,0.0,0.0,134325.0,0.1,Stable,-0.011,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Business Bay,Ready,2026Q4,0,774.52,ok,ok,1798515.0,0.0,0.0,70114.0,0.0,Stable,-0.004,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Dubai Investment Park First,Off-Plan,2026Q4,0,453.44,ok,ok,1021418.0,0.0,0.0,78213.0,0.0,Stable,0.001,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Dubai Investment Park First,Ready,2026Q4,0,41.64,ok,ok,3852224.0,0.0,0.0,99027.0,0.0,Stable,0.072,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Dubai Investment Park Second,Off-Plan,2026Q4,0,107.0,fallback,fallback,2187026.0,0.0,0.0,145980.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Dubai Investment Park Second,Ready,2026Q4,0,33.9,ok,fallback,670043.0,0.0,0.0,15734.0,0.0,Stable,-0.041,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Hadaeq Sheikh Mohammed Bin Rashid,Off-Plan,2026Q4,0,191.5,ok,ok,2592462.0,0.0,0.0,187169.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Hadaeq Sheikh Mohammed Bin Rashid,Ready,2026Q4,0,290.73,ok,ok,3052922.0,0.0,0.0,114089.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Jabal Ali First,Off-Plan,2026Q4,0,1039.02,ok,ok,1734598.0,0.0,0.0,136131.0,0.0,Stable,-0.023,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Jabal Ali First,Ready,2026Q4,0,463.47,ok,ok,1242582.0,0.0,0.0,47619.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Jabal Ali Industrial Second,Off-Plan,2026Q4,0,1089.46,ok,fallback,868530.0,0.0,0.0,68222.0,0.0,Rising,0.321,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Jabal Ali Industrial Second,Ready,2026Q4,0,35.9,ok,fallback,621777.0,0.0,0.0,14996.0,0.0,Stable,-0.003,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Jumeirah First,Ready,2026Q4,0,30.97,ok,ok,4417979.0,0.0,0.0,99222.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Madinat Al Mataar,Off-Plan,2026Q4,0,3682.86,ok,ok,1221799.0,0.0,0.0,97215.0,0.0,Stable,0.078,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Madinat Al Mataar,Ready,2026Q4,0,227.08,ok,ok,1519558.0,0.0,0.0,55730.0,0.0,Stable,-0.085,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Madinat Dubai Almelaheyah,Off-Plan,2026Q4,0,332.19,ok,ok,2890044.0,0.0,0.0,217826.0,0.167,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Marsa Dubai,Ready,2026Q4,0,654.01,ok,ok,2558012.0,0.0,0.0,99254.0,0.1,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Me'Aisem First,Off-Plan,2026Q4,0,461.21,ok,ok,1152736.0,0.0,0.0,88333.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Me'Aisem First,Ready,2026Q4,0,237.47,ok,ok,2434787.0,0.0,0.0,89631.0,0.0,Stable,-0.01,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Mirdif,Ready,2026Q4,0,32.66,ok,ok,3069805.0,0.0,0.0,70800.0,0.0,Stable,-0.034,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Nad Al Shiba First,Off-Plan,2026Q4,0,318.38,ok,ok,2141601.0,0.0,0.0,161002.0,0.0,Rising,0.252,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Nad Al Shiba First,Ready,2026Q4,0,54.41,ok,ok,3139457.0,0.0,0.0,88922.0,0.0,Stable,-0.012,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Nadd Hessa,Off-Plan,2026Q4,0,152.2,ok,ok,1298956.0,0.0,0.0,91383.0,0.0,Stable,-0.084,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Nadd Hessa,Ready,2026Q4,0,270.3,ok,ok,926643.0,0.0,0.0,34454.0,0.0,Stable,-0.001,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Palm Deira,Off-Plan,2026Q4,0,466.0,fallback,fallback,2861856.0,0.0,0.0,219398.0,0.3,Stable,-0.073,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Ras Al Khor Industrial First,Off-Plan,2026Q4,0,106.0,fallback,fallback,2347977.0,0.0,0.0,156464.0,0.0,Stable,-0.049,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Saih Shuaib 2,Off-Plan,2026Q4,0,244.0,fallback,fallback,693757.0,0.0,0.0,51190.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Trade Center First,Off-Plan,2026Q4,0,31.0,fallback,fallback,4447742.0,0.0,0.0,199876.0,0.067,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Um Suqaim Third,Ready,2026Q4,0,39.93,ok,fallback,3254425.0,0.0,0.0,82223.0,0.033,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 2,Off-Plan,2026Q4,0,184.96,ok,ok,1236212.0,0.0,0.0,88934.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 2,Ready,2026Q4,0,101.78,ok,ok,1131566.0,0.0,0.0,37427.0,0.0,Stable,-0.021,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 3,Off-Plan,2026Q4,0,1303.02,ok,ok,1195318.0,0.0,0.0,94173.0,0.0,Stable,-0.0,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 3,Ready,2026Q4,0,211.86,ok,ok,1945946.0,0.0,0.0,70931.0,0.0,Rising,0.233,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 4,Off-Plan,2026Q4,0,1928.0,fallback,fallback,994434.0,0.0,0.0,78735.0,0.0,Stable,-0.028,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 5,Off-Plan,2026Q4,0,1159.98,ok,ok,1131332.0,0.0,0.0,88964.0,0.0,Stable,-0.041,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 5,Ready,2026Q4,0,301.0,ok,ok,2220563.0,0.0,0.0,83174.0,0.0,Stable,-0.005,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 7,Off-Plan,2026Q4,0,69.15,ok,ok,1647967.0,0.0,0.0,100107.0,0.0,Stable,-0.102,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 7,Ready,2026Q4,0,89.26,ok,ok,2590123.0,0.0,0.0,83502.0,0.0,Stable,-0.095,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Warsan Fourth,Off-Plan,2026Q4,0,248.0,fallback,fallback,813029.0,0.0,0.0,60068.0,0.0,Rising,0.22,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Warsan Fourth,Ready,2026Q4,0,88.24,ok,ok,515239.0,0.0,0.0,16571.0,0.0,Stable,0.086,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Zaabeel First,Off-Plan,2026Q4,0,30.0,fallback,fallback,3119900.0,0.0,0.0,137850.0,0.0,Insufficient data,,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Zaabeel Second,Off-Plan,2026Q4,0,73.11,ok,fallback,4114237.0,0.0,0.0,253498.0,0.2,Stable,-0.042,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,Zaabeel Second,Ready,2026Q4,0,30.84,ok,fallback,2948120.0,0.0,0.0,66072.0,0.0,Stable,-0.019,"Usable forecast, not selected"
-1.0,part4-10cec2a51e35921f,AL MIZHAR FOURTH,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,AL TWAR FIFTH,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Abu Hail,Ready,2026Q4,0,13.77,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Aweer First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Aweer Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Bada,Ready,2026Q4,0,7.2,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Baraha,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Barsha First,Off-Plan,2026Q4,0,17.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Barsha First,Ready,2026Q4,0,9.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Barsha Second,Ready,2026Q4,0,5.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Barsha Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Barshaa South First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Dhagaya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Garhoud,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Goze First,Ready,2026Q4,0,5.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Goze Fourth,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Goze Fourth,Ready,2026Q4,0,23.4,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Hamriya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Hebiah Sixth,Off-Plan,2026Q4,0,23.6,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Hudaiba,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Jafliya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Khawaneej First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Khawaneej Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Kheeran,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Kifaf,Ready,2026Q4,0,26.64,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Lusaily,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Mamzer,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Manara,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Mararr,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Mizhar First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Mizhar Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Mizhar Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Murqabat,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Muteena,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Qusais Industrial Fifth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Qusais Industrial Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Raffa,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Rashidiya,Ready,2026Q4,0,10.0,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Rowaiyah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Saffa First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Saffa Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Safouh First,Ready,2026Q4,0,14.39,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Safouh Second,Off-Plan,2026Q4,0,19.09,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Suq Al Kabeer,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Thanyah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Thanyah Third,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Twar First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Twar Fourth,Ready,2026Q4,0,7.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Twar Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Twar Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Waheda,Ready,2026Q4,0,9.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Al Warqa Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Warqa Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Warqa Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Yufrah 2,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Al Yufrah 3,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Ghadeer Al tair,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Hatta,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Hessyan First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Hessyan First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Hor Al Anz,Ready,2026Q4,0,16.18,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Hor Al Anz East,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Island 2,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Island 2,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Jumeirah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Jumeirah Second,Off-Plan,2026Q4,0,27.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Jumeirah Second,Ready,2026Q4,0,8.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Jumeirah Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Lehbab Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Madinat Dubai Almelaheyah,Ready,2026Q4,0,12.99,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Madinat Hind 4,Off-Plan,2026Q4,0,14.02,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Madinat Hind 4,Ready,2026Q4,0,26.36,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Mankhool,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Mirdif,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Muhaisanah First,Ready,2026Q4,0,13.68,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Muhaisanah Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Nad Al Hamar,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
-1.0,part4-10cec2a51e35921f,Nad Al Hamar,Ready,2026Q4,0,6.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Nad Al Shiba,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Nad Al Shiba Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Nad Al Shiba Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Nad Shamma,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Naif,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Palm Jabal Ali,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
-1.0,part4-10cec2a51e35921f,Port Saeed,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Rega Al Buteen,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Saih Shuaib 1,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
-1.0,part4-10cec2a51e35921f,Saih Shuaib 1,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Saih Shuaib 2,Ready,2026Q4,0,12.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Trade Center First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Trade Center Second,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
-1.0,part4-10cec2a51e35921f,Trade Center Second,Ready,2026Q4,0,7.38,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Um Al Sheif,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Um Hurair Second,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Um Hurair Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Um Suqaim First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Um Suqaim Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Um Suqaim Third,Off-Plan,2026Q4,0,13.84,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,Wadi Al Amardi,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Wadi Al Safa 4,Ready,2026Q4,0,23.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
-1.0,part4-10cec2a51e35921f,World Islands,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,World Islands,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
-1.0,part4-10cec2a51e35921f,Zaabeel First,Ready,2026Q4,0,10.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Business Bay,Off-Plan,2026Q4,5,594.18,ok,ok,3633067.0,8.491,1233928.0,0.0,1.0,Stable,-0.086,Allocated
+1.0,part4-2016b44db1036d4f,Marsa Dubai,Off-Plan,2026Q4,3,132.61,ok,ok,6454319.0,3.948,1019264.0,180345.0,1.0,Stable,-0.058,Allocated
+1.0,part4-2016b44db1036d4f,Palm Jumeirah,Off-Plan,2026Q4,2,66.68,ok,ok,10624193.0,2.33,989993.0,192559.0,1.0,Stable,-0.095,Allocated
+1.0,part4-2016b44db1036d4f,Palm Jumeirah,Ready,2026Q4,2,155.6,ok,ok,9319842.0,3.127,582942.0,196584.0,0.967,Stable,-0.055,Allocated
+1.0,part4-2016b44db1036d4f,Al Yufrah 1,Off-Plan,2026Q4,2,415.08,ok,ok,2958517.0,3.638,430541.0,186081.0,0.4,Rising,0.212,Allocated
+1.0,part4-2016b44db1036d4f,Al Khairan First,Off-Plan,2026Q4,2,526.16,ok,ok,2880375.0,3.711,427535.0,190592.0,0.367,Stable,-0.008,Allocated
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 6,Ready,2026Q4,2,60.31,ok,ok,8528102.0,2.215,377808.0,66175.0,0.633,Stable,-0.006,Allocated
+1.0,part4-2016b44db1036d4f,Al Thanayah Fourth,Ready,2026Q4,2,99.3,ok,ok,6698581.0,2.747,367966.0,98538.0,0.667,Stable,-0.003,Allocated
+1.0,part4-2016b44db1036d4f,Al Barsha South Fifth,Off-Plan,2026Q4,0,401.39,ok,ok,1264071.0,0.0,0.0,96250.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barsha South Fifth,Ready,2026Q4,0,129.49,ok,ok,1629660.0,0.0,0.0,56080.0,0.0,Stable,-0.013,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barsha South Fourth,Off-Plan,2026Q4,0,1329.32,ok,ok,1215858.0,0.0,0.0,95820.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barsha South Fourth,Ready,2026Q4,0,1135.07,ok,ok,1148008.0,0.0,0.0,45121.0,0.0,Stable,-0.002,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barshaa South Second,Off-Plan,2026Q4,0,185.0,fallback,fallback,1160567.0,0.0,0.0,83494.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barshaa South Second,Ready,2026Q4,0,42.86,ok,ok,1432926.0,0.0,0.0,37263.0,0.0,Declining,-0.144,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barshaa South Third,Off-Plan,2026Q4,0,466.04,ok,ok,1093489.0,0.0,0.0,83830.0,0.0,Rising,0.192,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Barshaa South Third,Ready,2026Q4,0,287.2,ok,ok,924284.0,0.0,0.0,34512.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Fifth,Off-Plan,2026Q4,0,670.0,fallback,fallback,1223547.0,0.0,0.0,95019.0,0.0,Stable,0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Fifth,Ready,2026Q4,0,52.91,ok,ok,1129876.0,0.0,0.0,31713.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah First,Off-Plan,2026Q4,0,664.29,ok,fallback,1322928.0,0.0,0.0,102711.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah First,Ready,2026Q4,0,126.93,ok,ok,1572378.0,0.0,0.0,53949.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Fourth,Off-Plan,2026Q4,0,312.38,ok,ok,1291068.0,0.0,0.0,96946.0,0.0,Stable,-0.025,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Fourth,Ready,2026Q4,0,280.01,ok,ok,1769301.0,0.0,0.0,65949.0,0.0,Stable,-0.031,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Second,Off-Plan,2026Q4,0,289.85,ok,ok,736629.0,0.0,0.0,55045.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Second,Ready,2026Q4,0,91.8,ok,fallback,888416.0,0.0,0.0,28807.0,0.0,Rising,0.29,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Sixth,Ready,2026Q4,0,88.69,ok,ok,3896475.0,0.0,0.0,125451.0,0.0,Stable,0.015,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Third,Off-Plan,2026Q4,0,279.75,ok,ok,1735798.0,0.0,0.0,129393.0,0.0,Stable,0.058,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Hebiah Third,Ready,2026Q4,0,123.68,ok,ok,1707462.0,0.0,0.0,58354.0,0.0,Stable,-0.028,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Jadaf,Off-Plan,2026Q4,0,370.45,ok,ok,1513919.0,0.0,0.0,114804.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Jadaf,Ready,2026Q4,0,117.88,ok,ok,1370096.0,0.0,0.0,46474.0,0.0,Stable,0.055,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Khairan First,Ready,2026Q4,0,262.85,ok,ok,2717196.0,0.0,0.0,100822.0,0.067,Stable,-0.011,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Kifaf,Off-Plan,2026Q4,0,51.0,fallback,fallback,2651135.0,0.0,0.0,146989.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Merkadh,Off-Plan,2026Q4,0,197.89,ok,ok,2168195.0,0.0,0.0,157049.0,0.0,Stable,0.039,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Merkadh,Ready,2026Q4,0,453.68,ok,ok,1801698.0,0.0,0.0,68982.0,0.0,Stable,-0.01,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Safouh First,Off-Plan,2026Q4,0,93.0,fallback,fallback,2486178.0,0.0,0.0,161647.0,0.0,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Safouh Second,Ready,2026Q4,0,36.0,fallback,unavailable,1378744.0,0.0,0.0,33295.0,0.0,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Satwa,Off-Plan,2026Q4,0,128.0,fallback,fallback,1393217.0,0.0,0.0,95723.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Satwa,Ready,2026Q4,0,34.0,fallback,unavailable,2089251.0,0.0,0.0,49130.0,0.0,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Thanyah Fifth,Off-Plan,2026Q4,0,512.2,ok,ok,2330407.0,0.0,0.0,179339.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Thanyah Fifth,Ready,2026Q4,0,377.51,ok,ok,2888208.0,0.0,0.0,109618.0,0.0,Stable,0.024,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Thanyah First,Ready,2026Q4,0,70.95,ok,ok,2088217.0,0.0,0.0,63848.0,0.0,Stable,0.013,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Thanyah Third,Ready,2026Q4,0,116.75,ok,ok,2836308.0,0.0,0.0,96060.0,0.0,Stable,-0.007,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Warsan First,Off-Plan,2026Q4,0,163.92,ok,fallback,920686.0,0.0,0.0,65356.0,0.0,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Warsan First,Ready,2026Q4,0,284.14,ok,ok,525031.0,0.0,0.0,19590.0,0.0,Stable,-0.031,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Wasl,Off-Plan,2026Q4,0,138.77,ok,ok,3404259.0,0.0,0.0,236605.0,0.5,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Wasl,Ready,2026Q4,0,83.39,ok,ok,4182637.0,0.0,0.0,132895.0,0.4,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Yelayiss 1,Off-Plan,2026Q4,0,260.0,fallback,fallback,2933442.0,0.0,0.0,217515.0,0.1,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Yelayiss 1,Ready,2026Q4,0,50.12,ok,ok,3625611.0,0.0,0.0,99909.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Yelayiss 2,Off-Plan,2026Q4,0,162.64,ok,ok,1571514.0,0.0,0.0,111455.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Yelayiss 2,Ready,2026Q4,0,189.33,ok,ok,1755477.0,0.0,0.0,63297.0,0.0,Stable,-0.038,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Al Yufrah 1,Ready,2026Q4,0,74.0,fallback,fallback,2845855.0,0.0,0.0,87937.0,0.0,Stable,0.023,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Bukadra,Off-Plan,2026Q4,0,383.0,fallback,fallback,2348668.0,0.0,0.0,178415.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Burj Khalifa,Off-Plan,2026Q4,0,135.81,ok,ok,3048142.0,0.0,0.0,211222.0,0.133,Stable,0.008,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Burj Khalifa,Ready,2026Q4,0,376.68,ok,ok,3539568.0,0.0,0.0,134325.0,0.1,Stable,-0.011,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Business Bay,Ready,2026Q4,0,774.52,ok,ok,1798515.0,0.0,0.0,70114.0,0.0,Stable,-0.004,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Dubai Investment Park First,Off-Plan,2026Q4,0,453.44,ok,ok,1021418.0,0.0,0.0,78213.0,0.0,Stable,0.001,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Dubai Investment Park First,Ready,2026Q4,0,41.64,ok,ok,3852224.0,0.0,0.0,99027.0,0.0,Stable,0.072,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Dubai Investment Park Second,Off-Plan,2026Q4,0,107.0,fallback,fallback,2187026.0,0.0,0.0,145980.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Dubai Investment Park Second,Ready,2026Q4,0,33.9,ok,fallback,670043.0,0.0,0.0,15734.0,0.0,Stable,-0.041,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Hadaeq Sheikh Mohammed Bin Rashid,Off-Plan,2026Q4,0,191.5,ok,ok,2592462.0,0.0,0.0,187169.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Hadaeq Sheikh Mohammed Bin Rashid,Ready,2026Q4,0,290.73,ok,ok,3052922.0,0.0,0.0,114089.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Jabal Ali First,Off-Plan,2026Q4,0,1039.02,ok,ok,1734598.0,0.0,0.0,136131.0,0.0,Stable,-0.023,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Jabal Ali First,Ready,2026Q4,0,463.47,ok,ok,1242582.0,0.0,0.0,47619.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Jabal Ali Industrial Second,Off-Plan,2026Q4,0,1089.46,ok,fallback,868530.0,0.0,0.0,68222.0,0.0,Rising,0.321,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Jabal Ali Industrial Second,Ready,2026Q4,0,35.9,ok,fallback,621777.0,0.0,0.0,14996.0,0.0,Stable,-0.003,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Jumeirah First,Ready,2026Q4,0,30.97,ok,ok,4417979.0,0.0,0.0,99222.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Madinat Al Mataar,Off-Plan,2026Q4,0,3682.86,ok,ok,1221799.0,0.0,0.0,97215.0,0.0,Stable,0.078,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Madinat Al Mataar,Ready,2026Q4,0,227.08,ok,ok,1519558.0,0.0,0.0,55730.0,0.0,Stable,-0.085,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Madinat Dubai Almelaheyah,Off-Plan,2026Q4,0,332.19,ok,ok,2890044.0,0.0,0.0,217826.0,0.167,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Marsa Dubai,Ready,2026Q4,0,654.01,ok,ok,2558012.0,0.0,0.0,99254.0,0.1,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Me'Aisem First,Off-Plan,2026Q4,0,461.21,ok,ok,1152736.0,0.0,0.0,88333.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Me'Aisem First,Ready,2026Q4,0,237.47,ok,ok,2434787.0,0.0,0.0,89631.0,0.0,Stable,-0.01,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Mirdif,Ready,2026Q4,0,32.66,ok,ok,3069805.0,0.0,0.0,70800.0,0.0,Stable,-0.034,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Nad Al Shiba First,Off-Plan,2026Q4,0,318.38,ok,ok,2141601.0,0.0,0.0,161002.0,0.0,Rising,0.252,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Nad Al Shiba First,Ready,2026Q4,0,54.41,ok,ok,3139457.0,0.0,0.0,88922.0,0.0,Stable,-0.012,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Nadd Hessa,Off-Plan,2026Q4,0,152.2,ok,ok,1298956.0,0.0,0.0,91383.0,0.0,Stable,-0.084,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Nadd Hessa,Ready,2026Q4,0,270.3,ok,ok,926643.0,0.0,0.0,34454.0,0.0,Stable,-0.001,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Palm Deira,Off-Plan,2026Q4,0,466.0,fallback,fallback,2861856.0,0.0,0.0,219398.0,0.3,Stable,-0.073,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Ras Al Khor Industrial First,Off-Plan,2026Q4,0,106.0,fallback,fallback,2347977.0,0.0,0.0,156464.0,0.0,Stable,-0.049,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Saih Shuaib 2,Off-Plan,2026Q4,0,244.0,fallback,fallback,693757.0,0.0,0.0,51190.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Trade Center First,Off-Plan,2026Q4,0,31.0,fallback,fallback,4447742.0,0.0,0.0,199876.0,0.067,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Um Suqaim Third,Ready,2026Q4,0,39.93,ok,fallback,3254425.0,0.0,0.0,82223.0,0.033,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 2,Off-Plan,2026Q4,0,184.96,ok,ok,1236212.0,0.0,0.0,88934.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 2,Ready,2026Q4,0,101.78,ok,ok,1131566.0,0.0,0.0,37427.0,0.0,Stable,-0.021,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 3,Off-Plan,2026Q4,0,1303.02,ok,ok,1195318.0,0.0,0.0,94173.0,0.0,Stable,-0.0,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 3,Ready,2026Q4,0,211.86,ok,ok,1945946.0,0.0,0.0,70931.0,0.0,Rising,0.233,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 4,Off-Plan,2026Q4,0,1928.0,fallback,fallback,994434.0,0.0,0.0,78735.0,0.0,Stable,-0.028,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 5,Off-Plan,2026Q4,0,1159.98,ok,ok,1131332.0,0.0,0.0,88964.0,0.0,Stable,-0.041,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 5,Ready,2026Q4,0,301.0,ok,ok,2220563.0,0.0,0.0,83174.0,0.0,Stable,-0.005,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 7,Off-Plan,2026Q4,0,69.15,ok,ok,1647967.0,0.0,0.0,100107.0,0.0,Stable,-0.102,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 7,Ready,2026Q4,0,89.26,ok,ok,2590123.0,0.0,0.0,83502.0,0.0,Stable,-0.095,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Warsan Fourth,Off-Plan,2026Q4,0,248.0,fallback,fallback,813029.0,0.0,0.0,60068.0,0.0,Rising,0.22,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Warsan Fourth,Ready,2026Q4,0,88.24,ok,ok,515239.0,0.0,0.0,16571.0,0.0,Stable,0.086,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Zaabeel First,Off-Plan,2026Q4,0,30.0,fallback,fallback,3119900.0,0.0,0.0,137850.0,0.0,Insufficient data,,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Zaabeel Second,Off-Plan,2026Q4,0,73.11,ok,fallback,4114237.0,0.0,0.0,253498.0,0.2,Stable,-0.042,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,Zaabeel Second,Ready,2026Q4,0,30.84,ok,fallback,2948120.0,0.0,0.0,66072.0,0.0,Stable,-0.019,"Usable forecast, not selected"
+1.0,part4-2016b44db1036d4f,AL MIZHAR FOURTH,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,AL TWAR FIFTH,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Abu Hail,Ready,2026Q4,0,13.77,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Aweer First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Aweer Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Bada,Ready,2026Q4,0,7.2,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Baraha,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Barsha First,Off-Plan,2026Q4,0,17.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Barsha First,Ready,2026Q4,0,9.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Barsha Second,Ready,2026Q4,0,5.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Barsha Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Barshaa South First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Dhagaya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Garhoud,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Goze First,Ready,2026Q4,0,5.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Goze Fourth,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Goze Fourth,Ready,2026Q4,0,23.4,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Hamriya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Hebiah Sixth,Off-Plan,2026Q4,0,23.6,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Hudaiba,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Jafliya,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Khawaneej First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Khawaneej Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Kheeran,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Kifaf,Ready,2026Q4,0,26.64,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Lusaily,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Mamzer,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Manara,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Mararr,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Mizhar First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Mizhar Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Mizhar Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Murqabat,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Muteena,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Qusais Industrial Fifth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Qusais Industrial Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Raffa,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Rashidiya,Ready,2026Q4,0,10.0,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Rowaiyah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Saffa First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Saffa Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Safouh First,Ready,2026Q4,0,14.39,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Safouh Second,Off-Plan,2026Q4,0,19.09,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Suq Al Kabeer,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Thanyah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Thanyah Third,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Twar First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Twar Fourth,Ready,2026Q4,0,7.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Twar Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Twar Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Waheda,Ready,2026Q4,0,9.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Al Warqa Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Warqa Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Warqa Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Yufrah 2,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Al Yufrah 3,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Ghadeer Al tair,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Hatta,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Hessyan First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Hessyan First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Hor Al Anz,Ready,2026Q4,0,16.18,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Hor Al Anz East,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Island 2,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Island 2,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Jumeirah First,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Jumeirah Second,Off-Plan,2026Q4,0,27.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Jumeirah Second,Ready,2026Q4,0,8.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Jumeirah Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Lehbab Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Madinat Dubai Almelaheyah,Ready,2026Q4,0,12.99,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Madinat Hind 4,Off-Plan,2026Q4,0,14.02,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Madinat Hind 4,Ready,2026Q4,0,26.36,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Mankhool,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Mirdif,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Muhaisanah First,Ready,2026Q4,0,13.68,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Muhaisanah Third,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Nad Al Hamar,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
+1.0,part4-2016b44db1036d4f,Nad Al Hamar,Ready,2026Q4,0,6.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Nad Al Shiba,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Nad Al Shiba Fourth,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Nad Al Shiba Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Nad Shamma,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Naif,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Palm Jabal Ali,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
+1.0,part4-2016b44db1036d4f,Port Saeed,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Rega Al Buteen,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Saih Shuaib 1,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
+1.0,part4-2016b44db1036d4f,Saih Shuaib 1,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Saih Shuaib 2,Ready,2026Q4,0,12.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Trade Center First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Trade Center Second,Off-Plan,2026Q4,0,,insufficient_data,,,,,,,Insufficient data,,No usable forecast: insufficient_data
+1.0,part4-2016b44db1036d4f,Trade Center Second,Ready,2026Q4,0,7.38,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Um Al Sheif,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Um Hurair Second,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Um Hurair Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Um Suqaim First,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Um Suqaim Second,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Um Suqaim Third,Off-Plan,2026Q4,0,13.84,ok,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,Wadi Al Amardi,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Wadi Al Safa 4,Ready,2026Q4,0,23.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales
+1.0,part4-2016b44db1036d4f,World Islands,Off-Plan,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,World Islands,Ready,2026Q4,0,,missing_input,,,,,,,Insufficient data,,No usable forecast: missing_input
+1.0,part4-2016b44db1036d4f,Zaabeel First,Ready,2026Q4,0,10.0,fallback,,,,,,,Insufficient data,,Forecast below min_forecast_sales

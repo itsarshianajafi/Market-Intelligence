@@ -16399,8 +16399,8 @@
       }
     ]
   },
-  "run_id": "part3-6527f9b3ae845b0f",
-  "generated_at_utc": "2026-11-01T10:06:59.523029+00:00",
+  "run_id": "part3-b6258240f482ef3b",
+  "generated_at_utc": "2026-11-01T11:06:05.907235+00:00",
   "warnings": [
     "Only supplied records; completeness is not established. Three observed months is a support rule, not proof of full coverage.",
     "Missing rows are unknown, never inferred zero. Unobserved property/subtype cells may remain within observed segment months.",
@@ -16411,8 +16411,8 @@
     "Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.",
     "Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.",
     "Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.",
-    "2026Q4 is a Q3-based projection generated during Q4, excluding October observations.",
-    "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee."
+    "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee.",
+    "2026Q4 is projected from data up to the end of 2026Q3; later records in the source are excluded."
   ],
   "splits": {
     "train_start": "2021Q1",
@@ -16432,7 +16432,7 @@
       "mae": 136.10701754385966,
       "rmse": 284.8099427842573,
       "wape": 0.32780796565624126,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "test",
@@ -16444,7 +16444,7 @@
       "mae": 133.24758146069345,
       "rmse": 283.89000745121564,
       "wape": 0.32092113540853046,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "test",
@@ -16456,7 +16456,7 @@
       "mae": 207.01754385964912,
       "rmse": 442.584451253349,
       "wape": 0.4985929537829684,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "test",
@@ -16468,7 +16468,7 @@
       "mae": 1091.718152484639,
       "rmse": 1721.2445637477638,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "test",
@@ -16480,7 +16480,7 @@
       "mae": 1160.7389896518325,
       "rmse": 1731.08741239713,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "test",
@@ -16492,7 +16492,7 @@
       "mae": 2226.874568714393,
       "rmse": 3227.9818494794267,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16504,7 +16504,7 @@
       "mae": 129.0122950819672,
       "rmse": 264.0625314045961,
       "wape": 0.2559226679240988,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16516,7 +16516,7 @@
       "mae": 132.18153252652687,
       "rmse": 261.11211839489476,
       "wape": 0.2622095082720001,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16528,7 +16528,7 @@
       "mae": 128.68782175757653,
       "rmse": 257.18422513523126,
       "wape": 0.25527900773035134,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16540,7 +16540,7 @@
       "mae": 124.4181351752745,
       "rmse": 254.12154292668941,
       "wape": 0.24680919808431553,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16552,7 +16552,7 @@
       "mae": 131.98299947005194,
       "rmse": 265.2630402505382,
       "wape": 0.26181567674259504,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16564,7 +16564,7 @@
       "mae": 195.04508196721312,
       "rmse": 384.969356881434,
       "wape": 0.3869124079283264,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16576,7 +16576,7 @@
       "mae": 1247.2360277684202,
       "rmse": 2308.408880005208,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16588,7 +16588,7 @@
       "mae": 1217.9900297962495,
       "rmse": 2177.66637761244,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16600,7 +16600,7 @@
       "mae": 1208.7097163674432,
       "rmse": 2228.119861062162,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16612,7 +16612,7 @@
       "mae": 1215.322767629914,
       "rmse": 2389.4575987620906,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16624,7 +16624,7 @@
       "mae": 1223.292025522603,
       "rmse": 2394.3956821207803,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     },
     {
       "split": "validation",
@@ -16636,7 +16636,7 @@
       "mae": 2549.548587526577,
       "rmse": 3644.4956849173936,
       "wape": null,
-      "run_id": "part3-6527f9b3ae845b0f"
+      "run_id": "part3-b6258240f482ef3b"
     }
   ]
 }
