@@ -128,8 +128,7 @@ def limited_moves(inputs, cfg, options, limit):
             x = plan(candidates, errors, agents, cfg, rng, **options)
         else:
             current = np.array([held.get(k, 0) for k in zip(candidates.area, candidates.registration_type)])
-            lost = agents - int(current.sum())   # a segment left the candidate list; they must move
-            limited = {**cfg, 'max_moves': max(limit, lost)}
+            limited = {**cfg, 'max_moves': limit}   # make_problem adds moves forced by dropped segments
             x = plan(candidates, errors, agents, limited, rng, current=current, **options)
         held = dict(zip(zip(candidates.area, candidates.registration_type), x))
         score(rows, candidates, x, truth, total_value(truth, exact(truth)), 'selected_move_limit',
