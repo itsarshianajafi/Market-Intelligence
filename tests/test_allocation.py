@@ -243,6 +243,7 @@ class SharedFileTests(unittest.TestCase):
         self.assertEqual(self.out.agents.sum(), self.cfg['agents'])
         self.assertFalse(self.out.duplicated(['area', 'registration_type']).any())
         self.assertTrue(self.manifest['feasible'])
+        self.assertTrue(self.out.trend_label.notna().all())
 
     def test_blank_forecasts_never_get_agents_or_a_zero(self):
         blank = self.out[self.out.forecast_status.isin(['missing_input', 'insufficient_data'])]

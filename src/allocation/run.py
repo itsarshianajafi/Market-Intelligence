@@ -94,6 +94,9 @@ def output_table(candidates, x, problem, selection, inputs, cfg, run_id):
     rest = pd.DataFrame({'area': rest.area, 'registration_type': rest.registration_type, 'agents': 0,
                          'forecast_sales': rest.forecast_value, 'forecast_status': rest.status,
                          'note': rest.status.map(NOTES)})
+    trends = inputs['trends'][inputs['trends'].quarter.eq(inputs['manifest']['origin_quarter'])]
+    rest = rest.merge(trends[KEYS + ['trend_label', 'trend_score']], on=KEYS, how='left')
+    rest['trend_label'] = rest.trend_label.fillna('Insufficient data')
     out = pd.concat([plan, rest], ignore_index=True).assign(
         schema_version=SCHEMA_VERSION, run_id=run_id,
         forecast_quarter=inputs['manifest']['forecast_quarter'])
@@ -196,8 +199,16 @@ def main():
     parser.add_argument('--current', help='CSV of today\'s allocation (area, registration_type, agents)')
     parser.add_argument('--max-moves', type=int, help='Most agents that may change segment; needs --current')
     parser.add_argument('--skip-evaluation', action='store_true', help='Only the live plan; a few seconds')
+    parser.add_argument('--output-dir', type=Path,
+                        help='Write the plan, manifest and reports here instead of the shared files')
     args = parser.parse_args()
+    if (args.agents or args.current or args.max_moves is not None) and not args.output_dir:
+        parser.error('--agents, --current and --max-moves change the plan; add --output-dir so the '
+                     'shared allocation.csv stays the default plan')
     cfg = json.loads(args.config.read_text())
+    if args.output_dir:
+        cfg.update(output=args.output_dir / 'allocation.csv', report_dir=args.output_dir,
+                   manifest=args.output_dir / 'allocation_manifest.json')
     cfg['agents'] = args.agents or cfg['agents']
     cfg['current_allocation'] = args.current or cfg['current_allocation']
     cfg['max_moves'] = args.max_moves if args.max_moves is not None else cfg['max_moves']
