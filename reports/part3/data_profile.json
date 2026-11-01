@@ -5,11 +5,6 @@
     "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
     "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
   },
-  "audit_hash_match": {
-    "monthly_sales.csv": true,
-    "quality_report.json": true,
-    "market_trends.csv": true
-  },
   "missing_subtype_rows": 31364,
   "nonpositive_price_rows": 0,
   "missing_price_rows": 104,
