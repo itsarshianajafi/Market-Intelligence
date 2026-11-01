@@ -3,7 +3,7 @@
   "validation_share_of_oracle": {
     "point": 0.9596053874378575,
     "point_trend_025": 0.9596053874378575,
-    "point_trend_050": 0.9518889491659672,
+    "point_trend_050": 0.9518889491659671,
     "scenarios": 0.9538273610551411,
     "scenarios_trend_025": 0.9596053874378575,
     "scenarios_trend_050": 0.9456975209238284
@@ -20,16 +20,16 @@
     },
     {
       "method": "point_trend_050",
-      "share_of_oracle": 0.887085215859779,
+      "share_of_oracle": 0.8870852158597791,
       "worst_quarter": 0.7505176372186921,
-      "realised_value": 38805038.08644183,
+      "realised_value": 38805038.08644184,
       "mean_moves": 5.428571428571429,
       "feasible_quarters": 7,
       "quarters": 7
     },
     {
       "method": "scenarios_trend_050",
-      "share_of_oracle": 0.8772055361064192,
+      "share_of_oracle": 0.8772055361064194,
       "worst_quarter": 0.6522595858961896,
       "realised_value": 38207161.866087325,
       "mean_moves": 5.428571428571429,
@@ -38,16 +38,16 @@
     },
     {
       "method": "point_trend_025",
-      "share_of_oracle": 0.8727429018253161,
+      "share_of_oracle": 0.8727429018253162,
       "worst_quarter": 0.7666483181869294,
-      "realised_value": 38186569.02244383,
+      "realised_value": 38186569.02244384,
       "mean_moves": 5.714285714285714,
       "feasible_quarters": 7,
       "quarters": 7
     },
     {
       "method": "scenarios",
-      "share_of_oracle": 0.8694980713479085,
+      "share_of_oracle": 0.8694980713479087,
       "worst_quarter": 0.7212846410107597,
       "realised_value": 37975079.93402672,
       "mean_moves": 5.142857142857143,
@@ -56,7 +56,7 @@
     },
     {
       "method": "selected",
-      "share_of_oracle": 0.8681535469982311,
+      "share_of_oracle": 0.8681535469982312,
       "worst_quarter": 0.7570580700439036,
       "realised_value": 37963902.64074214,
       "mean_moves": 5.428571428571429,
@@ -65,7 +65,7 @@
     },
     {
       "method": "scenarios_trend_025",
-      "share_of_oracle": 0.862338361029999,
+      "share_of_oracle": 0.8623383610299991,
       "worst_quarter": 0.6514031306080935,
       "realised_value": 37501154.96756618,
       "mean_moves": 5.285714285714286,
@@ -93,7 +93,7 @@
     {
       "method": "even_split",
       "share_of_oracle": 0.3701231202362612,
-      "worst_quarter": 0.32677750358252133,
+      "worst_quarter": 0.32677750358252144,
       "realised_value": 16277230.66443064,
       "mean_moves": 4.857142857142857,
       "feasible_quarters": 0,
@@ -101,8 +101,8 @@
     },
     {
       "method": "share_of_forecast",
-      "share_of_oracle": 0.36061944805622426,
-      "worst_quarter": 0.3249903348365103,
+      "share_of_oracle": 0.3606194480562243,
+      "worst_quarter": 0.32499033483651035,
       "realised_value": 15717403.835444218,
       "mean_moves": 3.142857142857143,
       "feasible_quarters": 0,
@@ -111,7 +111,7 @@
     {
       "method": "share_of_last_sales",
       "share_of_oracle": 0.35971601226753186,
-      "worst_quarter": 0.3152344224597753,
+      "worst_quarter": 0.31523442245977534,
       "realised_value": 15713104.955123305,
       "mean_moves": 5.857142857142857,
       "feasible_quarters": 0,
@@ -136,7 +136,7 @@
       "method": "selected",
       "against": "share_of_forecast_value",
       "mean_difference": 0.35031018092532423,
-      "std_difference": 0.05163031260882926,
+      "std_difference": 0.05163031260882923,
       "wins": 7,
       "losses": 0,
       "ties": 0,
@@ -146,7 +146,7 @@
       "method": "selected",
       "against": "optimiser_naive_input",
       "mean_difference": 0.02871854779571354,
-      "std_difference": 0.031748920625503274,
+      "std_difference": 0.03174892062550325,
       "wins": 6,
       "losses": 0,
       "ties": 1,
@@ -155,8 +155,8 @@
     {
       "method": "selected_move_limit",
       "against": "selected",
-      "mean_difference": 0.03065753011781753,
-      "std_difference": 0.036425154045040764,
+      "mean_difference": 0.030657530117817515,
+      "std_difference": 0.03642515404504073,
       "wins": 4,
       "losses": 2,
       "ties": 1,
@@ -166,39 +166,39 @@
   "repeated_runs": {
     "runs": 10,
     "quarters": 11,
-    "test_share_of_oracle_mean": 0.8663280742797832,
-    "test_std_between_seeds": 0.010081011821776028,
-    "test_std_between_quarters": 0.08789340037027321,
+    "test_share_of_oracle_mean": 0.8663280742797833,
+    "test_std_between_seeds": 0.010081011821776018,
+    "test_std_between_quarters": 0.08789340037027325,
     "greedy_quarters_feasible": 1,
     "gap_annealing": {
-      "mean": 0.003565952560906542,
-      "std": 0.0061151010995025125,
+      "mean": 0.0035659525609065762,
+      "std": 0.006115101099502519,
       "max": 0.027471430692817322
     },
     "gap_annealing_hill_climb": {
-      "mean": 0.0027574820571582086,
-      "std": 0.005017777144672425,
+      "mean": 0.002757482057158237,
+      "std": 0.005017777144672429,
       "max": 0.023027709430374133
     },
     "annealing_seconds": {
-      "mean": 0.36411158908793534,
-      "std": 0.009193542090538086,
-      "max": 0.3893935000523925
+      "mean": 0.42832393021819204,
+      "std": 0.011649893056962783,
+      "max": 0.4657541130000027
     },
     "hill_climb_seconds": {
-      "mean": 0.018149846356192774,
-      "std": 0.009048581429362417,
-      "max": 0.054776999866589904
+      "mean": 0.024670154463687637,
+      "std": 0.012213837688103866,
+      "max": 0.07333140399987315
     },
     "exact_seconds": {
-      "mean": 0.0185246272647584,
-      "std": 0.004761005707534316,
-      "max": 0.027660900028422475
+      "mean": 0.02077979545447306,
+      "std": 0.005238522646116243,
+      "max": 0.030839529000331822
     }
   },
   "solver_gap": {
     "quarters": 11,
-    "mean_gap": 0.0013068799236481661,
+    "mean_gap": 0.0013068799236482067,
     "max_gap": 0.007441164716801452
   }
 }

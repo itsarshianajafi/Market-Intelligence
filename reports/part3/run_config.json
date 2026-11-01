@@ -44,7 +44,7 @@
   "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
   "code_hashes": {
     "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
-    "data.py": "1176212f87995cc94d45ae770057fd7d44a5244d36ac462de12ec83f96b4c37d",
+    "data.py": "a825faede6b1f2f4a4570361ebeeb77218dd4b2678ac8aa78bec261a88ec7d08",
     "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
     "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
     "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
@@ -52,25 +52,25 @@
     "run.py": "b3a14ce2e5b677256470718cbd3c6eaca085463e771366c3512089ba5bd2433a"
   },
   "versions": {
-    "pandas": "2.2.3",
-    "numpy": "2.3.5",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
     "scikit-learn": "1.9.1",
     "scipy": "1.18.1",
     "matplotlib": "3.11.2",
     "joblib": "1.6.0",
     "threadpoolctl": "3.7.0",
-    "pillow": "12.3.0",
+    "pillow": "13.0.0",
     "contourpy": "1.4.0",
     "cycler": "0.12.1",
     "fonttools": "4.68.0",
     "kiwisolver": "1.5.1",
     "pyparsing": "3.3.3",
-    "python-dateutil": "2.9.0.post0",
+    "python-dateutil": "3.0.0",
     "six": "1.17.0",
-    "pytz": "2026.5",
-    "tzdata": "2026.5",
+    "pytz": "2026.6",
+    "tzdata": "2026.6",
     "narwhals": "2.28.0",
     "cloudpickle": "3.1.2",
-    "python": "3.12.14"
+    "python": "3.14.8"
   }
 }
