@@ -135,6 +135,13 @@ class SourceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'calendar-complete'):
                 load_inputs(cfg)
 
+    def test_fingerprint_ignores_line_endings(self):
+        with tempfile.TemporaryDirectory() as folder:
+            unix, windows = Path(folder) / 'unix.csv', Path(folder) / 'windows.csv'
+            unix.write_bytes(b'a,b\n1,2\n')
+            windows.write_bytes(b'a,b\r\n1,2\r\n')
+            self.assertEqual(fingerprint(unix), fingerprint(windows))
+
     def test_origin_behind_source_is_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
             cfg = write_sources(Path(folder))
