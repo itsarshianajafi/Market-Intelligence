@@ -2,6 +2,8 @@
 from itertools import product
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -275,6 +277,41 @@ class SharedFileTests(unittest.TestCase):
     def test_small_segments_are_not_candidates(self):
         inputs = load_inputs(self.cfg)
         self.assertGreaterEqual(deployment_candidates(inputs, self.cfg).demand.min(), self.cfg['min_forecast_sales'])
+
+
+    def test_inputs_from_another_run_are_refused(self):
+        base = Path(self.folder.name)
+        stale = pd.read_csv(self.cfg['predictions']).assign(run_id='part3-old')
+        stale.to_csv(base / 'predictions.csv', index=False)
+        with self.assertRaisesRegex(ValueError, 'same Part 3 run'):
+            load_inputs({**self.cfg, 'predictions': base / 'predictions.csv'})
+        trends = pd.read_csv(self.cfg['market_trends'])
+        trends[trends.quarter.ne(json.loads(Path(self.cfg['forecast_manifest']).read_text())['origin_quarter'])
+               ].to_csv(base / 'trends.csv', index=False)
+        with self.assertRaisesRegex(ValueError, 'rerun Part 2'):
+            load_inputs({**self.cfg, 'market_trends': base / 'trends.csv'})
+
+    def test_every_row_has_a_note_that_fits(self):
+        small = self.out[self.out.note.eq('Forecast below min_forecast_sales')]
+        self.assertTrue(small.forecast_sales.lt(self.cfg['min_forecast_sales']).all())
+
+
+class CommandLineTests(unittest.TestCase):
+    def run_cli(self, *args):
+        return subprocess.run([sys.executable, '-m', 'src.allocation.run', '--skip-evaluation', *args],
+                              capture_output=True, text=True)
+
+    def test_changed_plan_needs_output_dir(self):
+        self.assertIn('--output-dir', self.run_cli('--agents', '30').stderr)
+        self.assertIn('at least 1', self.run_cli('--agents', '0', '--output-dir', 'plans/test').stderr)
+        with tempfile.TemporaryDirectory() as folder:
+            other = Path(folder) / 'config.json'
+            other.write_text(json.dumps({**CFG, 'agents': 30}))
+            self.assertIn('--output-dir', self.run_cli('--config', str(other)).stderr)
+
+    def test_max_moves_needs_current(self):
+        result = self.run_cli('--max-moves', '4', '--output-dir', 'plans/test')
+        self.assertIn('needs --current', result.stderr)
 
 
 if __name__ == '__main__':
