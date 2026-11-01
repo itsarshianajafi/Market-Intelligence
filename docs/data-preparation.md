@@ -123,8 +123,7 @@ storing signed URL credentials.
 - `src/dld_data/pipeline.py`: `download_csv` retrieves a supplied public official
   URL; `clean_transactions` validates and normalizes records; `prepare` combines
   inputs and writes datasets/audit information; `main` exposes the CLI.
-- `requirements.txt`: pandas (Part 1) plus numpy, scikit-learn and matplotlib (Part 2) and scipy (Part 4);
-  `requirements-lock.txt` pins the exact versions the results were produced with.
+- `requirements.txt`: Part 1 needs only pandas; see the README for setup and the lock file.
 - `tests/test_pipeline.py` and `tests/test_sources.py`: artificial validation cases,
   source schemas, cross-part conflicts/duplicates, ZIP handling and CLI integration.
 - `docs/official-sources.md`: source research, access evidence and remaining limits.
