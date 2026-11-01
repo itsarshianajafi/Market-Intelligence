@@ -1,5 +1,40 @@
 # Market-Intelligence
-Private Project for University
+
+A market intelligence tool for Dubai real estate, built as a CSCI218 group project (UOW Dubai)
+with Imza Premium Properties. It turns the Dubai Land Department's public sales records into
+four things an agency can use:
+
+| Part | Question it answers | Output in `data/shared/` |
+|---|---|---|
+| 1. Data preparation | What sold, where, for how much? (cleaned and checked) | `monthly_sales.csv`, `quality_report.json` |
+| 2. Trend analysis | Is each area's market rising, stable or declining right now? | `market_trends.csv` |
+| 3. Forecasting | How many sales and what price per m2 next quarter? | `forecasts.csv`, `forecast_manifest.json` |
+| 4. Agent allocation | Where should the agents work next quarter? | `allocation.csv`, `allocation_manifest.json` |
+
+Each part reads the files of the parts before it. Areas are DLD's official area names, and
+off-plan and ready sales are always kept apart.
+
+Run everything (Python 3.11 or newer, see Install below):
+
+```bash
+python -m pip install -r requirements.txt
+python -m src.trend_analysis.run                            # Part 2, seconds
+python -m src.forecasting.run --config src/forecasting/config.json   # Part 3, seconds
+python -m src.allocation.run                                # Part 4, about 2 minutes
+python -m unittest discover -s tests                        # all tests
+```
+
+Things to know before using the results:
+
+- The data is the Data Dubai export of 28 Oct 2026. The latest full quarter is 2026Q3, and it is
+  provisional because DLD still corrects recent records.
+- Trend labels (Part 2) describe the market now. They do not predict next year's prices.
+- Forecasts (Part 3) beat simply repeating last quarter by only a small margin. Use them as a guide.
+- Part 4's team size, commission rates, deals per agent and market share are placeholders. Replace
+  them with Imza's own numbers before using the plan.
+- To refresh the data, follow "How to update the data" below.
+
+Each part's section below explains its method, results and limits.
 
 ## Member 1: Data Collection & Preparation
 
@@ -219,7 +254,10 @@ CAPTCHA); cleaning, validation and organisation are automated.
 2. Put the file(s) in data/raw/.
 3. Run the pipeline command above with a NEW --output-dir name (e.g. run-2026-11).
 4. Copy the new monthly_sales.csv and quality_report.json to data/shared/.
-5. Rerun Part 2 (`python -m src.trend_analysis.run`) so market_trends.csv matches, then Parts 3 and 4, then push.
+5. Rerun Part 2 (`python -m src.trend_analysis.run`). It picks up the latest full quarter by itself.
+6. If a new quarter is complete, set `origin_quarter` and `test_end` to it and `forecast_quarter` to the
+   next one in `src/forecasting/config.json` (Part 3 stops with this message if you forget).
+7. Rerun Parts 3 and 4 (commands at the top), then push.
 
 Overlapping exports are fine, duplicates across files are removed.
 
@@ -286,6 +324,13 @@ Percentages are fractions (0.05 = 5%).
   happening now", not as a forecast.
 
 ## Member 3: AI Forecasting
+
+In short: for every area (off-plan and ready separately), Part 3 forecasts next quarter's number of
+sales and a price per m2. It compares three methods: repeating last quarter, repeating the same
+quarter last year, and a Ridge regression trained on past quarters. Ridge was slightly better for
+sales (test error 32.1% of sales against 32.8% for repeating last quarter); for price, simply repeating
+last quarter did a little better on the test years. Rows marked `ok` or `fallback` are usable,
+blank values mean there was not enough data and must not be read as zero. The details follow.
 
 Forecasts the next quarter's recorded sales activity and a property-price proxy by
 exact DLD `area` and separate `registration_type` values, Ready and Off-Plan.
@@ -445,9 +490,9 @@ Allocation rules remain Part 4's responsibility.
 
 Use Python 3.11 or newer and the virtual environment described under Member 1.
 The existing `requirements.txt` already includes all four direct dependencies.
-The verified run used Python 3.12.14, pandas 2.2.3, numpy 2.3.5, scikit-learn 1.9.1,
-scipy 1.18.1 and matplotlib 3.11.2. The original `requirements-lock.txt` describes
-the earlier component environment and is preserved. Exact Part 3 package versions,
+The shared outputs were regenerated on 1 Nov 2026 with the versions in `requirements-lock.txt`
+(Python 3.14.8, pandas 3.1.0, numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1). The first run on
+Python 3.12.14 and pandas 2.2.3 gave the same forecasts to floating-point precision. Exact Part 3 package versions,
 source/code hashes and configuration identity are recorded in its manifest and
 `reports/part3/run_config.json`.
 
@@ -457,10 +502,10 @@ python -m src.forecasting.run --config src/forecasting/config.json
 python -m unittest discover -s tests -v
 ```
 
-To match the principal package versions used for these results:
+To match the package versions used for these results:
 
 ```bash
-python -m pip install pandas==2.2.3 numpy==2.3.5 scikit-learn==1.9.1 scipy==1.18.1 matplotlib==3.11.2 joblib==1.6.0 threadpoolctl==3.7.0
+python -m pip install -r requirements-lock.txt
 ```
 
 The command validates inputs, evaluates models, selects using validation, refits
@@ -524,11 +569,13 @@ Design decisions and limitations are explained in `src/allocation/NOTES.md`.
 
 ```bash
 python -m src.allocation.run                                # plan, backtest and sensitivity, about 2 minutes
-python -m src.allocation.run --skip-evaluation --agents 30  # plan only, a few seconds
-python -m src.allocation.run --skip-evaluation --current today.csv --max-moves 4
+python -m src.allocation.run --skip-evaluation --agents 30 --output-dir plans/30-agents   # a few seconds
+python -m src.allocation.run --skip-evaluation --current today.csv --max-moves 4 --output-dir plans/today
 ```
 
-Every run replaces `data/shared/allocation.csv`, so rerun the default before committing.
+The default run writes the shared `data/shared/allocation.csv`. Runs that change the plan
+(`--agents`, `--current`, `--max-moves`) must name an `--output-dir`, so the shared file always
+holds the default plan.
 `today.csv` has the columns `area`, `registration_type`, `agents`. Anything else is in
 `src/allocation/config.json`. A Git checkout on Windows may convert line endings, so hashes here ignore them.
 
