@@ -30,8 +30,13 @@ def load_inputs(cfg):
     monthly = monthly[monthly.property_type.isin(cfg['property_types'])
                       & monthly.registration_type.isin(cfg['commission_rate'])]
     predictions = pd.read_csv(cfg['predictions'])
+    if set(predictions.run_id) != {manifest['run_id']}:
+        raise ValueError('predictions.csv is not from the same Part 3 run as forecasts.csv; rerun Part 3')
+    trends = pd.read_csv(cfg['market_trends'])
+    if not trends.quarter.eq(manifest['origin_quarter']).any():
+        raise ValueError(f"market_trends.csv has no rows for {manifest['origin_quarter']}; rerun Part 2")
     return {'forecasts': forecasts, 'manifest': manifest, 'quarterly': quarterly(monthly),
-            'trends': pd.read_csv(cfg['market_trends']), 'predictions': predictions,
+            'trends': trends, 'predictions': predictions,
             'errors': forecast_errors(predictions, manifest['selected_methods'][ACTIVITY])}
 
 
