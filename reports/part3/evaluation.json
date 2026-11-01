@@ -373,11 +373,11 @@
       "train_max_target_quarter": "2026Q1",
       "model_id": "ridge_log_v1_alpha_10",
       "actual": 5101.0,
-      "prediction": 2249.487720238795,
+      "prediction": 2249.4877202387893,
       "scored": true,
       "exclusion_reason": "",
-      "error": -2851.512279761205,
-      "absolute_error": 2851.512279761205
+      "error": -2851.5122797612107,
+      "absolute_error": 2851.5122797612107
     },
     {
       "area": "Jabal Ali Industrial Second",
@@ -390,7 +390,7 @@
       "train_max_target_quarter": "2026Q2",
       "model_id": "ridge_log_v1_alpha_10",
       "actual": 2535.0,
-      "prediction": 304.14375034770666,
+      "prediction": 304.14375034770694,
       "scored": true,
       "exclusion_reason": "",
       "error": -2230.856249652293,
@@ -407,11 +407,11 @@
       "train_max_target_quarter": "2025Q2",
       "model_id": "ridge_log_v1_alpha_10",
       "actual": 3432.0,
-      "prediction": 1826.919746772734,
+      "prediction": 1826.9197467727406,
       "scored": true,
       "exclusion_reason": "",
-      "error": -1605.080253227266,
-      "absolute_error": 1605.080253227266
+      "error": -1605.0802532272594,
+      "absolute_error": 1605.0802532272594
     },
     {
       "area": "Madinat Al Mataar",
@@ -424,11 +424,11 @@
       "train_max_target_quarter": "2026Q2",
       "model_id": "ridge_log_v1_alpha_10",
       "actual": 5108.0,
-      "prediction": 3554.831757810397,
+      "prediction": 3554.8317578104034,
       "scored": true,
       "exclusion_reason": "",
-      "error": -1553.168242189603,
-      "absolute_error": 1553.168242189603
+      "error": -1553.1682421895966,
+      "absolute_error": 1553.1682421895966
     },
     {
       "area": "Al Barsha South Fifth",
@@ -441,11 +441,11 @@
       "train_max_target_quarter": "2025Q3",
       "model_id": "ridge_log_v1_alpha_10",
       "actual": 2130.0,
-      "prediction": 891.1086697527932,
+      "prediction": 891.1086697527933,
       "scored": true,
       "exclusion_reason": "",
-      "error": -1238.891330247207,
-      "absolute_error": 1238.891330247207
+      "error": -1238.8913302472067,
+      "absolute_error": 1238.8913302472067
     },
     {
       "area": "Palm Jumeirah",
@@ -492,11 +492,11 @@
       "train_max_target_quarter": "2026Q2",
       "model_id": "ridge_log_v1_alpha_1",
       "actual": 56569.09608071333,
-      "prediction": 63947.90992485526,
+      "prediction": 63947.90992485537,
       "scored": true,
       "exclusion_reason": "",
-      "error": 7378.813844141929,
-      "absolute_error": 7378.813844141929
+      "error": 7378.813844142038,
+      "absolute_error": 7378.813844142038
     },
     {
       "area": "Jabal Ali First",
@@ -526,11 +526,11 @@
       "train_max_target_quarter": "2026Q2",
       "model_id": "ridge_log_v1_alpha_1",
       "actual": 21492.85659623138,
-      "prediction": 14760.024402710282,
+      "prediction": 14760.024402710309,
       "scored": true,
       "exclusion_reason": "",
-      "error": -6732.832193521099,
-      "absolute_error": 6732.832193521099
+      "error": -6732.8321935210715,
+      "absolute_error": 6732.8321935210715
     }
   ],
   "selected_model_segment_metrics": [
@@ -540,9 +540,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 2,
-      "mae": 1.6808965524165602,
-      "rmse": 2.3255820677197576,
-      "wape": 0.14007471270138003
+      "mae": 1.6808965524166064,
+      "rmse": 2.325582067719785,
+      "wape": 0.14007471270138386
     },
     {
       "area": "Al Barsha South Fifth",
@@ -550,9 +550,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 494.1884746665114,
-      "rmse": 585.8853758146213,
-      "wape": 0.5593078937211932
+      "mae": 494.18847466651084,
+      "rmse": 585.8853758146208,
+      "wape": 0.5593078937211925
     },
     {
       "area": "Al Barsha South Fifth",
@@ -560,9 +560,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 42.469349319709394,
-      "rmse": 52.65639776139382,
-      "wape": 0.2272824504877414
+      "mae": 42.46934931970934,
+      "rmse": 52.65639776139372,
+      "wape": 0.2272824504877411
     },
     {
       "area": "Al Barsha South Fourth",
@@ -570,9 +570,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 658.7082569690175,
-      "rmse": 730.3749125540301,
-      "wape": 0.26699234503666025
+      "mae": 658.708256969015,
+      "rmse": 730.3749125540278,
+      "wape": 0.26699234503665925
     },
     {
       "area": "Al Barsha South Fourth",
@@ -580,9 +580,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 204.4822273881438,
-      "rmse": 238.90972868635126,
-      "wape": 0.15526365025675307
+      "mae": 204.48222738814326,
+      "rmse": 238.90972868635058,
+      "wape": 0.15526365025675268
     },
     {
       "area": "Al Barshaa South Second",
@@ -590,9 +590,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 23.413378250055352,
-      "rmse": 28.423015554327662,
-      "wape": 0.44657669686754076
+      "mae": 23.41337825005531,
+      "rmse": 28.423015554327623,
+      "wape": 0.44657669686754
     },
     {
       "area": "Al Barshaa South Third",
@@ -600,9 +600,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 173.1339113994653,
-      "rmse": 207.6983042951669,
-      "wape": 0.2956665966812045
+      "mae": 173.1339113994655,
+      "rmse": 207.69830429516728,
+      "wape": 0.2956665966812048
     },
     {
       "area": "Al Barshaa South Third",
@@ -610,9 +610,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 52.905156026587186,
-      "rmse": 73.59844316463952,
-      "wape": 0.15334827833793388
+      "mae": 52.90515602658726,
+      "rmse": 73.59844316463953,
+      "wape": 0.15334827833793407
     },
     {
       "area": "Al Goze Fourth",
@@ -620,9 +620,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 9.952980191764594,
-      "rmse": 12.972131638525207,
-      "wape": 0.25061460914515166
+      "mae": 9.952980191764604,
+      "rmse": 12.972131638525225,
+      "wape": 0.2506146091451519
     },
     {
       "area": "Al Hebiah Fifth",
@@ -630,9 +630,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 42.85641301500533,
-      "rmse": 53.247993409843126,
-      "wape": 0.4490941483608343
+      "mae": 42.85641301500534,
+      "rmse": 53.247993409843154,
+      "wape": 0.4490941483608344
     },
     {
       "area": "Al Hebiah First",
@@ -640,9 +640,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 1,
-      "mae": 108.76504432553065,
-      "rmse": 108.76504432553065,
-      "wape": 0.165296419947615
+      "mae": 108.76504432553168,
+      "rmse": 108.76504432553168,
+      "wape": 0.16529641994761654
     },
     {
       "area": "Al Hebiah First",
@@ -650,9 +650,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 75.98751952806836,
-      "rmse": 87.63993073577416,
-      "wape": 0.3312033852406467
+      "mae": 75.98751952806829,
+      "rmse": 87.63993073577412,
+      "wape": 0.3312033852406463
     },
     {
       "area": "Al Hebiah Fourth",
@@ -660,9 +660,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 124.5026123186282,
-      "rmse": 186.90003959232484,
-      "wape": 0.25884118985161786
+      "mae": 124.50261231862842,
+      "rmse": 186.90003959232493,
+      "wape": 0.25884118985161836
     },
     {
       "area": "Al Hebiah Fourth",
@@ -670,9 +670,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 74.1671647954704,
-      "rmse": 84.59193703222412,
-      "wape": 0.1889953234686177
+      "mae": 74.16716479547043,
+      "rmse": 84.59193703222407,
+      "wape": 0.18899532346861778
     },
     {
       "area": "Al Hebiah Second",
@@ -690,9 +690,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 50.666793189567734,
-      "rmse": 79.44219852029944,
-      "wape": 0.5473264696403922
+      "mae": 50.666793189567706,
+      "rmse": 79.44219852029946,
+      "wape": 0.5473264696403919
     },
     {
       "area": "Al Hebiah Sixth",
@@ -700,9 +700,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 1,
-      "mae": 19.84192528520694,
-      "rmse": 19.84192528520694,
-      "wape": 1.1023291825114967
+      "mae": 19.84192528520692,
+      "rmse": 19.84192528520692,
+      "wape": 1.1023291825114956
     },
     {
       "area": "Al Hebiah Sixth",
@@ -710,9 +710,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 29.59935997799666,
-      "rmse": 37.84896713590066,
-      "wape": 0.33855477099015785
+      "mae": 29.599359977996674,
+      "rmse": 37.8489671359007,
+      "wape": 0.338554770990158
     },
     {
       "area": "Al Hebiah Third",
@@ -721,7 +721,7 @@
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
       "mae": 112.64362219957431,
-      "rmse": 160.17207243584767,
+      "rmse": 160.1720724358477,
       "wape": 0.633846748711431
     },
     {
@@ -730,9 +730,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 52.23024031997509,
-      "rmse": 67.19090555829204,
-      "wape": 0.2598519418904233
+      "mae": 52.230240319975266,
+      "rmse": 67.19090555829223,
+      "wape": 0.2598519418904242
     },
     {
       "area": "Al Jadaf",
@@ -740,9 +740,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 146.77486458285694,
-      "rmse": 199.8501316916473,
-      "wape": 0.2718772299761838
+      "mae": 146.77486458285674,
+      "rmse": 199.85013169164708,
+      "wape": 0.2718772299761834
     },
     {
       "area": "Al Jadaf",
@@ -750,9 +750,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 31.949929114840735,
-      "rmse": 41.84953841154341,
-      "wape": 0.24415884694747286
+      "mae": 31.949929114840774,
+      "rmse": 41.849538411543485,
+      "wape": 0.24415884694747314
     },
     {
       "area": "Al Khairan First",
@@ -760,9 +760,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 199.14793789076035,
-      "rmse": 240.93857287177454,
-      "wape": 0.3168982871642015
+      "mae": 199.14793789076052,
+      "rmse": 240.93857287177462,
+      "wape": 0.3168982871642018
     },
     {
       "area": "Al Khairan First",
@@ -770,9 +770,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 69.06954644578077,
-      "rmse": 78.36246953371479,
-      "wape": 0.1977451227486566
+      "mae": 69.06954644578101,
+      "rmse": 78.36246953371507,
+      "wape": 0.19774512274865733
     },
     {
       "area": "Al Kheeran",
@@ -780,9 +780,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 5.606761230446847,
-      "rmse": 5.826971951051355,
-      "wape": 0.43974597885857625
+      "mae": 5.606761230446831,
+      "rmse": 5.826971951051336,
+      "wape": 0.43974597885857497
     },
     {
       "area": "Al Kifaf",
@@ -790,9 +790,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 16.08320905061165,
-      "rmse": 20.72417202613822,
-      "wape": 0.5071282133075746
+      "mae": 16.08320905061168,
+      "rmse": 20.724172026138234,
+      "wape": 0.5071282133075755
     },
     {
       "area": "Al Merkadh",
@@ -800,9 +800,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 160.58134264605937,
-      "rmse": 248.2165117362312,
-      "wape": 0.9623881836664517
+      "mae": 160.58134264605926,
+      "rmse": 248.216511736231,
+      "wape": 0.962388183666451
     },
     {
       "area": "Al Merkadh",
@@ -810,9 +810,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 110.22364005831825,
-      "rmse": 127.22948128180427,
-      "wape": 0.18814081453504702
+      "mae": 110.22364005831841,
+      "rmse": 127.22948128180425,
+      "wape": 0.18814081453504727
     },
     {
       "area": "Al Rashidiya",
@@ -820,9 +820,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 5,
-      "mae": 3.7026366921391265,
-      "rmse": 4.751878639677509,
-      "wape": 0.2985997332370263
+      "mae": 3.702636692139136,
+      "rmse": 4.751878639677528,
+      "wape": 0.2985997332370271
     },
     {
       "area": "Al Safouh First",
@@ -830,9 +830,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 3,
-      "mae": 3.757534746030855,
-      "rmse": 4.477093689680138,
-      "wape": 0.15656394775128563
+      "mae": 3.7575347460308444,
+      "rmse": 4.477093689680146,
+      "wape": 0.15656394775128518
     },
     {
       "area": "Al Safouh Second",
@@ -840,9 +840,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 6,
-      "mae": 21.292976128403744,
-      "rmse": 22.92276845294728,
-      "wape": 0.6452417008607195
+      "mae": 21.292976128403748,
+      "rmse": 22.922768452947288,
+      "wape": 0.6452417008607196
     },
     {
       "area": "Al Thanayah Fourth",
@@ -850,9 +850,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 20.489931000147156,
-      "rmse": 28.051940293843206,
-      "wape": 0.14847776087063155
+      "mae": 20.489931000147216,
+      "rmse": 28.051940293843213,
+      "wape": 0.148477760870632
     },
     {
       "area": "Al Thanyah Fifth",
@@ -860,9 +860,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 178.24214648941884,
-      "rmse": 219.07192881396614,
-      "wape": 0.33254131807727394
+      "mae": 178.2421464894192,
+      "rmse": 219.0719288139667,
+      "wape": 0.33254131807727466
     },
     {
       "area": "Al Thanyah Fifth",
@@ -870,9 +870,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 81.08132645482802,
-      "rmse": 122.43245546485667,
-      "wape": 0.13673073601151434
+      "mae": 81.08132645482826,
+      "rmse": 122.43245546485642,
+      "wape": 0.13673073601151475
     },
     {
       "area": "Al Thanyah First",
@@ -880,9 +880,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 18.59427500004247,
+      "mae": 18.59427500004249,
       "rmse": 22.304374680130685,
-      "wape": 0.20274131619984
+      "wape": 0.2027413161998402
     },
     {
       "area": "Al Thanyah Third",
@@ -890,9 +890,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 29.87142510426485,
-      "rmse": 39.61691257769475,
-      "wape": 0.18422905350647925
+      "mae": 29.871425104264876,
+      "rmse": 39.61691257769479,
+      "wape": 0.1842290535064794
     },
     {
       "area": "Al Warsan First",
@@ -900,9 +900,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 66.449332614465,
-      "rmse": 101.42595338599574,
-      "wape": 0.4729489865798221
+      "mae": 66.44933261446499,
+      "rmse": 101.42595338599565,
+      "wape": 0.47294898657982204
     },
     {
       "area": "Al Warsan First",
@@ -910,9 +910,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 85.97027632948182,
-      "rmse": 107.73352075511943,
-      "wape": 0.1875325441902065
+      "mae": 85.97027632948188,
+      "rmse": 107.73352075511937,
+      "wape": 0.18753254419020665
     },
     {
       "area": "Al Wasl",
@@ -920,9 +920,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 180.62108981567312,
-      "rmse": 249.45157138976217,
-      "wape": 0.5265920985879683
+      "mae": 180.6210898156733,
+      "rmse": 249.45157138976242,
+      "wape": 0.5265920985879687
     },
     {
       "area": "Al Wasl",
@@ -930,8 +930,8 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 29.13361908730574,
-      "rmse": 41.54279839358163,
+      "mae": 29.133619087305735,
+      "rmse": 41.54279839358169,
       "wape": 0.2665821354393989
     },
     {
@@ -940,9 +940,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 28.756881658276534,
-      "rmse": 33.06051072081986,
-      "wape": 0.3939298857298155
+      "mae": 28.75688165827651,
+      "rmse": 33.060510720819835,
+      "wape": 0.3939298857298152
     },
     {
       "area": "Al Yelayiss 2",
@@ -950,9 +950,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 63.62808998953184,
-      "rmse": 102.68887283923225,
-      "wape": 0.19534939909066792
+      "mae": 63.628089989531745,
+      "rmse": 102.68887283923206,
+      "wape": 0.19534939909066762
     },
     {
       "area": "Al Yelayiss 2",
@@ -960,9 +960,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 32.83161717776786,
-      "rmse": 42.94307462259611,
-      "wape": 0.12309658288397164
+      "mae": 32.83161717776784,
+      "rmse": 42.94307462259597,
+      "wape": 0.12309658288397154
     },
     {
       "area": "Al Yufrah 1",
@@ -970,9 +970,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 353.80451116077995,
-      "rmse": 390.8146215732205,
-      "wape": 0.8487428300635571
+      "mae": 353.80451116078024,
+      "rmse": 390.8146215732209,
+      "wape": 0.8487428300635578
     },
     {
       "area": "Burj Khalifa",
@@ -980,9 +980,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 189.15005533114893,
-      "rmse": 235.13572784396635,
-      "wape": 0.7076699023613269
+      "mae": 189.15005533114922,
+      "rmse": 235.13572784396675,
+      "wape": 0.707669902361328
     },
     {
       "area": "Burj Khalifa",
@@ -990,9 +990,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 104.92327830597708,
+      "mae": 104.92327830597729,
       "rmse": 114.96540035854828,
-      "wape": 0.19052216553614515
+      "wape": 0.19052216553614554
     },
     {
       "area": "Business Bay",
@@ -1000,9 +1000,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 679.1803694139755,
-      "rmse": 807.6710414471968,
-      "wape": 0.41825130517267783
+      "mae": 679.1803694139744,
+      "rmse": 807.6710414471949,
+      "wape": 0.4182513051726771
     },
     {
       "area": "Business Bay",
@@ -1010,9 +1010,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 184.3664971372788,
-      "rmse": 225.741411806771,
-      "wape": 0.1740479406555565
+      "mae": 184.36649713727996,
+      "rmse": 225.74141180677137,
+      "wape": 0.17404794065555762
     },
     {
       "area": "Dubai Investment Park First",
@@ -1020,9 +1020,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 5,
-      "mae": 249.31761825166978,
-      "rmse": 424.252020605949,
-      "wape": 0.6574831704949098
+      "mae": 249.3176182516696,
+      "rmse": 424.2520206059488,
+      "wape": 0.6574831704949092
     },
     {
       "area": "Dubai Investment Park First",
@@ -1030,9 +1030,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 13.150357686839682,
-      "rmse": 15.125120585424574,
-      "wape": 0.22955736610443334
+      "mae": 13.150357686839685,
+      "rmse": 15.125120585424566,
+      "wape": 0.22955736610443342
     },
     {
       "area": "Dubai Investment Park Second",
@@ -1040,9 +1040,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 6,
-      "mae": 27.81989621157834,
-      "rmse": 38.42077366386962,
-      "wape": 0.5089005404557013
+      "mae": 27.819896211578293,
+      "rmse": 38.420773663869596,
+      "wape": 0.5089005404557004
     },
     {
       "area": "Hadaeq Sheikh Mohammed Bin Rashid",
@@ -1050,9 +1050,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 238.51731900826547,
-      "rmse": 309.47786347024766,
-      "wape": 0.4249481377087957
+      "mae": 238.51731900826556,
+      "rmse": 309.47786347024754,
+      "wape": 0.42494813770879586
     },
     {
       "area": "Hadaeq Sheikh Mohammed Bin Rashid",
@@ -1060,9 +1060,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 65.1649264940681,
-      "rmse": 80.7411659627192,
-      "wape": 0.18505252959775928
+      "mae": 65.16492649406825,
+      "rmse": 80.74116596271945,
+      "wape": 0.18505252959775975
     },
     {
       "area": "Jabal Ali First",
@@ -1070,9 +1070,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 338.4596591431267,
-      "rmse": 387.25722764564665,
-      "wape": 0.2663538632941975
+      "mae": 338.4596591431264,
+      "rmse": 387.25722764564654,
+      "wape": 0.26635386329419725
     },
     {
       "area": "Jabal Ali First",
@@ -1080,9 +1080,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 78.34124356657854,
-      "rmse": 101.84674045784567,
-      "wape": 0.13543806000643363
+      "mae": 78.34124356657851,
+      "rmse": 101.84674045784539,
+      "wape": 0.13543806000643357
     },
     {
       "area": "Jabal Ali Industrial Second",
@@ -1090,9 +1090,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 667.3458225358489,
+      "mae": 667.3458225358488,
       "rmse": 1129.137363203981,
-      "wape": 0.8520214778625584
+      "wape": 0.8520214778625583
     },
     {
       "area": "Jabal Ali Industrial Second",
@@ -1100,9 +1100,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 18.561552470235394,
-      "rmse": 20.613045582114548,
-      "wape": 0.41117363066977136
+      "mae": 18.56155247023541,
+      "rmse": 20.61304558211456,
+      "wape": 0.41117363066977175
     },
     {
       "area": "Jumeirah First",
@@ -1110,9 +1110,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 18.853055201101345,
-      "rmse": 22.140341371874047,
-      "wape": 0.7393354980824057
+      "mae": 18.853055201101313,
+      "rmse": 22.14034137187399,
+      "wape": 0.7393354980824044
     },
     {
       "area": "Jumeirah First",
@@ -1120,9 +1120,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 16.43243965866186,
-      "rmse": 18.9190632127762,
-      "wape": 0.3403167976645947
+      "mae": 16.432439658661902,
+      "rmse": 18.91906321277624,
+      "wape": 0.3403167976645956
     },
     {
       "area": "Madinat Al Mataar",
@@ -1130,9 +1130,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 845.3177725823023,
-      "rmse": 1266.8121374359537,
-      "wape": 0.2829312617421878
+      "mae": 845.3177725823012,
+      "rmse": 1266.8121374359544,
+      "wape": 0.28293126174218747
     },
     {
       "area": "Madinat Al Mataar",
@@ -1140,9 +1140,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 72.59989612935753,
-      "rmse": 85.35269342311537,
-      "wape": 0.22348252986169867
+      "mae": 72.59989612935735,
+      "rmse": 85.35269342311518,
+      "wape": 0.22348252986169806
     },
     {
       "area": "Madinat Dubai Almelaheyah",
@@ -1150,9 +1150,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 3,
-      "mae": 510.58845028441516,
-      "rmse": 545.5864221932244,
-      "wape": 0.8708160038961033
+      "mae": 510.58845028441533,
+      "rmse": 545.5864221932247,
+      "wape": 0.8708160038961035
     },
     {
       "area": "Madinat Dubai Almelaheyah",
@@ -1160,9 +1160,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 2,
-      "mae": 10.675462594577112,
-      "rmse": 11.203069902835015,
-      "wape": 1.1237329046923277
+      "mae": 10.675462594577118,
+      "rmse": 11.20306990283503,
+      "wape": 1.1237329046923281
     },
     {
       "area": "Madinat Hind 4",
@@ -1170,9 +1170,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 9.740693839455773,
-      "rmse": 11.82574116635714,
-      "wape": 0.6087933649659858
+      "mae": 9.740693839455766,
+      "rmse": 11.825741166357126,
+      "wape": 0.6087933649659854
     },
     {
       "area": "Madinat Hind 4",
@@ -1180,9 +1180,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 4.437137419971226,
-      "rmse": 7.201807036452593,
-      "wape": 0.12861267883974567
+      "mae": 4.437137419971238,
+      "rmse": 7.201807036452565,
+      "wape": 0.12861267883974603
     },
     {
       "area": "Marsa Dubai",
@@ -1190,9 +1190,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 308.3987194820947,
-      "rmse": 342.8904272418093,
-      "wape": 0.5346188797361721
+      "mae": 308.3987194820948,
+      "rmse": 342.89042724180956,
+      "wape": 0.5346188797361723
     },
     {
       "area": "Marsa Dubai",
@@ -1200,9 +1200,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 139.24486438291265,
-      "rmse": 157.05419838933562,
-      "wape": 0.1596844775033402
+      "mae": 139.24486438291314,
+      "rmse": 157.05419838933645,
+      "wape": 0.15968447750334075
     },
     {
       "area": "Me'Aisem First",
@@ -1210,9 +1210,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 360.78774934394124,
-      "rmse": 433.7419941596295,
-      "wape": 0.4213403812825473
+      "mae": 360.7877493439407,
+      "rmse": 433.7419941596292,
+      "wape": 0.4213403812825467
     },
     {
       "area": "Me'Aisem First",
@@ -1220,9 +1220,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 69.71157844304585,
-      "rmse": 79.05324227109345,
-      "wape": 0.22241615729321831
+      "mae": 69.71157844304597,
+      "rmse": 79.05324227109358,
+      "wape": 0.22241615729321867
     },
     {
       "area": "Mirdif",
@@ -1230,9 +1230,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 17.752676359079253,
-      "rmse": 24.763848215330512,
-      "wape": 0.4184132475203864
+      "mae": 17.75267635907926,
+      "rmse": 24.763848215330565,
+      "wape": 0.4184132475203866
     },
     {
       "area": "Muhaisanah First",
@@ -1240,9 +1240,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 1.9101095492760938,
-      "rmse": 2.2719747007838667,
-      "wape": 0.13108594946012408
+      "mae": 1.9101095492760896,
+      "rmse": 2.2719747007838706,
+      "wape": 0.13108594946012378
     },
     {
       "area": "Nad Al Shiba First",
@@ -1260,9 +1260,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 21.41360055750107,
-      "rmse": 23.498606712557937,
-      "wape": 0.3149058905514863
+      "mae": 21.41360055750104,
+      "rmse": 23.49860671255792,
+      "wape": 0.3149058905514859
     },
     {
       "area": "Nadd Hessa",
@@ -1270,9 +1270,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 4,
-      "mae": 177.98238616421077,
-      "rmse": 219.58642712029052,
-      "wape": 0.7126421868436867
+      "mae": 177.9823861642107,
+      "rmse": 219.5864271202907,
+      "wape": 0.7126421868436865
     },
     {
       "area": "Nadd Hessa",
@@ -1280,9 +1280,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 66.01809395189807,
-      "rmse": 79.50857374050854,
-      "wape": 0.18916359298538127
+      "mae": 66.01809395189831,
+      "rmse": 79.50857374050868,
+      "wape": 0.189163592985382
     },
     {
       "area": "Palm Jumeirah",
@@ -1291,7 +1291,7 @@
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
       "mae": 28.990081052203752,
-      "rmse": 35.63801383851018,
+      "rmse": 35.63801383851021,
       "wape": 0.30288144382899446
     },
     {
@@ -1300,9 +1300,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 51.46632898552241,
-      "rmse": 59.8780371890744,
-      "wape": 0.2070484499417568
+      "mae": 51.466328985522615,
+      "rmse": 59.878037189074554,
+      "wape": 0.20704844994175764
     },
     {
       "area": "Trade Center Second",
@@ -1310,9 +1310,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 3,
-      "mae": 2.673067348113102,
+      "mae": 2.673067348113086,
       "rmse": 3.35410450485962,
-      "wape": 0.17820448987420678
+      "wape": 0.17820448987420573
     },
     {
       "area": "Um Suqaim Third",
@@ -1320,9 +1320,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 65.94767723903657,
-      "rmse": 83.93608889558725,
-      "wape": 1.0013747086187765
+      "mae": 65.94767723903661,
+      "rmse": 83.9360888955873,
+      "wape": 1.0013747086187772
     },
     {
       "area": "Um Suqaim Third",
@@ -1330,9 +1330,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 16.65362181207195,
-      "rmse": 19.442781025777315,
-      "wape": 0.46077214499803815
+      "mae": 16.653621812071986,
+      "rmse": 19.442781025777347,
+      "wape": 0.46077214499803915
     },
     {
       "area": "Wadi Al Safa 2",
@@ -1340,9 +1340,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 6,
-      "mae": 162.55183378346922,
-      "rmse": 188.00332742632847,
-      "wape": 0.47856280799843737
+      "mae": 162.55183378346905,
+      "rmse": 188.0033274263282,
+      "wape": 0.4785628079984368
     },
     {
       "area": "Wadi Al Safa 2",
@@ -1350,9 +1350,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 27.913264810027634,
-      "rmse": 33.31726081918809,
-      "wape": 0.20808610614504092
+      "mae": 27.913264810027602,
+      "rmse": 33.317260819188036,
+      "wape": 0.2080861061450407
     },
     {
       "area": "Wadi Al Safa 3",
@@ -1360,9 +1360,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 6,
-      "mae": 399.96120771134173,
+      "mae": 399.961207711342,
       "rmse": 556.5518504952507,
-      "wape": 0.2719282998604023
+      "wape": 0.2719282998604025
     },
     {
       "area": "Wadi Al Safa 3",
@@ -1370,9 +1370,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 137.709498323163,
-      "rmse": 204.56267789865566,
-      "wape": 0.4734609470835663
+      "mae": 137.7094983231629,
+      "rmse": 204.56267789865564,
+      "wape": 0.473460947083566
     },
     {
       "area": "Wadi Al Safa 5",
@@ -1380,9 +1380,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 542.3250567138159,
-      "rmse": 663.1694863244609,
-      "wape": 0.26342900541230385
+      "mae": 542.3250567138155,
+      "rmse": 663.169486324461,
+      "wape": 0.2634290054123037
     },
     {
       "area": "Wadi Al Safa 5",
@@ -1390,9 +1390,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 95.51806232403952,
-      "rmse": 108.30529097764278,
-      "wape": 0.24536749954799142
+      "mae": 95.51806232403958,
+      "rmse": 108.305290977643,
+      "wape": 0.24536749954799159
     },
     {
       "area": "Wadi Al Safa 6",
@@ -1400,9 +1400,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 15.5908154902324,
-      "rmse": 20.336841429400046,
-      "wape": 0.20323223171625102
+      "mae": 15.59081549023242,
+      "rmse": 20.33684142940007,
+      "wape": 0.2032322317162513
     },
     {
       "area": "Wadi Al Safa 7",
@@ -1410,9 +1410,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 87.55645706890131,
-      "rmse": 99.76021405843917,
-      "wape": 0.5674955550762122
+      "mae": 87.55645706890144,
+      "rmse": 99.76021405843929,
+      "wape": 0.5674955550762131
     },
     {
       "area": "Wadi Al Safa 7",
@@ -1420,9 +1420,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 29.8582630025223,
-      "rmse": 38.21529036233848,
-      "wape": 0.18111598008462398
+      "mae": 29.858263002522275,
+      "rmse": 38.21529036233846,
+      "wape": 0.18111598008462385
     },
     {
       "area": "Warsan Fourth",
@@ -1430,9 +1430,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 54.16100856359271,
-      "rmse": 62.420742039984816,
-      "wape": 0.3783703193065359
+      "mae": 54.161008563592695,
+      "rmse": 62.420742039984844,
+      "wape": 0.3783703193065358
     },
     {
       "area": "Zaabeel Second",
@@ -1450,9 +1450,9 @@
       "target": "sales_count",
       "model_id": "ridge_log_v1_alpha_10",
       "n": 7,
-      "mae": 11.927900376963901,
-      "rmse": 14.83740847808674,
-      "wape": 0.3058435994093308
+      "mae": 11.92790037696386,
+      "rmse": 14.837408478086685,
+      "wape": 0.30584359940932976
     },
     {
       "area": "Al Barsha South Fifth",
@@ -1460,8 +1460,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 681.5933609237735,
-      "rmse": 755.622884357968,
+      "mae": 681.5933609237787,
+      "rmse": 755.6228843579768,
       "wape": null
     },
     {
@@ -1470,8 +1470,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 836.9378838367518,
-      "rmse": 919.8436347730852,
+      "mae": 836.9378838367546,
+      "rmse": 919.8436347730865,
       "wape": null
     },
     {
@@ -1480,8 +1480,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 565.5002829503194,
-      "rmse": 856.6994474982256,
+      "mae": 565.500282950328,
+      "rmse": 856.6994474982358,
       "wape": null
     },
     {
@@ -1490,8 +1490,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 565.0745721635095,
-      "rmse": 696.9677528005541,
+      "mae": 565.0745721635129,
+      "rmse": 696.9677528005544,
       "wape": null
     },
     {
@@ -1500,8 +1500,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 6,
-      "mae": 910.8967011348099,
-      "rmse": 1021.3038397487172,
+      "mae": 910.8967011348186,
+      "rmse": 1021.3038397487223,
       "wape": null
     },
     {
@@ -1510,8 +1510,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 423.0803563834769,
-      "rmse": 479.39068210795705,
+      "mae": 423.08035638346803,
+      "rmse": 479.3906821079529,
       "wape": null
     },
     {
@@ -1520,8 +1520,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 432.33106170053827,
-      "rmse": 491.36439691547974,
+      "mae": 432.3310617005414,
+      "rmse": 491.3643969154836,
       "wape": null
     },
     {
@@ -1530,8 +1530,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 245.61383099147392,
-      "rmse": 344.2774464498416,
+      "mae": 245.61383099147133,
+      "rmse": 344.27744644983966,
       "wape": null
     },
     {
@@ -1540,8 +1540,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 714.6236203758011,
-      "rmse": 829.0355391113457,
+      "mae": 714.6236203758009,
+      "rmse": 829.0355391113449,
       "wape": null
     },
     {
@@ -1550,8 +1550,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1026.6065044150866,
-      "rmse": 1287.5472924075343,
+      "mae": 1026.6065044150819,
+      "rmse": 1287.5472924075307,
       "wape": null
     },
     {
@@ -1560,8 +1560,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 381.894389774741,
-      "rmse": 472.02043157527737,
+      "mae": 381.8943897747413,
+      "rmse": 472.0204315752827,
       "wape": null
     },
     {
@@ -1570,8 +1570,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 3,
-      "mae": 291.8321292416137,
-      "rmse": 346.37639292496095,
+      "mae": 291.8321292416367,
+      "rmse": 346.37639292498613,
       "wape": null
     },
     {
@@ -1580,8 +1580,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 797.5963011043189,
-      "rmse": 1012.7222252378801,
+      "mae": 797.5963011043061,
+      "rmse": 1012.7222252378738,
       "wape": null
     },
     {
@@ -1600,8 +1600,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 920.19299572599,
-      "rmse": 1078.1639260863005,
+      "mae": 920.1929957259898,
+      "rmse": 1078.1639260862953,
       "wape": null
     },
     {
@@ -1610,8 +1610,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1059.2362275811554,
-      "rmse": 1346.5478253067351,
+      "mae": 1059.2362275811502,
+      "rmse": 1346.5478253067342,
       "wape": null
     },
     {
@@ -1620,8 +1620,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1079.59952173794,
-      "rmse": 1276.4143013472676,
+      "mae": 1079.5995217379404,
+      "rmse": 1276.4143013472683,
       "wape": null
     },
     {
@@ -1630,8 +1630,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2403.257806538222,
-      "rmse": 2629.5704059174127,
+      "mae": 2403.2578065382295,
+      "rmse": 2629.5704059174245,
       "wape": null
     },
     {
@@ -1640,8 +1640,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 733.0949598140542,
-      "rmse": 952.4832391221778,
+      "mae": 733.0949598140671,
+      "rmse": 952.4832391221931,
       "wape": null
     },
     {
@@ -1650,8 +1650,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 2,
-      "mae": 206.41664686579315,
-      "rmse": 266.52846954744024,
+      "mae": 206.41664686581316,
+      "rmse": 266.5284695474431,
       "wape": null
     },
     {
@@ -1660,8 +1660,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2094.697825930143,
-      "rmse": 2214.9332494097475,
+      "mae": 2094.6978259301563,
+      "rmse": 2214.933249409764,
       "wape": null
     },
     {
@@ -1670,8 +1670,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 810.4304876900896,
-      "rmse": 1060.339855797197,
+      "mae": 810.4304876901011,
+      "rmse": 1060.3398557972127,
       "wape": null
     },
     {
@@ -1681,7 +1681,7 @@
       "model_id": "ridge_log_v1_alpha_1",
       "n": 2,
       "mae": 835.2990274380863,
-      "rmse": 835.9913378103911,
+      "rmse": 835.9913378103884,
       "wape": null
     },
     {
@@ -1700,8 +1700,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2008.3366199178568,
-      "rmse": 2364.4680325795334,
+      "mae": 2008.336619917858,
+      "rmse": 2364.4680325795266,
       "wape": null
     },
     {
@@ -1710,8 +1710,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 384.7068482442537,
-      "rmse": 434.5121613675481,
+      "mae": 384.70684824425814,
+      "rmse": 434.5121613675445,
       "wape": null
     },
     {
@@ -1720,8 +1720,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2242.257339414507,
-      "rmse": 2606.58924626929,
+      "mae": 2242.25733941451,
+      "rmse": 2606.589246269297,
       "wape": null
     },
     {
@@ -1730,8 +1730,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 912.5467105250292,
-      "rmse": 1170.1398131158353,
+      "mae": 912.5467105250397,
+      "rmse": 1170.139813115848,
       "wape": null
     },
     {
@@ -1740,8 +1740,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 340.66440485734046,
-      "rmse": 485.6932500838449,
+      "mae": 340.6644048573367,
+      "rmse": 485.6932500838443,
       "wape": null
     },
     {
@@ -1751,7 +1751,7 @@
       "model_id": "ridge_log_v1_alpha_1",
       "n": 6,
       "mae": 1450.30617387584,
-      "rmse": 1723.6011791807568,
+      "rmse": 1723.601179180768,
       "wape": null
     },
     {
@@ -1760,8 +1760,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1806.3035701854315,
-      "rmse": 2390.875048093807,
+      "mae": 1806.3035701854253,
+      "rmse": 2390.875048093795,
       "wape": null
     },
     {
@@ -1770,8 +1770,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 606.3102107115501,
-      "rmse": 686.3665974617281,
+      "mae": 606.3102107115438,
+      "rmse": 686.3665974617261,
       "wape": null
     },
     {
@@ -1780,8 +1780,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 6,
-      "mae": 907.1010607809652,
-      "rmse": 1098.1646239467232,
+      "mae": 907.1010607809698,
+      "rmse": 1098.164623946725,
       "wape": null
     },
     {
@@ -1790,8 +1790,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 592.0287946849863,
-      "rmse": 682.0928600725242,
+      "mae": 592.0287946850005,
+      "rmse": 682.092860072535,
       "wape": null
     },
     {
@@ -1800,8 +1800,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2539.499865297519,
-      "rmse": 3261.8533703264075,
+      "mae": 2539.4998652975155,
+      "rmse": 3261.8533703263993,
       "wape": null
     },
     {
@@ -1810,8 +1810,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2006.801974221448,
-      "rmse": 2654.4356357335187,
+      "mae": 2006.8019742214576,
+      "rmse": 2654.4356357335078,
       "wape": null
     },
     {
@@ -1820,8 +1820,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1334.2336302667593,
-      "rmse": 1934.2894166667957,
+      "mae": 1334.233630266752,
+      "rmse": 1934.2894166667932,
       "wape": null
     },
     {
@@ -1830,8 +1830,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2003.8401662609515,
-      "rmse": 2621.2587122193713,
+      "mae": 2003.8401662609847,
+      "rmse": 2621.258712219408,
       "wape": null
     },
     {
@@ -1840,8 +1840,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1055.1792682170833,
-      "rmse": 1242.7575393702218,
+      "mae": 1055.179268217089,
+      "rmse": 1242.757539370233,
       "wape": null
     },
     {
@@ -1850,8 +1850,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 1,
-      "mae": 1643.9726707912887,
-      "rmse": 1643.9726707912887,
+      "mae": 1643.9726707913105,
+      "rmse": 1643.9726707913105,
       "wape": null
     },
     {
@@ -1860,8 +1860,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 332.3820565576512,
-      "rmse": 451.41875974462346,
+      "mae": 332.3820565576534,
+      "rmse": 451.4187597446233,
       "wape": null
     },
     {
@@ -1870,8 +1870,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1885.9001725457363,
-      "rmse": 2134.9424171580404,
+      "mae": 1885.9001725457576,
+      "rmse": 2134.942417158058,
       "wape": null
     },
     {
@@ -1880,8 +1880,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 853.5398272146564,
-      "rmse": 1122.7985996525126,
+      "mae": 853.5398272146621,
+      "rmse": 1122.7985996525135,
       "wape": null
     },
     {
@@ -1890,8 +1890,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 3058.656453115732,
-      "rmse": 4128.563017785292,
+      "mae": 3058.656453115736,
+      "rmse": 4128.563017785293,
       "wape": null
     },
     {
@@ -1900,8 +1900,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 650.5120393122834,
-      "rmse": 833.68262355698,
+      "mae": 650.512039312274,
+      "rmse": 833.6826235569728,
       "wape": null
     },
     {
@@ -1910,8 +1910,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 4,
-      "mae": 1473.4754597031233,
-      "rmse": 1817.8986849841633,
+      "mae": 1473.475459703137,
+      "rmse": 1817.8986849841644,
       "wape": null
     },
     {
@@ -1920,8 +1920,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1053.152277100299,
-      "rmse": 1415.4231675339965,
+      "mae": 1053.1522771003085,
+      "rmse": 1415.4231675339977,
       "wape": null
     },
     {
@@ -1930,8 +1930,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 594.7339700048306,
-      "rmse": 678.2219655731383,
+      "mae": 594.733970004836,
+      "rmse": 678.221965573138,
       "wape": null
     },
     {
@@ -1950,8 +1950,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 3189.757103380432,
-      "rmse": 3666.2992550358817,
+      "mae": 3189.7571033804657,
+      "rmse": 3666.29925503591,
       "wape": null
     },
     {
@@ -1960,8 +1960,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 999.6497112462218,
-      "rmse": 1320.8197933339688,
+      "mae": 999.6497112462223,
+      "rmse": 1320.8197933339716,
       "wape": null
     },
     {
@@ -1980,8 +1980,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 760.0347209796392,
-      "rmse": 923.5630569321759,
+      "mae": 760.0347209796362,
+      "rmse": 923.5630569321762,
       "wape": null
     },
     {
@@ -1990,8 +1990,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 5,
-      "mae": 1428.1844844816628,
-      "rmse": 1824.5641779808232,
+      "mae": 1428.1844844816655,
+      "rmse": 1824.5641779808238,
       "wape": null
     },
     {
@@ -2000,8 +2000,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 842.3547712573264,
-      "rmse": 1057.0317166922396,
+      "mae": 842.3547712573171,
+      "rmse": 1057.031716692227,
       "wape": null
     },
     {
@@ -2010,8 +2010,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 3,
-      "mae": 1272.0999963920851,
-      "rmse": 1462.4449298768234,
+      "mae": 1272.0999963920756,
+      "rmse": 1462.4449298768163,
       "wape": null
     },
     {
@@ -2020,8 +2020,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 370.7113146364346,
-      "rmse": 403.5952023944185,
+      "mae": 370.7113146364388,
+      "rmse": 403.59520239441935,
       "wape": null
     },
     {
@@ -2030,8 +2030,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 4351.810001811051,
-      "rmse": 5235.918163848903,
+      "mae": 4351.810001811136,
+      "rmse": 5235.918163848947,
       "wape": null
     },
     {
@@ -2040,8 +2040,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 2792.501430003198,
-      "rmse": 3277.2166415883166,
+      "mae": 2792.5014300032067,
+      "rmse": 3277.2166415883157,
       "wape": null
     },
     {
@@ -2050,8 +2050,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 3,
-      "mae": 2865.723653839513,
-      "rmse": 2951.874536868385,
+      "mae": 2865.7236538394936,
+      "rmse": 2951.8745368683594,
       "wape": null
     },
     {
@@ -2060,8 +2060,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 3,
-      "mae": 748.3973342994304,
-      "rmse": 763.4590284073247,
+      "mae": 748.3973342994414,
+      "rmse": 763.4590284073347,
       "wape": null
     },
     {
@@ -2070,8 +2070,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 629.9350768323568,
-      "rmse": 749.7465973856426,
+      "mae": 629.9350768323618,
+      "rmse": 749.7465973856475,
       "wape": null
     },
     {
@@ -2090,8 +2090,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1466.141062639223,
-      "rmse": 1928.2309248233648,
+      "mae": 1466.1410626392233,
+      "rmse": 1928.230924823366,
       "wape": null
     },
     {
@@ -2100,8 +2100,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 486.4247948664818,
-      "rmse": 663.1430096408903,
+      "mae": 486.42479486648205,
+      "rmse": 663.1430096408908,
       "wape": null
     },
     {
@@ -2110,8 +2110,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 323.3569575543931,
-      "rmse": 358.43327968977906,
+      "mae": 323.3569575543957,
+      "rmse": 358.43327968978355,
       "wape": null
     },
     {
@@ -2120,8 +2120,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 748.9182804232431,
-      "rmse": 1032.6158745509622,
+      "mae": 748.9182804232498,
+      "rmse": 1032.6158745509629,
       "wape": null
     },
     {
@@ -2130,8 +2130,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 1158.5628284617792,
-      "rmse": 1328.25965533293,
+      "mae": 1158.5628284617828,
+      "rmse": 1328.2596553329308,
       "wape": null
     },
     {
@@ -2140,8 +2140,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 7,
-      "mae": 573.4211438804305,
-      "rmse": 714.4341191006207,
+      "mae": 573.4211438804367,
+      "rmse": 714.4341191006233,
       "wape": null
     },
     {
@@ -2150,8 +2150,8 @@
       "target": "weighted_geomean_monthly_median_aed_m2",
       "model_id": "ridge_log_v1_alpha_1",
       "n": 6,
-      "mae": 1071.5212029676484,
-      "rmse": 1367.6170935239834,
+      "mae": 1071.5212029676454,
+      "rmse": 1367.6170935239786,
       "wape": null
     }
   ],
@@ -2271,7 +2271,7 @@
         "eligible_quarters": 4,
         "scored_quarters": 4,
         "n": 118,
-        "mae": 1265.2918897931522,
+        "mae": 1265.2918897931515,
         "rmse": 1835.7509162006959,
         "wape": null
       },
@@ -2289,8 +2289,8 @@
         "eligible_quarters": 1,
         "scored_quarters": 1,
         "n": 31,
-        "mae": 1758.6451939555348,
-        "rmse": 2525.0785276927345,
+        "mae": 1758.6451939555332,
+        "rmse": 2525.078527692734,
         "wape": null
       },
       {
@@ -2343,8 +2343,8 @@
         "eligible_quarters": 1,
         "scored_quarters": 1,
         "n": 30,
-        "mae": 1213.5831208812772,
-        "rmse": 1627.184077971931,
+        "mae": 1213.5831208812763,
+        "rmse": 1627.1840779719305,
         "wape": null
       },
       {
@@ -2505,8 +2505,8 @@
         "eligible_quarters": 7,
         "scored_quarters": 7,
         "n": 175,
-        "mae": 1413.2409513444418,
-        "rmse": 2347.1704604837405,
+        "mae": 1413.2409513444413,
+        "rmse": 2347.17046048374,
         "wape": null
       },
       {
@@ -2523,8 +2523,8 @@
         "eligible_quarters": 1,
         "scored_quarters": 1,
         "n": 30,
-        "mae": 1366.429521954369,
-        "rmse": 1935.6392076026427,
+        "mae": 1366.429521954368,
+        "rmse": 1935.6392076026418,
         "wape": null
       },
       {
@@ -2613,8 +2613,8 @@
         "eligible_quarters": 1,
         "scored_quarters": 1,
         "n": 20,
-        "mae": 1200.3706845976897,
-        "rmse": 1433.6268844056626,
+        "mae": 1200.370684597691,
+        "rmse": 1433.6268844056633,
         "wape": null
       },
       {
@@ -2631,7 +2631,7 @@
         "eligible_quarters": 1,
         "scored_quarters": 1,
         "n": 22,
-        "mae": 1453.3201484181948,
+        "mae": 1453.3201484181932,
         "rmse": 3116.760898611923,
         "wape": null
       }
@@ -4243,13 +4243,13 @@
         "forecast_quarter": "2024Q1",
         "model_id": "naive_v1",
         "cohort": "fallback",
-        "prediction": 28611.19335105567,
+        "prediction": 28611.19335105562,
         "actual": 28224.468358824393,
         "scored": true,
         "exclusion_reason": "",
         "primary_exclusion_reason": "fewer_than_min_training_pairs",
         "history_quarters": 12,
-        "error": 386.7249922312767
+        "error": 386.72499223122577
       },
       {
         "split": "validation",
@@ -7970,12 +7970,12 @@
         "model_id": "naive_v1",
         "cohort": "fallback",
         "prediction": 15605.100763271776,
-        "actual": 16256.26566699866,
+        "actual": 16256.265666998632,
         "scored": true,
         "exclusion_reason": "",
         "primary_exclusion_reason": "fewer_than_min_training_pairs",
         "history_quarters": 11,
-        "error": -651.1649037268853
+        "error": -651.1649037268562
       },
       {
         "split": "validation",
@@ -9283,13 +9283,13 @@
         "forecast_quarter": "2025Q1",
         "model_id": "naive_v1",
         "cohort": "fallback",
-        "prediction": 16256.26566699866,
+        "prediction": 16256.265666998632,
         "actual": 14862.88155027679,
         "scored": true,
         "exclusion_reason": "",
         "primary_exclusion_reason": "fewer_than_min_training_pairs",
         "history_quarters": 12,
-        "error": 1393.3841167218707
+        "error": 1393.3841167218416
       },
       {
         "split": "test",
@@ -15170,12 +15170,12 @@
         "model_id": "naive_v1",
         "cohort": "fallback",
         "prediction": 19267.373024304386,
-        "actual": 18620.594890781158,
+        "actual": 18620.594890781125,
         "scored": true,
         "exclusion_reason": "",
         "primary_exclusion_reason": "fewer_than_min_training_pairs",
         "history_quarters": 9,
-        "error": 646.7781335232285
+        "error": 646.7781335232612
       },
       {
         "split": "test",
@@ -16123,13 +16123,13 @@
         "forecast_quarter": "2026Q3",
         "model_id": "naive_v1",
         "cohort": "fallback",
-        "prediction": 18620.594890781158,
+        "prediction": 18620.594890781125,
         "actual": 18515.01430753973,
         "scored": true,
         "exclusion_reason": "",
         "primary_exclusion_reason": "fewer_than_min_training_pairs",
         "history_quarters": 10,
-        "error": 105.58058324142621
+        "error": 105.58058324139347
       },
       {
         "split": "test",
@@ -16399,8 +16399,8 @@
       }
     ]
   },
-  "run_id": "part3-366e2209f118cbd3",
-  "generated_at_utc": "2026-10-31T19:07:51.609556+00:00",
+  "run_id": "part3-6527f9b3ae845b0f",
+  "generated_at_utc": "2026-11-01T10:06:59.523029+00:00",
   "warnings": [
     "Only supplied records; completeness is not established. Three observed months is a support rule, not proof of full coverage.",
     "Missing rows are unknown, never inferred zero. Unobserved property/subtype cells may remain within observed segment months.",
@@ -16432,7 +16432,7 @@
       "mae": 136.10701754385966,
       "rmse": 284.8099427842573,
       "wape": 0.32780796565624126,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "test",
@@ -16441,10 +16441,10 @@
       "model_id": "ridge_log_v1_alpha_10",
       "forecast_quarter": "all",
       "n": 570,
-      "mae": 133.24758146069348,
-      "rmse": 283.8900074512157,
-      "wape": 0.32092113540853057,
-      "run_id": "part3-366e2209f118cbd3"
+      "mae": 133.24758146069345,
+      "rmse": 283.89000745121564,
+      "wape": 0.32092113540853046,
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "test",
@@ -16456,7 +16456,7 @@
       "mae": 207.01754385964912,
       "rmse": 442.584451253349,
       "wape": 0.4985929537829684,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "test",
@@ -16465,10 +16465,10 @@
       "model_id": "naive_v1",
       "forecast_quarter": "all",
       "n": 436,
-      "mae": 1091.7181524846392,
-      "rmse": 1721.2445637477642,
+      "mae": 1091.718152484639,
+      "rmse": 1721.2445637477638,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "test",
@@ -16477,10 +16477,10 @@
       "model_id": "ridge_log_v1_alpha_1",
       "forecast_quarter": "all",
       "n": 436,
-      "mae": 1160.7389896518278,
-      "rmse": 1731.0874123971253,
+      "mae": 1160.7389896518325,
+      "rmse": 1731.08741239713,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "test",
@@ -16489,10 +16489,10 @@
       "model_id": "seasonal_naive_v1",
       "forecast_quarter": "all",
       "n": 436,
-      "mae": 2226.8745687143933,
+      "mae": 2226.874568714393,
       "rmse": 3227.9818494794267,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16504,7 +16504,7 @@
       "mae": 129.0122950819672,
       "rmse": 264.0625314045961,
       "wape": 0.2559226679240988,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16513,10 +16513,10 @@
       "model_id": "ridge_log_v1_alpha_0.1",
       "forecast_quarter": "all",
       "n": 244,
-      "mae": 132.1815325265269,
-      "rmse": 261.11211839489465,
+      "mae": 132.18153252652687,
+      "rmse": 261.11211839489476,
       "wape": 0.2622095082720001,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16525,10 +16525,10 @@
       "model_id": "ridge_log_v1_alpha_1",
       "forecast_quarter": "all",
       "n": 244,
-      "mae": 128.6878217575766,
-      "rmse": 257.18422513523143,
-      "wape": 0.25527900773035145,
-      "run_id": "part3-366e2209f118cbd3"
+      "mae": 128.68782175757653,
+      "rmse": 257.18422513523126,
+      "wape": 0.25527900773035134,
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16537,10 +16537,10 @@
       "model_id": "ridge_log_v1_alpha_10",
       "forecast_quarter": "all",
       "n": 244,
-      "mae": 124.41813517527437,
-      "rmse": 254.1215429266895,
-      "wape": 0.24680919808431526,
-      "run_id": "part3-366e2209f118cbd3"
+      "mae": 124.4181351752745,
+      "rmse": 254.12154292668941,
+      "wape": 0.24680919808431553,
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16549,10 +16549,10 @@
       "model_id": "ridge_log_v1_alpha_100",
       "forecast_quarter": "all",
       "n": 244,
-      "mae": 131.98299947005188,
+      "mae": 131.98299947005194,
       "rmse": 265.2630402505382,
-      "wape": 0.26181567674259487,
-      "run_id": "part3-366e2209f118cbd3"
+      "wape": 0.26181567674259504,
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16564,7 +16564,7 @@
       "mae": 195.04508196721312,
       "rmse": 384.969356881434,
       "wape": 0.3869124079283264,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16576,7 +16576,7 @@
       "mae": 1247.2360277684202,
       "rmse": 2308.408880005208,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16585,10 +16585,10 @@
       "model_id": "ridge_log_v1_alpha_0.1",
       "forecast_quarter": "all",
       "n": 190,
-      "mae": 1217.9900297962527,
-      "rmse": 2177.666377612448,
+      "mae": 1217.9900297962495,
+      "rmse": 2177.66637761244,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16597,10 +16597,10 @@
       "model_id": "ridge_log_v1_alpha_1",
       "forecast_quarter": "all",
       "n": 190,
-      "mae": 1208.7097163674418,
-      "rmse": 2228.1198610621636,
+      "mae": 1208.7097163674432,
+      "rmse": 2228.119861062162,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16609,10 +16609,10 @@
       "model_id": "ridge_log_v1_alpha_10",
       "forecast_quarter": "all",
       "n": 190,
-      "mae": 1215.322767629917,
-      "rmse": 2389.457598762097,
+      "mae": 1215.322767629914,
+      "rmse": 2389.4575987620906,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16621,10 +16621,10 @@
       "model_id": "ridge_log_v1_alpha_100",
       "forecast_quarter": "all",
       "n": 190,
-      "mae": 1223.2920255226056,
-      "rmse": 2394.3956821207858,
+      "mae": 1223.292025522603,
+      "rmse": 2394.3956821207803,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     },
     {
       "split": "validation",
@@ -16636,7 +16636,7 @@
       "mae": 2549.548587526577,
       "rmse": 3644.4956849173936,
       "wape": null,
-      "run_id": "part3-366e2209f118cbd3"
+      "run_id": "part3-6527f9b3ae845b0f"
     }
   ]
 }
