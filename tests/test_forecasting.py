@@ -135,6 +135,13 @@ class SourceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'calendar-complete'):
                 load_inputs(cfg)
 
+    def test_origin_behind_source_is_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            cfg = write_sources(Path(folder))
+            cfg.update(origin_quarter='2026Q2', forecast_quarter='2026Q3', test_end='2026Q2')
+            with self.assertRaisesRegex(ValueError, 'complete to 2026Q3'):
+                load_inputs(cfg)
+
     def test_calendar_complete_is_not_coverage_claim(self):
         self.assertEqual(str(last_calendar_complete_quarter('2026-10-27')), '2026Q3')
         self.assertEqual(str(last_calendar_complete_quarter('2026-09-30')), '2026Q3')

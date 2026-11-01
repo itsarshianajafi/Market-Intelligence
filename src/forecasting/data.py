@@ -124,14 +124,17 @@ def load_inputs(cfg):
     if len(df) != report['monthly_sales_rows'] or int(counts.sum()) != report['sales_transactions']:
         raise ValueError('Monthly rows/counts do not reconcile with quality report')
     origin = quarter(cfg['origin_quarter'])
-    if origin > last_calendar_complete_quarter(upper):
+    latest = last_calendar_complete_quarter(upper)
+    if origin > latest:
         raise ValueError('Requested origin is not calendar-complete in source')
+    # Otherwise new data would silently re-forecast an old quarter.
+    if origin < latest:
+        raise ValueError(f'Source is complete to {latest} but origin_quarter is {origin}; set origin_quarter '
+                         f'and test_end to {latest} and forecast_quarter to {latest + 1} in the config')
     hashes = {cfg[k]: fingerprint(cfg[k]) for k in ['input', 'quality_report']}
     if cfg.get('context') and Path(cfg['context']).exists():
         hashes[cfg['context']] = fingerprint(cfg['context'])
     profile = {'source_rows': len(df), 'source_hashes': hashes,
-               'audit_hash_match': {Path(p).name: h == AUDIT_HASHES.get(Path(p).name)
-                                    for p, h in hashes.items()},
                'missing_subtype_rows': int(df.unit_type.isna().sum()),
                'nonpositive_price_rows': int(parsed.le(0).sum()),
                'missing_price_rows': int(parsed.isna().sum()), 'quality_report': report}
@@ -159,12 +162,6 @@ def load_inputs(cfg):
                     'excluded_before_panel_rows': int((scope & df.quarter.lt(quarter(cfg['panel_start']))).sum()),
                     'selected_rows': int(keep.sum())})
     return df.loc[keep].copy(), report, profile
-
-
-AUDIT_HASHES = {
-    'monthly_sales.csv': '14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38',
-    'quality_report.json': '604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921',
-    'market_trends.csv': 'ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924'}
 
 
 def build_panel(monthly, cfg):
