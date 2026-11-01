@@ -162,7 +162,7 @@ storing signed URL credentials.
 - `src/dld_data/pipeline.py`: `download_csv` retrieves a supplied public official
   URL; `clean_transactions` validates and normalizes records; `prepare` combines
   inputs and writes datasets/audit information; `main` exposes the CLI.
-- `requirements.txt`: pandas (Part 1) plus numpy, scikit-learn and matplotlib (Part 2);
+- `requirements.txt`: pandas (Part 1) plus numpy, scikit-learn and matplotlib (Part 2) and scipy (Part 4);
   `requirements-lock.txt` pins the exact versions the results were produced with.
 - `tests/test_pipeline.py` and `tests/test_sources.py`: artificial validation cases,
   source schemas, cross-part conflicts/duplicates, ZIP handling and CLI integration.
@@ -219,7 +219,7 @@ CAPTCHA); cleaning, validation and organisation are automated.
 2. Put the file(s) in data/raw/.
 3. Run the pipeline command above with a NEW --output-dir name (e.g. run-2026-11).
 4. Copy the new monthly_sales.csv and quality_report.json to data/shared/.
-5. Rerun Part 2 (`python -m src.trend_analysis.run`) so market_trends.csv matches, then push.
+5. Rerun Part 2 (`python -m src.trend_analysis.run`) so market_trends.csv matches, then Parts 3 and 4, then push.
 
 Overlapping exports are fine, duplicates across files are removed.
 
@@ -514,3 +514,94 @@ remain sample-limited and do not guarantee performance for a particular segment.
   model selection, failures, coverage, source fingerprints and run settings.
 - `reports/part3/actual_vs_forecast.png` and `baseline_comparison.png`: held-out
   evidence for both targets, including median-error and worst-error segments.
+
+## Member 4: Intelligent Agent Allocation
+
+Recommends how many of Imza's agents should work in each area and segment next quarter.
+Input is Part 3's `forecasts.csv` and `forecast_manifest.json`, Part 2's `market_trends.csv`, Part 1's
+`monthly_sales.csv` and Part 3's `reports/part3/predictions.csv`. Output is `data/shared/allocation.csv`.
+Design decisions and limitations are explained in `src/allocation/NOTES.md`.
+
+```bash
+python -m src.allocation.run                                # plan, backtest and sensitivity, about 2 minutes
+python -m src.allocation.run --skip-evaluation --agents 30  # plan only, a few seconds
+python -m src.allocation.run --skip-evaluation --current today.csv --max-moves 4
+```
+
+Every run replaces `data/shared/allocation.csv`, so rerun the default before committing.
+`today.csv` has the columns `area`, `registration_type`, `agents`. Anything else is in
+`src/allocation/config.json`. A Git checkout on Windows may convert line endings, so hashes here ignore them.
+
+**The team size, deal rate, market share and commission rates in the config are placeholders, not
+Imza's numbers.** Replace them before using the plan. Whether Imza wants commission or deal count
+(`objective`) changes the plan most: only 1 of 20 agents stays in place.
+
+### Method
+
+- **Candidates:** segments with an `ok` or `fallback` activity forecast of at least 30 sales: 95 of 198.
+  Blank forecasts are never treated as zero.
+- **Value of x agents:** `deals(x) = ceiling * (1 - exp(-deals_per_agent * x / ceiling))`, with
+  `ceiling = max_market_share * forecast sales`, times the typical deal value and commission rate.
+  This gives diminishing returns.
+- **Constraints:** every agent placed, at least 2 agents in an area in use, no area over 25% of the team,
+  at most 8 areas, Off-Plan 30-70% of the team, optional limit on agents moved from today's plan.
+- **Search:** simulated annealing with a final hill climb (own code, `search.py`). A mixed-integer
+  program (scipy HiGHS) checks it independently, and the run keeps the better plan.
+- **Evaluation:** walk-forward on real 2024-2026 sales. Choices frozen on 2024, reported on 2025Q1
+  to 2026Q3. Forecast-error scenarios and trend weights did not win on 2024, so the plain forecast
+  is used and trend labels are context only.
+
+### Results (28 Oct 2026 export, 20 agents)
+
+Share of the hindsight-best plan, mean of seven test quarters. Sales and prices are real, but the
+response curve is assumed in both planning and scoring, so these are **not** measured commissions.
+
+| Method | Share of best plan | Worst quarter | Meets constraints |
+| --- | ---: | ---: | ---: |
+| Optimiser with move limit of 4 (not selected) | 89.9% | 75.6% | 7 of 7 |
+| Optimiser with Part 3 forecast (selected) | 86.8% | 75.7% | 7 of 7 |
+| Optimiser with last quarter as forecast | 83.9% | 66.7% | 7 of 7 |
+| Share of forecast value | 51.8% | 41.7% | 0 of 7 |
+| Even split over biggest segments | 37.0% | 32.7% | 0 of 7 |
+| Share of forecast sales | 36.1% | 32.5% | 0 of 7 |
+| Share of last quarter sales | 36.0% | 31.5% | 0 of 7 |
+
+- The optimiser beat the best rule in all seven test quarters (paired difference 35.0 +- 5.2 points,
+  Wilcoxon p = 0.016). Most of that comes from valuing deals and modelling saturation: Part 3's
+  forecast adds 2.9 +- 3.2 points over using last quarter.
+- Over 10 seeds the selected method scores 86.6%, std 1.0 points between seeds and 8.8 between quarters.
+- The move limit's higher score is not established (4 wins, 2 losses, 1 tie, p = 0.16).
+- Annealing with hill climb is 0.28% +- 0.50% below the exact optimum (worst 2.30%, 10 seeds on 11
+  quarters), and 0 on the 2026Q4 plan. It takes 0.38 s; the exact solver takes 0.02 s.
+- With `objective = deals` the advantage disappears (99.4% against 99.2%).
+
+Plan for 2026Q4: Business Bay Off-Plan 5, Marsa Dubai Off-Plan 3, Palm Jumeirah Off-Plan 2 and Ready 2,
+Al Thanayah Fourth Ready 2, Wadi Al Safa 6 Ready 2, Al Yufrah 1 Off-Plan 2, Al Khairan First Off-Plan 2.
+The first four stay chosen in 97-100% of replans under forecast error. The last four only in 37-67%,
+so treat them as close calls.
+
+### allocation.csv
+
+One row per Part 3 segment, largest allocation first. `allocation_manifest.json` records the source
+hashes, placeholder assumptions, policy and solver check.
+
+| Column | Meaning |
+| --- | --- |
+| `area`, `registration_type`, `forecast_quarter` | Segment and quarter |
+| `agents` | Recommended agents; 0 if not selected |
+| `forecast_sales`, `forecast_status`, `price_status` | Part 3 forecast and its status; blank stays blank |
+| `ticket_aed` | Typical deal value used for planning |
+| `expected_deals`, `expected_commission_aed` | Expected result under the assumed response, not a promise |
+| `next_agent_value_aed` | What one more agent would add |
+| `selection_rate` | Share of replans under forecast error that still gave this segment an agent |
+| `trend_label`, `trend_score` | Part 2 context for the origin quarter; not used in the decision |
+| `note` | Allocated, not selected, or why the segment was not a candidate |
+
+### Files and checks
+
+- `src/allocation/`: `data.py` inputs, `model.py` value and scenarios, `search.py` constraints and solvers,
+  `evaluate.py` backtest and sensitivity, `figures.py`, `run.py`, `config.json`, `NOTES.md`.
+- `tests/test_allocation.py`: response, leakage, constraints, solvers against brute force, output contract.
+- `reports/part4/`: `backtest.csv`, `backtest_summary.csv`, `evaluation.json`, `sensitivity.csv`,
+  `repeated_runs.csv`, `convergence.csv`, `team_size.csv`, `allocation.png`, `backtest.png`,
+  `convergence.png`, `team_size.png`.
