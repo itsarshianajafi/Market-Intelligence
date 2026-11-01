@@ -1,4 +1,4 @@
-"""Validate, backtest, select on validation, and export a Q3-based Q4 projection."""
+"""Validate, backtest, select on validation, and export a one-quarter-ahead projection."""
 import argparse
 import hashlib
 import importlib.metadata
@@ -155,6 +155,8 @@ def run(cfg):
                     code_hashes=code_hashes, versions=versions)
     run_id = 'part3-' + hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
     predictions, metric_table, evaluation = evaluate(feature_tables, cfg)
+    warnings = WARNINGS + [f"{cfg['forecast_quarter']} is projected from data up to the end of "
+                           f"{cfg['origin_quarter']}; later records in the source are excluded."]
     out = deployment(feature_tables, evaluation['selected_methods'], evaluation['selected_ridge_alphas'],
                      cfg, run_id, quality['date_max'])
     profile.update(dict(segments=len(panel[KEYS].drop_duplicates()), panel_rows=len(panel),
@@ -167,7 +169,7 @@ def run(cfg):
         origin_quarter=cfg['origin_quarter'], last_eligible_historical_quarter=cfg['origin_quarter'],
         forecast_quarter=cfg['forecast_quarter'], horizon_quarters=1, data_cutoff_date=quality['date_max'],
         historical_input_end_date=str(quarter(cfg['origin_quarter']).end_time.date()),
-        publication_context='Q3-based projection generated during Q4; not published in September',
+        publication_context=f"Projection from {cfg['origin_quarter']} data, generated after that quarter ended",
         **identity, selected_methods=evaluation['selected_methods'], selected_ridge_alphas=evaluation['selected_ridge_alphas'],
         selection_policy=POLICY, feature_columns=FEATURES,
         evaluation_periods={k: cfg[k] for k in ['train_start', 'validation_start', 'validation_end', 'test_start', 'test_end']},
@@ -192,7 +194,7 @@ def run(cfg):
         output_columns=OUTPUT_COLUMNS, output_key=OUTPUT_KEY,
         source_evidence=profile['source_evidence'],
         source_coverage_note=quality['coverage_note'], upstream_raw_provenance_unverified=quality['inputs'],
-        warnings=WARNINGS, output_rows=len(out), status_counts=profile['output_status_counts'])
+        warnings=warnings, output_rows=len(out), status_counts=profile['output_status_counts'])
     fallback = evaluation['fallback_evaluation']
     manifest['fallback_evaluation'] = dict(report=str(Path(cfg['report_dir']) / 'evaluation.json'),
         section='fallback_evaluation', scope=fallback['scope'],
@@ -208,7 +210,7 @@ def run(cfg):
     metric_table['run_id'] = run_id
     predictions.to_csv(report_dir / 'predictions.csv', index=False)
     metric_table.to_csv(report_dir / 'metrics.csv', index=False)
-    evaluation.update(dict(run_id=run_id, generated_at_utc=generated, warnings=WARNINGS,
+    evaluation.update(dict(run_id=run_id, generated_at_utc=generated, warnings=warnings,
         splits={k: cfg[k] for k in ['train_start', 'validation_start', 'validation_end', 'test_start', 'test_end']},
         metrics=metric_table.loc[metric_table.forecast_quarter.eq('all')].to_dict('records')))
     write_json(report_dir / 'evaluation.json', clean_json(evaluation))
