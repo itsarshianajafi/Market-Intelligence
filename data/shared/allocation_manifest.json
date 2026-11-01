@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "run_id": "part4-2016b44db1036d4f",
-  "generated_at_utc": "2026-11-01T11:08:34.874807+00:00",
+  "generated_at_utc": "2026-11-01T13:15:31.401638+00:00",
   "forecast_quarter": "2026Q4",
   "forecast_run_id": "part3-b6258240f482ef3b",
   "agents": 20,
@@ -39,5 +39,6 @@
     "use_scenarios": false,
     "trend_weight": 0.0
   },
+  "max_moves_used": null,
   "output_sha256": "3f77784e9b832dbea416852de4c47728499b5896fc38b92e443fc4175a774287"
 }
