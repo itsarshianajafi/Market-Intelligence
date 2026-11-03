@@ -13,6 +13,43 @@ the Dubai Land Department's public sales records into four things an agency can 
 Each part reads the files of the parts before it. Areas are DLD's official area names, and
 off-plan and ready sales are always kept apart.
 
+## Interactive dashboard
+
+The Streamlit interface provides Overview, Data Explorer, Market Trends, Forecasts,
+and Agent Allocation pages. It reads the existing shared outputs; an official
+portal connection is not needed to browse the supplied analysis.
+
+```bash
+python -m pip install -r requirements-dashboard.txt
+python -m streamlit run app.py
+```
+
+For the recorded core dependency versions, install `requirements-lock.txt` before
+`requirements-dashboard.txt`. On Windows, use `.venv\Scripts\python.exe` instead
+of `python` after creating the virtual environment described below.
+
+Filter areas, registration type, property types and months, download the current
+selection, inspect held-out forecasts, or click **Generate custom plan** to adjust
+team size, deal rate, market share, commission rates and planning objective.
+Custom plans run only on submission, persist in the current browser session, and
+can be downloaded with their assumptions. They use disposable temporary output
+folders and never replace `data/shared/` or the committed reports. This is the
+existing allocation model, including its whole-agent constraint rounding; the UI
+shows effective limits for the selected team size.
+
+The interface displays the source cutoff, unsupported forecasts, provisional
+inputs and placeholder business assumptions. It verifies input/output manifest
+hashes and refuses an inconsistent snapshot. After updating the underlying data,
+rerun Parts 2–4 together before refreshing the app. The dashboard does not download
+new official exports, retrain forecasts on page load, or allocate marketing budgets.
+
+Dashboard implementation: `app.py` contains the views; `src/dashboard/data.py`
+loads and verifies shared results; `src/dashboard/planning.py` isolates custom
+allocation runs. `tests/test_dashboard.py` covers filters, source consistency,
+shared-file preservation, navigation and form submission. Install the dashboard
+requirements to run its Streamlit interaction tests; core-only installations skip
+those UI checks. No hosted deployment or user authentication is configured.
+
 Run everything (Python 3.11 or newer, see Install below):
 
 ```bash
