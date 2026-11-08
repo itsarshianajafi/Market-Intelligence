@@ -52,6 +52,14 @@ def load_current(cfg, candidates, segments):
     return merged.agents.fillna(0).astype(int).to_numpy()
 
 
+def try_anneal(problem, settings, rng):
+    """Annealing has no feasibility guarantee (it can miss with big teams); None when it finds no plan."""
+    try:
+        return anneal(problem, settings, rng)
+    except ValueError:
+        return None
+
+
 def live_problem(candidates, inputs, cfg, agents=None, current=None):
     agents = agents or cfg['agents']
     rng = np.random.default_rng(cfg['seed'])
@@ -68,7 +76,8 @@ def robustness(candidates, inputs, cfg, current):
     for _ in range(cfg['robustness_runs']):
         draw = scenarios(candidates, inputs['errors'], cfg, rng, count=1)[:, 0]
         problem = make_problem(candidates, value_table(draw, values, cap, cfg), cfg['agents'], cfg, current)
-        chosen += anneal(problem, evaluate.FAST, rng) > 0
+        x = try_anneal(problem, evaluate.FAST, rng)
+        chosen += (exact(problem) if x is None else x) > 0
     return chosen / cfg['robustness_runs']
 
 
@@ -79,11 +88,11 @@ def team_curve(candidates, inputs, cfg):
         began = perf_counter()
         x = exact(problem)
         middle = perf_counter()
-        searched = anneal(problem, cfg['anneal'], rng)
+        searched = try_anneal(problem, cfg['anneal'], rng)
         rows.append({'agents': agents, 'expected_commission_aed': total_value(problem, x),
                      'areas_used': len(set(problem.area[x > 0].tolist())),
                      'offplan_agents': int(x[problem.offplan].sum()),
-                     'annealing_gap': 1 - total_value(problem, searched) / total_value(problem, x),
+                     'annealing_gap': np.nan if searched is None else 1 - total_value(problem, searched) / total_value(problem, x),
                      'exact_seconds': middle - began, 'annealing_seconds': perf_counter() - middle})
     curve = pd.DataFrame(rows)
     curve['value_per_added_agent_aed'] = (curve.expected_commission_aed.diff() / curve.agents.diff())
@@ -127,7 +136,8 @@ def plan_for(inputs, candidates, current):
     def live(cfg):
         problem, rng = live_problem(candidates.assign(rate=candidates.registration_type.map(cfg['commission_rate'])),
                                     inputs, cfg, current=current)
-        x = anneal(problem, evaluate.FAST, rng)
+        x = try_anneal(problem, evaluate.FAST, rng)
+        x = exact(problem) if x is None else x
         return {k: int(v) for k, v in zip(zip(candidates.area, candidates.registration_type), x) if v}
     return live
 
@@ -176,8 +186,9 @@ def run(cfg, evaluation=True):
     if evaluation:
         cfg, result = evaluate_all(inputs, candidates, cfg, report_dir, current)
     problem, rng = live_problem(candidates, inputs, cfg, current=current)
-    searched, best = anneal(problem, cfg['anneal'], rng), exact(problem)
-    source = 'annealing' if total_value(problem, searched) >= total_value(problem, best) - 1e-6 else 'exact_check'
+    searched, best = try_anneal(problem, cfg['anneal'], rng), exact(problem)
+    annealed = None if searched is None else total_value(problem, searched)
+    source = 'annealing' if annealed is not None and annealed >= total_value(problem, best) - 1e-6 else 'exact_check'
     x = searched if source == 'annealing' else best     # annealing has no guarantee; never ship the worse plan
     selection = robustness(candidates, inputs, cfg, current)
     # Where the files go does not change the plan, so it is not part of the run's identity.
@@ -198,9 +209,9 @@ def run(cfg, evaluation=True):
         'forecast_quarter': quarter, 'forecast_run_id': inputs['manifest']['run_id'],
         'agents': cfg['agents'], 'candidates': len(candidates), 'segments_used': int(np.count_nonzero(x)),
         'areas_used': len(set(problem.area[x > 0].tolist())), 'feasible': violations(problem, x) == 0,
-        'plan_source': source, 'annealing_value': total_value(problem, searched),
+        'plan_source': source, 'annealing_value': annealed,
         'exact_value': total_value(problem, best),
-        'solver_gap': 1 - total_value(problem, searched) / total_value(problem, best),
+        'solver_gap': None if annealed is None else 1 - annealed / total_value(problem, best),
         'source_hashes': {str(cfg[k]): fingerprint(cfg[k]) for k in
                           ['forecasts', 'market_trends', 'monthly_sales', 'predictions']},
         'assumptions_not_from_data': {k: cfg[k] for k in ['agents', 'deals_per_agent', 'max_market_share',
