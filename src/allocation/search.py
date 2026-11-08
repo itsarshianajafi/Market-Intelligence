@@ -181,7 +181,7 @@ def anneal(p, settings, rng, start=None, trace=None):
             if trace is not None and step % 500 == 0:
                 trace.append(best_value * top if best_x is not None else math.nan)
     if best_x is None:
-        raise ValueError('No feasible allocation found; a small --max-moves may not allow fixing a team that breaks the area limits')
+        raise ValueError('No feasible allocation found')
     return hill_climb(p, best_x) if settings.get('polish', True) else best_x
 
 
@@ -263,5 +263,6 @@ def exact(p, time_limit=60):
                            integrality=integrality, bounds=optimize.Bounds(0, upper),
                            options={'time_limit': time_limit, 'mip_rel_gap': 0})
     if result.x is None:
-        raise ValueError(f'No exact solution: {result.message}')
+        hint = '; a small --max-moves may not allow fixing a team that breaks the area limits' if moves else ''
+        raise ValueError(f'No allocation satisfies these limits ({result.message}){hint}')
     return np.rint(result.x[:cells * depth]).reshape(cells, depth).sum(axis=1).astype(int)

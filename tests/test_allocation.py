@@ -302,6 +302,13 @@ class CommandLineTests(unittest.TestCase):
             other.write_text(json.dumps({**CFG, 'agents': 30}))
             self.assertIn('--output-dir', self.run_cli('--config', str(other)).stderr)
 
+    def test_big_team_plan_works_when_quick_annealing_misses(self):
+        # 60 agents: the fast annealer in the robustness step finds no valid plan for some draws.
+        with tempfile.TemporaryDirectory() as folder:
+            result = self.run_cli('--agents', '60', '--output-dir', folder)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(pd.read_csv(Path(folder) / 'allocation.csv').agents.sum(), 60)
+
     def test_max_moves_needs_current(self):
         result = self.run_cli('--max-moves', '4', '--output-dir', 'plans/test')
         self.assertIn('needs --current', result.stderr)
