@@ -198,7 +198,7 @@ known at the time; and the candidate list changes each quarter.
 - Past ticket and price uncertainty is not simulated, only sales demand.
 - Backtest candidates exclude fallback segments, because `predictions.csv` has only the primary
   cohort. The live plan includes them. No fallback segment was picked for 2026Q4.
-- Part 3's limits carry over: one quarter ahead, no prediction intervals, and 2026Q3 is provisional.
+- Part 3's limits carry over: one quarter ahead, rough empirical ranges only, and 2026Q3 is provisional.
 - DLD area names are land names, not the community names buyers use. Mahan flagged this too. Imza
   will want a mapping before seeing the plan. What I could find for the plan's areas, none of it from
   DLD's own boundary data, so check with Imza:

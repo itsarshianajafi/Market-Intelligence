@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from .data import COUNT, KEYS, TARGETS
-from .features import fallback_supported, origin_candidates, training_rows
+from .features import fallback_supported, origin_candidates, training_rows, transform
 from .models import NAIVE, SEASONAL, predictions_for, ridge_id
 
 POLICY = {
@@ -171,6 +171,52 @@ def evaluate_fallbacks(feature_tables, cfg):
         predictions=predictions.to_dict('records'), high_error_examples=failures)
 
 
+MIN_RANGE_ERRORS = 30
+
+
+def forecast_ranges(predictions, selected, fallbacks, cfg):
+    """Empirical forecast ranges from past errors, pooled over segments.
+
+    An error is transform(actual) - transform(prediction), a log ratio. A range adds the lower and
+    upper error quantiles to a forecast, widened so it always contains the forecast itself.
+    Coverage is checked walk-forward on the test: each quarter's range uses only errors from
+    quarters before it. The exported limits use every scored error. Fallback forecasts get their
+    own, wider limits from the fallback cohort.
+    """
+    level = cfg['range_level']
+    tails = [(1 - level) / 2, (1 + level) / 2]
+    fallbacks = pd.DataFrame(fallbacks, columns=['split', 'target', 'forecast_quarter', 'prediction', 'actual', 'scored'])
+
+    def limits(errors):
+        if len(errors) < MIN_RANGE_ERRORS:
+            return None
+        low, high = np.quantile(errors, tails)
+        return min(float(low), 0.0), max(float(high), 0.0)
+
+    result = {}
+    for target, method in selected.items():
+        cohorts = {'ok': predictions.loc[predictions.scored & predictions.target.eq(target)
+                                         & predictions.model_id.eq(method)],
+                   'fallback': fallbacks.loc[fallbacks.scored.astype(bool) & fallbacks.target.eq(target)]}
+        result[target] = {}
+        for status, rows in cohorts.items():
+            errors = pd.Series(transform(rows.actual.to_numpy(dtype=float), target)
+                               - transform(rows.prediction.to_numpy(dtype=float), target), index=rows.index)
+            test = rows.loc[rows.split.eq('test')]
+            covered = checked = 0
+            for quarter in sorted(test.forecast_quarter.unique()):
+                known = limits(errors[rows.forecast_quarter < quarter])
+                if known:
+                    now = errors[test.index[test.forecast_quarter.eq(quarter)]]
+                    covered += int(now.between(*known).sum())
+                    checked += len(now)
+            final = limits(errors)
+            result[target][status] = dict(
+                level=level, errors=len(errors), low=final[0] if final else None, high=final[1] if final else None,
+                test_forecasts=checked, test_coverage=covered / checked if checked else None)
+    return result
+
+
 def evaluate(feature_tables, cfg):
     validation, validation_coverage = walk_forward(feature_tables, cfg['validation_start'],
         cfg['validation_end'], 'validation', cfg, cfg['ridge_alphas'])
@@ -194,7 +240,9 @@ def evaluate(feature_tables, cfg):
         for keys, group in subset.groupby(KEYS):
             segments.append(dict(zip(KEYS, keys), target=target, model_id=method,
                                  **metrics(group.actual, group.prediction, target == COUNT)))
+    fallback = evaluate_fallbacks(feature_tables, cfg)
     return predictions, table, dict(selection_policy=POLICY, selected_methods=selected,
         selected_ridge_alphas=alphas, per_origin=validation_coverage + coverage,
         selected_model_failure_examples=failures, selected_model_segment_metrics=segments,
-        fallback_evaluation=evaluate_fallbacks(feature_tables, cfg))
+        fallback_evaluation=fallback,
+        forecast_ranges=forecast_ranges(predictions, selected, fallback['predictions'], cfg))

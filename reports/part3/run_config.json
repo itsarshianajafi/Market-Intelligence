@@ -28,6 +28,7 @@
     "min_price_sales": 30,
     "min_price_coverage": 0.5,
     "provisional_quarters": 1,
+    "range_level": 0.8,
     "ridge_alphas": [
       0.1,
       1.0,
@@ -41,15 +42,15 @@
     "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
     "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
   },
-  "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
+  "config_sha256": "641ea320af06c9d22eec767deb360b78f98386885767fb251f7e102baab1b228",
   "code_hashes": {
     "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
-    "data.py": "e1395365cddef85090dc88a3ceed3b3a2cfb71ddd98492016f322155f652863a",
-    "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
-    "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
+    "data.py": "12057fc835b0298fa2197fddf99cea315c5834fc2fbb899aafb655390ca0c886",
+    "evaluate.py": "3f82ef4b233b7ba481aa515532a9c842ac7a5b9b45858f665263494067a5589e",
+    "features.py": "dfd3013b6e468ee02aedb178b9d895a6ed8f90c8929072d225dc450b66e87abb",
     "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
-    "models.py": "e57878b304a66ad2de8872a8f102d6855c87cc58a72ee0bb65d81ba39324db48",
-    "run.py": "f173d2ce9e14f787293b3db1ededa83138ae5e0bc1f717b484e8e562dd96c2a6"
+    "models.py": "a612f3a9f5e428b26adca374606905802049f89cee58da9a82d6fd6870316e82",
+    "run.py": "b03401a2afb2b75950214ff9dfc9c4866bfe1e0cab01ae126da2013e9e1343cd"
   },
   "versions": {
     "pandas": "3.1.0",
@@ -71,6 +72,6 @@
     "tzdata": "2026.6",
     "narwhals": "2.28.0",
     "cloudpickle": "3.1.2",
-    "python": "3.14.8"
+    "python": "3.15.2"
   }
 }

@@ -21,6 +21,7 @@
   "min_price_sales": 30,
   "min_price_coverage": 0.5,
   "provisional_quarters": 1,
+  "range_level": 0.8,
   "ridge_alphas": [0.1, 1.0, 10.0, 100.0],
   "figures": true
 }

@@ -294,8 +294,12 @@ denominator is zero. It is an error measure, not an accuracy percentage.
   current one, get a `fallback` (last quarter's value). Others are `insufficient_data` with blank values.
   Fallback was tested on a different set of segments (52% sales error), so it is not directly
   comparable with the 32% above. See [the Part 3 notes](src/forecasting/NOTES.md).
-- There are no prediction intervals, and big misses happen around project launches (Madinat Al Mataar
-  Off-Plan, 2026Q2: 5,101 actual sales against 2,249 forecast).
+- Each forecast has a rough range (`range_low`, `range_high`) taken from past forecast errors pooled over
+  all segments: −44% to +45% around a sales forecast, −10% to +9% around a price. It is meant to hold
+  80% of the time; on the test, 74% of sales and 78% of prices landed inside. It is not a model-based
+  prediction interval, and it is the same relative width for every segment.
+- Big misses happen around project launches (Madinat Al Mataar Off-Plan, 2026Q2: 5,101 actual sales
+  against 2,249 forecast).
 
 ### forecasts.csv
 
@@ -318,6 +322,7 @@ allows consumers to check that the files belong together. The output schema is `
 | `reason` | Explanation for an unavailable prediction or fallback |
 | `history_quarters`, `last_actual` | Supported quarters since 2020 and supported origin actual, never a stale carried value |
 | `price_coverage`, `provisional_input` | Origin price-support weight fraction, blank for activity, and boolean provisional flag |
+| `range_low`, `range_high` | Rough 80% range from past errors; blank when the forecast is unavailable |
 | `schema_version`, `run_id`, `data_cutoff_date` | Contract version, linked run identity and source cutoff |
 
 The unique key is schema version, run ID, area, registration, property scope,

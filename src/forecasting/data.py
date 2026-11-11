@@ -21,7 +21,7 @@ WARNINGS = [
     'Price weight coverage is a support proxy, not transaction-level valid-price coverage.',
     'Unit/Villa can include commercial units. No procedure filter is available.',
     'Pseudo-real-time backtests use today\'s revised snapshot, not historical release vintages.',
-    'Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.',
+    'Inverse log predictions are not automatically unbiased arithmetic means. Forecast ranges are empirical, from past errors pooled over all segments; they are not model-based prediction intervals.',
     'Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.',
     'Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.',
     'Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee.'
@@ -55,6 +55,8 @@ def validate_config(cfg):
             raise ValueError(f'{name} must be a positive integer')
     if not 0 < cfg['min_price_coverage'] <= 1 or cfg['min_price_sales'] < 1:
         raise ValueError('Invalid price support thresholds')
+    if not 0.5 <= cfg['range_level'] < 1:
+        raise ValueError('range_level must be at least 0.5 and below 1')
     if not cfg['ridge_alphas'] or any(not np.isfinite(a) or a <= 0 for a in cfg['ridge_alphas']):
         raise ValueError('Ridge alphas must be finite and positive')
     inputs = {Path(cfg[k]).resolve() for k in ['input', 'quality_report', 'context'] if cfg.get(k)}
