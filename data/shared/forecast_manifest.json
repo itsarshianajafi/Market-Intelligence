@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
-  "run_id": "part3-b6258240f482ef3b",
-  "generated_at_utc": "2026-11-01T11:06:05.907235+00:00",
+  "run_id": "part3-e98e6de8574b1f69",
+  "generated_at_utc": "2026-11-11T18:56:06.413254+00:00",
   "origin_quarter": "2026Q3",
   "last_eligible_historical_quarter": "2026Q3",
   "forecast_quarter": "2026Q4",
@@ -14,15 +14,15 @@
     "data/shared/quality_report.json": "604cdc2df1b057d56c557ccb25555168fb7218beacbc680cf7c71b03c77de921",
     "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924"
   },
-  "config_sha256": "1ab0c51dc37a1b83637bb1aca384bdc856eb89d863f25a5ec880d567ebbb9344",
+  "config_sha256": "641ea320af06c9d22eec767deb360b78f98386885767fb251f7e102baab1b228",
   "code_hashes": {
     "__init__.py": "f74be0149c08a76cbf19403f11b958d4b8e6f1c206db4132212977d5d2118532",
-    "data.py": "e1395365cddef85090dc88a3ceed3b3a2cfb71ddd98492016f322155f652863a",
-    "evaluate.py": "56fb45641fdca9421fcd222cb54c12a7ee457ef231b82ca4c85dd9dcf27c7a7d",
-    "features.py": "8d94d2dd5c13390fabb89dd160ae2385d07d770597b69666474c8adc66697c5d",
+    "data.py": "12057fc835b0298fa2197fddf99cea315c5834fc2fbb899aafb655390ca0c886",
+    "evaluate.py": "3f82ef4b233b7ba481aa515532a9c842ac7a5b9b45858f665263494067a5589e",
+    "features.py": "dfd3013b6e468ee02aedb178b9d895a6ed8f90c8929072d225dc450b66e87abb",
     "figures.py": "aa72ee2e530bcc7c7796ee224bb956e03e4510df22007a4d972b7737790a9817",
-    "models.py": "e57878b304a66ad2de8872a8f102d6855c87cc58a72ee0bb65d81ba39324db48",
-    "run.py": "f173d2ce9e14f787293b3db1ededa83138ae5e0bc1f717b484e8e562dd96c2a6"
+    "models.py": "a612f3a9f5e428b26adca374606905802049f89cee58da9a82d6fd6870316e82",
+    "run.py": "b03401a2afb2b75950214ff9dfc9c4866bfe1e0cab01ae126da2013e9e1343cd"
   },
   "versions": {
     "pandas": "3.1.0",
@@ -44,7 +44,7 @@
     "tzdata": "2026.6",
     "narwhals": "2.28.0",
     "cloudpickle": "3.1.2",
-    "python": "3.14.8"
+    "python": "3.15.2"
   },
   "selected_methods": {
     "sales_count": "ridge_log_v1_alpha_10",
@@ -101,6 +101,7 @@
     "history_quarters": "Number of supported target quarters from panel_start through origin",
     "last_actual": "Supported origin-quarter target only; null if unsupported, never stale",
     "price_coverage": "Origin positive-median cell count weights / observed counts; blank for count and zero denominator",
+    "range_low, range_high": "Empirical 80% range from past errors of the same kind of forecast, pooled over segments; blank when unavailable or too few past errors",
     "thresholds": {
       "min_training_pairs": 12,
       "min_fallback_quarters": 4,
@@ -143,7 +144,9 @@
     "provisional_input",
     "history_quarters",
     "last_actual",
-    "price_coverage"
+    "price_coverage",
+    "range_low",
+    "range_high"
   ],
   "output_key": [
     "schema_version",
@@ -155,6 +158,44 @@
     "forecast_quarter",
     "target"
   ],
+  "forecast_ranges": {
+    "sales_count": {
+      "ok": {
+        "level": 0.8,
+        "errors": 814,
+        "low": -0.5795845059541094,
+        "high": 0.3692497000946979,
+        "test_forecasts": 570,
+        "test_coverage": 0.743859649122807
+      },
+      "fallback": {
+        "level": 0.8,
+        "errors": 365,
+        "low": -0.7537718023763804,
+        "high": 0.8019410738755062,
+        "test_forecasts": 219,
+        "test_coverage": 0.7990867579908676
+      }
+    },
+    "weighted_geomean_monthly_median_aed_m2": {
+      "ok": {
+        "level": 0.8,
+        "errors": 626,
+        "low": -0.10663368790580563,
+        "high": 0.08310541458206089,
+        "test_forecasts": 436,
+        "test_coverage": 0.7821100917431193
+      },
+      "fallback": {
+        "level": 0.8,
+        "errors": 293,
+        "low": -0.08190285151906809,
+        "high": 0.15038962774955822,
+        "test_forecasts": 175,
+        "test_coverage": 0.7828571428571428
+      }
+    }
+  },
   "source_evidence": {
     "verified_aggregate_rows": 59008,
     "verified_aggregate_sales_sum": 1383409,
@@ -208,7 +249,7 @@
     "Price weight coverage is a support proxy, not transaction-level valid-price coverage.",
     "Unit/Villa can include commercial units. No procedure filter is available.",
     "Pseudo-real-time backtests use today's revised snapshot, not historical release vintages.",
-    "Inverse log predictions are not automatically unbiased arithmetic means. No prediction intervals are estimated.",
+    "Inverse log predictions are not automatically unbiased arithmetic means. Forecast ranges are empirical, from past errors pooled over all segments; they are not model-based prediction intervals.",
     "Fallback history/input policy is evaluated separately; historical sample-limited errors do not guarantee accuracy for every segment or future quarter. Numerical model-failure fallbacks are not evaluated.",
     "Fractional sales_count values are continuous numerical forecasts of activity, not literal fractional transactions; CSV precision is retained.",
     "Recorded sales activity is not buyer enquiries, agent demand, profit or a guarantee.",
@@ -315,5 +356,5 @@
       "Origin and segment observations are dependent; price scores exclude unsupported next-quarter prices."
     ]
   },
-  "output_sha256": "2da902a3d8e0a6d45cadd7f1af705f9a538ed72c8cd42e900de99de5ce2967b6"
+  "output_sha256": "b8087821cb9f70ef284ffaac601c3694243ccbd62c5c8a4f9793069b293c349b"
 }

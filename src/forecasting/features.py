@@ -14,6 +14,10 @@ def transform(values, target):
     return np.log1p(values) if target == COUNT else np.log(values)
 
 
+def inverse(values, target):
+    return np.expm1(values) if target == COUNT else np.exp(values)
+
+
 def make_features(panel, target, cfg):
     """At origin t, seasonal=t-3 predicts t+1. Every offset is a calendar offset.
 

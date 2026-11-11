@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "run_id": "part4-2016b44db1036d4f",
-  "generated_at_utc": "2026-11-01T13:15:31.401638+00:00",
+  "run_id": "part4-e2d3425fc0c36556",
+  "generated_at_utc": "2026-11-11T18:59:29.374990+00:00",
   "forecast_quarter": "2026Q4",
-  "forecast_run_id": "part3-b6258240f482ef3b",
+  "forecast_run_id": "part3-e98e6de8574b1f69",
   "agents": 20,
   "candidates": 95,
   "segments_used": 8,
@@ -14,10 +14,10 @@
   "exact_value": 5429975.366991051,
   "solver_gap": 0.0,
   "source_hashes": {
-    "data/shared/forecasts.csv": "2da902a3d8e0a6d45cadd7f1af705f9a538ed72c8cd42e900de99de5ce2967b6",
+    "data/shared/forecasts.csv": "b8087821cb9f70ef284ffaac601c3694243ccbd62c5c8a4f9793069b293c349b",
     "data/shared/market_trends.csv": "ae1253c6fa9b5951a6d26ab3b2209580bfe7dc6a2db10c7a8f3273e891fe3924",
     "data/shared/monthly_sales.csv": "14e525c3212daad62f40c21ccc874ae501699126f21e8df31305497bccadea38",
-    "reports/part3/predictions.csv": "c4c86198fb2f71f15aaba163cb184c0688f67f8b92a9360edbbf21d4d3080443"
+    "reports/part3/predictions.csv": "c52b0a5c791a651f8970bc7fd0907c20a155516e673627ad7cd11e3038ce69d7"
   },
   "assumptions_not_from_data": {
     "agents": 20,
@@ -40,5 +40,5 @@
     "trend_weight": 0.0
   },
   "max_moves_used": null,
-  "output_sha256": "3f77784e9b832dbea416852de4c47728499b5896fc38b92e443fc4175a774287"
+  "output_sha256": "3cad97794e457867b31c7f5e8863229f215ec650ac5a6f4fe2209e7d4e5a2fb8"
 }

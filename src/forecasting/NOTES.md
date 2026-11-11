@@ -143,15 +143,38 @@ These are pseudo-real-time tests using today's revised data, not archived data
 vintages. Temporal origins and neighbouring areas are dependent. Sparse segments,
 launches, changing property mix and the observed 2026 activity changes limit
 generalisation. The supplied export does not prove complete market coverage.
-There are no prediction intervals or guaranteed future prices. Recorded activity
+Forecast ranges are empirical, not model-based prediction intervals, and there are no
+guaranteed future prices. Recorded activity
 does not directly establish buyer enquiries, agent demand, staffing or profit.
 Allocation rules remain Part 4's responsibility.
 
+## Forecast ranges
+
+`range_low` and `range_high` give a rough range around each forecast. An error is the log ratio
+of actual to forecast (`log1p` for sales). The 10th and 90th percentiles of the past errors of the
+selected method, pooled over all segments and scored quarters, are added to the forecast on the
+log scale, so the range is the same relative width for every segment. It is widened if needed so
+that it always contains the forecast. `range_level` in the config sets the 80%.
+
+| Forecast | Past errors | Range around a forecast | Test forecasts inside |
+| --- | ---: | --- | ---: |
+| Sales, model (`ok`) | 814 | −44% to +45% | 74% of 570 |
+| Sales, `fallback` | 365 | −53% to +123% | 80% of 219 |
+| Price, model (`ok`) | 626 | −10% to +9% | 78% of 436 |
+| Price, `fallback` | 293 | −8% to +16% | 78% of 175 |
+
+The last column is a walk-forward check: the range for each test quarter used only errors from
+quarters before it. Sales coverage is below the 80% aimed for because 2026 errors were larger than
+earlier ones. Fallback forecasts use the errors of the fallback cohort, so their ranges are wider.
+Fewer than 30 past errors give no range. Part 4 does not read these columns; it resamples the
+same errors for its scenarios. The figures are in `forecast_ranges` in the manifest and
+`reports/part3/evaluation.json`.
+
 ## Reproducibility
 
-The shared outputs were regenerated on 1 Nov 2026 with the versions in `requirements-lock.txt`
-(Python 3.14.8, pandas 3.1.0, numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1). The first run on
-Python 3.12.14 and pandas 2.2.3 gave the same forecasts to floating-point precision. Exact Part 3 package versions,
+The shared outputs were regenerated on 11 Nov 2026 with the versions in `requirements-lock.txt`
+(Python 3.15.2, pandas 3.1.0, numpy 2.5.4, scikit-learn 1.9.1, scipy 1.18.1). Earlier runs on
+Python 3.14.8, and on Python 3.12.14 with pandas 2.2.3, gave the same forecasts to floating-point precision. Exact Part 3 package versions,
 source/code hashes and configuration identity are recorded in its manifest and
 `reports/part3/run_config.json`.
 

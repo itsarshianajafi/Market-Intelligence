@@ -89,16 +89,23 @@ def method_name(model_id):
     return {'naive_v1': 'Last quarter repeated', 'seasonal_naive_v1': 'Same quarter last year'}.get(model_id, '—')
 
 
+def range_text(low, high):
+    """'330 – 860', or blank when Part 3 gave no range."""
+    return '' if pd.isna(low) or pd.isna(high) else f'{float(low):,.0f} – {float(high):,.0f}'
+
+
 def forecast_table(forecasts):
     """One row per segment: next quarter's sales and price beside the last observed quarter."""
     wide = forecasts.pivot(index=['area', 'registration_type'], columns='target',
-                           values=['forecast_value', 'last_actual', 'status']).reset_index()
+                           values=['forecast_value', 'last_actual', 'status', 'range_low', 'range_high']).reset_index()
     out = wide[['area', 'registration_type']].droplevel(1, axis=1)
     for name, target in [('sales', SALES), ('price', PRICE)]:
         forecast = pd.to_numeric(wide[('forecast_value', target)])
         last = pd.to_numeric(wide[('last_actual', target)])
         out[f'{name}_forecast'], out[f'{name}_last'] = forecast, last
         out[f'{name}_change_pct'] = (forecast / last.where(last > 0) - 1) * 100
+        out[f'{name}_range'] = [range_text(low, high) for low, high in
+                                zip(wide[('range_low', target)], wide[('range_high', target)])]
     out['status'] = wide[('status', SALES)].map(STATUS)
     return out.sort_values('sales_forecast', ascending=False, na_position='last').reset_index(drop=True)
 
