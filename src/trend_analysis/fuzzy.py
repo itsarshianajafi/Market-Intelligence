@@ -48,24 +48,28 @@ def fit_scales(df, cfg):
     return scales
 
 
-def rule_strengths(df, scales):
-    """Fire the rule base. Returns the strength of each output class per row."""
+def fired_rules(df, scales):
+    """The rule base: (output class, rule weight, meaning, firing strength per row)."""
     p_fall, p_flat, p_rise = three_sets(df.log_price_change, *scales['price'])
     v_fall, _, v_rise = three_sets(df.log_volume_change, *scales['volume'])
     # Missing volatility (too few quarters) gives no evidence of high volatility.
     vol_high = np.nan_to_num(ramp(df.volatility, *scales['volatility']))
-    rules = [  # (output class, rule weight, firing strength); AND = min, NOT x = 1 - x
-        ('Rising', 1.0, np.minimum(p_rise, 1 - v_fall)),     # prices up, buyers not leaving
-        ('Declining', 1.0, np.minimum(p_fall, 1 - v_rise)),  # prices down, no buying rush
-        ('Stable', 1.0, p_flat),                             # prices flat
-        ('Stable', 0.7, np.minimum(p_rise, v_fall)),         # mixed signals
-        ('Stable', 0.7, np.minimum(p_fall, v_rise)),         # mixed signals
-        ('Rising', 0.5, np.minimum(p_flat, v_rise)),         # demand picking up first
-        ('Declining', 0.5, np.minimum(p_flat, v_fall)),      # demand drying up first
-        ('Stable', 0.5, vol_high),                           # jumpy prices are less trustworthy
+    return [  # AND = min, NOT x = 1 - x
+        ('Rising', 1.0, 'Prices up and buyers not leaving', np.minimum(p_rise, 1 - v_fall)),
+        ('Declining', 1.0, 'Prices down and no buying rush', np.minimum(p_fall, 1 - v_rise)),
+        ('Stable', 1.0, 'Prices flat', p_flat),
+        ('Stable', 0.7, 'Mixed signals: prices up, sales down', np.minimum(p_rise, v_fall)),
+        ('Stable', 0.7, 'Mixed signals: prices down, sales up', np.minimum(p_fall, v_rise)),
+        ('Rising', 0.5, 'Demand picking up first: prices flat, sales up', np.minimum(p_flat, v_rise)),
+        ('Declining', 0.5, 'Demand drying up first: prices flat, sales down', np.minimum(p_flat, v_fall)),
+        ('Stable', 0.5, 'Jumpy prices are less trustworthy', vol_high),
     ]
+
+
+def rule_strengths(df, scales):
+    """Fire the rule base. Returns the strength of each output class per row."""
     strength = {c: np.zeros(len(df)) for c in CLASSES}
-    for label, weight, fire in rules:
+    for label, weight, _meaning, fire in fired_rules(df, scales):
         strength[label] = np.maximum(strength[label], weight * fire)
     return strength
 
