@@ -13,7 +13,8 @@ import pandas as pd
 from .data import (COUNT, PRICE, KEYS, TARGETS, WARNINGS, build_panel, fingerprint,
                    load_inputs, quarter, validate_config)
 from .evaluate import POLICY, evaluate
-from .features import FEATURES, fallback_supported, make_features, origin_candidates, training_rows
+from .features import (FEATURES, fallback_supported, inverse, make_features, origin_candidates,
+                       training_rows, transform)
 from .models import NAIVE, SEASONAL, fit_ridge, predict_ridge
 
 DEFAULT_CONFIG = Path(__file__).with_name('config.json')
@@ -21,7 +22,7 @@ SCHEMA_VERSION = '1.0'
 OUTPUT_COLUMNS = ['schema_version', 'run_id', 'area', 'registration_type', 'property_scope',
     'origin_quarter', 'forecast_quarter', 'horizon_quarters', 'target', 'forecast_value', 'unit',
     'model_id', 'selection_basis', 'status', 'reason', 'data_cutoff_date', 'provisional_input',
-    'history_quarters', 'last_actual', 'price_coverage']
+    'history_quarters', 'last_actual', 'price_coverage', 'range_low', 'range_high']
 OUTPUT_KEY = ['schema_version', 'run_id'] + KEYS + ['property_scope', 'origin_quarter', 'forecast_quarter', 'target']
 
 
@@ -44,7 +45,7 @@ def clean_json(data):
     return data
 
 
-def deployment(feature_tables, selected, alphas, cfg, run_id, cutoff):
+def deployment(feature_tables, selected, alphas, cfg, run_id, cutoff, ranges=None):
     output = []
     origin = quarter(cfg['origin_quarter'])
     for target, features in feature_tables.items():
@@ -84,6 +85,12 @@ def deployment(feature_tables, selected, alphas, cfg, run_id, cutoff):
                         reason = 'Origin price fails sales, coverage or priced-month support; ' + reason
                     else:
                         reason = 'Not enough supported history for primary or fallback; ' + reason
+            low = high = np.nan
+            limits = (ranges or {}).get(target, {}).get(status)
+            if limits and limits['low'] is not None:
+                # min/max: the range must contain the forecast even after float round trips.
+                low = min(max(float(inverse(transform(value, target) + limits['low'], target)), 0.0), value)
+                high = max(float(inverse(transform(value, target) + limits['high'], target)), value)
             output.append(dict(schema_version=SCHEMA_VERSION, run_id=run_id,
                 area=row.area, registration_type=row.registration_type, property_scope='Unit|Villa',
                 origin_quarter=cfg['origin_quarter'], forecast_quarter=cfg['forecast_quarter'],
@@ -91,7 +98,8 @@ def deployment(feature_tables, selected, alphas, cfg, run_id, cutoff):
                 model_id=actual_method, selection_basis=basis, status=status, reason=reason,
                 data_cutoff_date=cutoff, provisional_input=bool(row.provisional),
                 history_quarters=int(row.history_quarters), last_actual=row.naive,
-                price_coverage=row.price_coverage if target == PRICE else np.nan))
+                price_coverage=row.price_coverage if target == PRICE else np.nan,
+                range_low=low, range_high=high))
     return pd.DataFrame(output, columns=OUTPUT_COLUMNS).sort_values(KEYS + ['target']).reset_index(drop=True)
 
 
@@ -120,6 +128,12 @@ def validate_output(out, manifest):
         raise ValueError('Invalid segment identity')
     if not out.history_quarters.ge(0).all() or not out.history_quarters.mod(1).eq(0).all():
         raise ValueError('Invalid history count')
+    ranged = out.range_low.notna() | out.range_high.notna()
+    if ((ranged & ~valid).any() or out.loc[ranged, ['range_low', 'range_high']].isna().any().any()
+            or out.loc[ranged, 'range_low'].lt(0).any()
+            or (out.loc[ranged, 'range_low'] > out.loc[ranged, 'forecast_value']).any()
+            or (out.loc[ranged, 'range_high'] < out.loc[ranged, 'forecast_value']).any()):
+        raise ValueError('A forecast range must be nonnegative and contain its forecast')
     coverage = out.price_coverage.dropna()
     if not coverage.between(0, 1).all():
         raise ValueError('Invalid price coverage')
@@ -158,7 +172,7 @@ def run(cfg):
     warnings = WARNINGS + [f"{cfg['forecast_quarter']} is projected from data up to the end of "
                            f"{cfg['origin_quarter']}; later records in the source are excluded."]
     out = deployment(feature_tables, evaluation['selected_methods'], evaluation['selected_ridge_alphas'],
-                     cfg, run_id, quality['date_max'])
+                     cfg, run_id, quality['date_max'], evaluation['forecast_ranges'])
     profile.update(dict(segments=len(panel[KEYS].drop_duplicates()), panel_rows=len(panel),
         selected_sales=int(monthly.transaction_count.sum()),
         partial_segment_quarters=int(panel.month_coverage.between(1, 2).sum()),
@@ -183,6 +197,7 @@ def run(cfg):
                      'history_quarters': 'Number of supported target quarters from panel_start through origin',
                      'last_actual': 'Supported origin-quarter target only; null if unsupported, never stale',
                      'price_coverage': 'Origin positive-median cell count weights / observed counts; blank for count and zero denominator',
+                     'range_low, range_high': f"Empirical {cfg['range_level']:.0%} range from past errors of the same kind of forecast, pooled over segments; blank when unavailable or too few past errors",
                      'thresholds': {k: cfg[k] for k in ['min_training_pairs', 'min_fallback_quarters', 'min_price_sales', 'min_price_coverage']},
                      'provisional': f"Latest {cfg['provisional_quarters']} historical quarter(s); source corrections remain possible"},
         target_definitions={COUNT: 'Sum transaction_count for supplied Unit/Villa Sales cells in a supported area/registration quarter',
@@ -192,7 +207,7 @@ def run(cfg):
             'insufficient_data': 'Inputs exist but history or price-support gates fail',
             'missing_input': 'Origin lacks three observed months or usable price inputs'},
         output_columns=OUTPUT_COLUMNS, output_key=OUTPUT_KEY,
-        source_evidence=profile['source_evidence'],
+        forecast_ranges=evaluation['forecast_ranges'], source_evidence=profile['source_evidence'],
         source_coverage_note=quality['coverage_note'], upstream_raw_provenance_unverified=quality['inputs'],
         warnings=warnings, output_rows=len(out), status_counts=profile['output_status_counts'])
     fallback = evaluation['fallback_evaluation']
@@ -224,7 +239,7 @@ def run(cfg):
     write_json(cfg['manifest'], clean_json(manifest))
     # Consumer-style read back, independent of any fitted model object.
     reread = pd.read_csv(cfg['output'], keep_default_na=False,
-                         na_values={'forecast_value': [''], 'last_actual': [''], 'price_coverage': ['']},
+                         na_values={name: [''] for name in ['forecast_value', 'last_actual', 'price_coverage', 'range_low', 'range_high']},
                          dtype={'schema_version': str})
     validate_output(reread, json.loads(Path(cfg['manifest']).read_text()))
     if any(fingerprint(p) != expected for p, expected in profile['source_hashes'].items()):

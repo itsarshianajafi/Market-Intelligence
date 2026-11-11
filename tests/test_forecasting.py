@@ -13,7 +13,8 @@ from pandas.testing import assert_frame_equal
 
 from src.forecasting.data import (COUNT, PRICE, KEYS, TARGETS, build_panel, fingerprint,
     last_calendar_complete_quarter, load_inputs, quarter, validate_config)
-from src.forecasting.evaluate import evaluate, evaluate_fallbacks, metrics, select_validation, walk_forward
+from src.forecasting.evaluate import (MIN_RANGE_ERRORS, evaluate, evaluate_fallbacks, forecast_ranges, metrics,
+    select_validation, walk_forward)
 from src.forecasting.features import FEATURES, make_features, origin_candidates, training_rows
 from src.forecasting.models import NAIVE, SEASONAL, fit_ridge, predict_ridge, ridge_id
 from src.forecasting.run import DEFAULT_CONFIG, OUTPUT_KEY, deployment, run, validate_output
@@ -485,6 +486,41 @@ class FallbackEvaluationTests(unittest.TestCase):
         self.assertTrue(rows[0]['scored'])
 
 
+class RangeTests(unittest.TestCase):
+    def predictions(self, quarters, ratio):
+        """Forecast 100 everywhere; the actual is 100 * ratio(quarter index, row)."""
+        rows = [dict(split='validation' if q < '2025' else 'test', target=COUNT, model_id=NAIVE,
+                     forecast_quarter=q, prediction=100.0, actual=100.0 * ratio(i, j), scored=True)
+                for i, q in enumerate(quarters) for j in range(MIN_RANGE_ERRORS)]
+        return pd.DataFrame(rows)
+
+    def test_limits_are_error_quantiles_and_contain_zero(self):
+        spread = lambda i, j: np.exp(np.linspace(-1, 1, MIN_RANGE_ERRORS)[j])
+        result = forecast_ranges(self.predictions(['2024Q1', '2025Q1'], spread), {COUNT: NAIVE}, [], config())
+        ok = result[COUNT]['ok']
+        errors = np.log1p(100 * np.exp(np.linspace(-1, 1, MIN_RANGE_ERRORS))) - np.log1p(100)
+        self.assertAlmostEqual(ok['low'], np.quantile(errors, 0.1))
+        self.assertAlmostEqual(ok['high'], np.quantile(errors, 0.9))
+        self.assertIsNone(result[COUNT]['fallback']['low'])     # no fallback errors, so no range
+        biased = forecast_ranges(self.predictions(['2024Q1'], lambda i, j: 2.0), {COUNT: NAIVE}, [], config())
+        self.assertEqual(biased[COUNT]['ok']['low'], 0.0)       # all errors positive: still contains the forecast
+
+    def test_coverage_uses_only_earlier_quarters(self):
+        # Errors are zero until the last quarter, where every actual doubles.
+        jump = lambda i, j: 2.0 if i == 2 else 1.0
+        result = forecast_ranges(self.predictions(['2024Q1', '2025Q1', '2025Q2'], jump), {COUNT: NAIVE}, [], config())
+        ok = result[COUNT]['ok']
+        # 2025Q1 is covered by the 2024 errors; 2025Q2's doubling is outside a range that never saw it.
+        self.assertEqual(ok['test_forecasts'], 2 * MIN_RANGE_ERRORS)
+        self.assertAlmostEqual(ok['test_coverage'], 0.5)
+
+    def test_too_few_errors_give_no_range(self):
+        few = self.predictions(['2024Q1'], lambda i, j: 1.1).iloc[:MIN_RANGE_ERRORS - 1]
+        ok = forecast_ranges(few, {COUNT: NAIVE}, [], config())[COUNT]['ok']
+        self.assertIsNone(ok['low'])
+        self.assertIsNone(ok['test_coverage'])
+
+
 class OutputTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -542,6 +578,18 @@ assert 'src.forecasting' not in sys.modules
         brief = self.out.loc[self.out.area.eq('BRIEF TEST')]
         self.assertTrue(brief.status.eq('insufficient_data').all())
         self.assertTrue(brief.forecast_value.isna().all())
+
+    def test_ranges_contain_the_forecast_and_stay_blank_when_unavailable(self):
+        ranged = self.out.loc[self.out.range_low.notna()]
+        self.assertTrue((ranged.range_low <= ranged.forecast_value).all())
+        self.assertTrue((ranged.forecast_value <= ranged.range_high).all())
+        unavailable = self.out.loc[~self.out.status.isin(['ok', 'fallback'])]
+        self.assertTrue(unavailable[['range_low', 'range_high']].isna().all().all())
+        bad = self.out.copy()
+        row = bad.index[bad.status.eq('ok')][0]
+        bad.loc[row, ['range_low', 'range_high']] = bad.loc[row, 'forecast_value'] + 1, bad.loc[row, 'forecast_value'] + 2
+        with self.assertRaisesRegex(ValueError, 'contain its forecast'):
+            validate_output(bad, self.manifest)
 
     def test_count_available_when_price_missing(self):
         area = self.out.loc[self.out.area.eq('TEST B')].set_index('target')

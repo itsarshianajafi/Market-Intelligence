@@ -53,6 +53,8 @@ class DashboardDataTests(unittest.TestCase):
         self.assertEqual(len(table), len(forecasts[['area', 'registration_type']].drop_duplicates()))
         unavailable = table[table.sales_forecast.isna()]
         self.assertTrue(unavailable.sales_change_pct.isna().all())   # blank stays blank, never zero
+        self.assertTrue(unavailable.sales_range.eq('').all())
+        self.assertTrue(table.sales_range.ne('').any())
 
     def test_mixed_snapshot_is_rejected(self):
         with patch('src.dashboard.data.fingerprint', return_value='different-source-hash'):

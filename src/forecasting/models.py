@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from .data import COUNT
-from .features import CATEGORICAL, FEATURES, NUMERIC, transform
+from .features import CATEGORICAL, FEATURES, NUMERIC, inverse, transform
 
 NAIVE = 'naive_v1'
 SEASONAL = 'seasonal_naive_v1'
@@ -41,7 +41,7 @@ def predict_ridge(model, rows, target):
         return np.full(len(rows), np.nan)
     with np.errstate(over='ignore', invalid='ignore'):
         z = model.predict(rows[FEATURES])
-        prediction = np.expm1(z) if target == COUNT else np.exp(z)
+        prediction = inverse(z, target)
     if target == COUNT:
         prediction = np.maximum(prediction, 0)
     prediction[~np.isfinite(prediction)] = np.nan

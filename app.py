@@ -7,7 +7,8 @@ import pandas as pd
 import streamlit as st
 
 from src.dashboard.data import (PRICE, ROOT, SALES, STATUS, explain_trend, filter_rows, forecast_table,
-                                load_bundle, load_evidence, method_name, monthly_summary, source_signature)
+                                load_bundle, load_evidence, method_name, monthly_summary, range_text,
+                                source_signature)
 from src.dashboard.planning import generate_plan
 
 # Same colours as the report figures: direction is orange / grey / blue, registration is blue / aqua.
@@ -234,15 +235,20 @@ def forecasts(bundle, area, registration):
     available = filter_rows(bundle['forecasts'], area, registration)
     if empty(available): return
     table = forecast_table(available).round({'sales_forecast': 0, 'sales_last': 0, 'price_forecast': 0, 'price_last': 0})
-    st.dataframe(table, hide_index=True, width='stretch', column_config={
-        'area': 'Area', 'registration_type': 'Type',
+    level = manifest['forecast_ranges'][SALES]['ok']['level']
+    likely = st.column_config.TextColumn('Likely range', help=f'Where about {level:.0%} of past forecasts of this kind landed, applied to this forecast.')
+    order = ['area', 'registration_type', 'sales_forecast', 'sales_range', 'sales_last', 'sales_change_pct',
+             'price_forecast', 'price_range', 'price_last', 'price_change_pct', 'status']
+    st.dataframe(table[order], hide_index=True, width='stretch', column_config={
+        'area': 'Area', 'registration_type': 'Type', 'sales_range': likely, 'price_range': likely,
         'sales_forecast': number(f'Sales, {quarter}'), 'sales_last': number(f'Sales, {origin}'),
         'sales_change_pct': percent('Change'),
         'price_forecast': number(f'AED/m², {quarter}'), 'price_last': number(f'AED/m², {origin}'),
         'price_change_pct': percent('Change'),
         'status': st.column_config.TextColumn('How it was made', help='Blank numbers mean no forecast could be made. They are never zero.')})
-    st.caption('Forecasts are single numbers with no range, so read them as rough sizes. '
-               'The Evidence page shows how far off they were on past quarters.')
+    st.caption(f'The likely range comes from past forecast errors, pooled over all areas: about {level:.0%} of past '
+               'forecasts landed inside it. It is wider for forecasts made by repeating last quarter. '
+               'The Evidence page shows how well it held.')
 
     st.subheader('One area in detail')
     areas = sorted(available.area.unique())
@@ -256,7 +262,8 @@ def forecasts(bundle, area, registration):
         if pd.notna(row.forecast_value) and pd.notna(row.last_actual) and row.last_actual > 0:
             change = f'{row.forecast_value / row.last_actual - 1:+.1%} vs {origin}'
         column.metric(f'{row.registration_type} · {name}', value, change)
-        column.caption(f'{STATUS[row.status]} · {method_name(row.model_id)}')
+        span = range_text(row.range_low, row.range_high)
+        column.caption((f'Likely {span} · ' if span else '') + f'{STATUS[row.status]} · {method_name(row.model_id)}')
         if row.status != 'ok':
             column.info(row.reason)
     st.subheader('Past forecasts against what happened')
@@ -384,6 +391,14 @@ def evidence_page(evidence, manifest):
             'Mean error': number('Mean absolute error', '%.0f', 'In sales per quarter, or AED per m².'),
             'Error as share of sales': st.column_config.NumberColumn('Error as % of actual', format='%.1f%%', help='Sum of absolute errors over sum of actual sales. Not defined for price.'),
             'Forecasts scored': number('Forecasts scored')})
+        for card, (target, name) in zip(st.columns(2), [(SALES, 'Sales'), (PRICE, 'Price')]):
+            held = manifest['forecast_ranges'][target]['ok']
+            if held['test_coverage'] is not None:
+                card.metric(f'{name}: actuals inside the likely range', f"{held['test_coverage']:.0%}",
+                            f"aimed for {held['level']:.0%} · range {math.expm1(held['low']):+.0%} to "
+                            f"{math.expm1(held['high']):+.0%} around a forecast · {held['test_forecasts']} test forecasts",
+                            delta_color='off', delta_arrow='off',
+                            help='Each test quarter\'s range used only the errors of earlier quarters.')
         periods = manifest['evaluation_periods']
         st.write(f"The method for each target was chosen on {periods['validation_start']}–{periods['validation_end']} and then "
                  f"tested on {periods['test_start']}–{periods['test_end']}, forecasting each quarter with only the data before it. "
