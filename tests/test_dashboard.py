@@ -4,7 +4,8 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-from src.dashboard.data import ROOT, filter_rows, load_bundle, monthly_summary, source_signature
+from src.dashboard.data import (ROOT, explain_trend, filter_rows, forecast_table, load_bundle, load_evidence,
+                                monthly_summary, source_signature)
 from src.dashboard.planning import generate_plan
 from src.forecasting.data import fingerprint
 
@@ -36,6 +37,23 @@ class DashboardDataTests(unittest.TestCase):
         self.assertEqual(int(summary.Sales.sum()), int(frame.transaction_count.sum()))
         self.assertAlmostEqual(summary['Transaction value (AED)'].sum(), frame.total_price_aed.sum(), delta=1)
 
+    def test_fuzzy_explanation_matches_part2(self):
+        scales = load_evidence()['trends']['scales']
+        trends = self.bundle['trends']
+        for row in trends[trends.status.eq('ok')].sample(60, random_state=0).itertuples():
+            _, rules, degrees = explain_trend(row, scales)
+            self.assertEqual(len(rules), 8)
+            for name, stored in [('Rising', row.rising_degree), ('Stable', row.stable_degree),
+                                 ('Declining', row.declining_degree)]:
+                self.assertAlmostEqual(degrees[name], stored, delta=0.002)   # the CSV rounds its inputs
+
+    def test_forecast_table_has_one_row_per_segment(self):
+        forecasts = self.bundle['forecasts']
+        table = forecast_table(forecasts)
+        self.assertEqual(len(table), len(forecasts[['area', 'registration_type']].drop_duplicates()))
+        unavailable = table[table.sales_forecast.isna()]
+        self.assertTrue(unavailable.sales_change_pct.isna().all())   # blank stays blank, never zero
+
     def test_mixed_snapshot_is_rejected(self):
         with patch('src.dashboard.data.fingerprint', return_value='different-source-hash'):
             with self.assertRaisesRegex(ValueError, 'differs from the saved analysis'):
@@ -64,10 +82,11 @@ class DashboardUITests(unittest.TestCase):
 
     def test_all_pages_render(self):
         app = self.app()
-        for page in ['Overview', 'Data Explorer', 'Market Trends', 'Forecasts', 'Agent Allocation']:
+        for page in ['Overview', 'Data Explorer', 'Market Trends', 'Forecasts', 'Agent Allocation', 'Evidence']:
             app.sidebar.radio[0].set_value(page).run()
             self.assertEqual(len(app.exception), 0, str(app.exception))
-        self.assertTrue(any('assumptions' in w.value.lower() for w in app.warning))
+            if page == 'Agent Allocation':
+                self.assertTrue(any('assumptions' in w.value.lower() for w in app.warning))
 
     def test_empty_explorer_filter_does_not_crash(self):
         app = self.app()
@@ -82,7 +101,7 @@ class DashboardUITests(unittest.TestCase):
         app.sidebar.selectbox[0].set_value('Business Bay').run()
         app.sidebar.selectbox[1].set_value('Ready').run()
         self.assertEqual(len(app.exception), 0)
-        self.assertTrue(any('projection' in m.label for m in app.metric))
+        self.assertTrue(any('Ready · sales' in m.label for m in app.metric))
 
     def test_form_generation_is_explicit_and_retained(self):
         app = self.app()

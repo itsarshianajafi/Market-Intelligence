@@ -16,7 +16,9 @@ off-plan and ready sales are always kept apart.
 ## Interactive dashboard
 
 The Streamlit interface provides Overview, Data Explorer, Market Trends, Forecasts,
-and Agent Allocation pages. It reads the existing shared outputs; an official
+Agent Allocation and Evidence pages. Market Trends replays the fuzzy rules for any segment
+(inputs, membership degrees, rules fired), and Evidence shows each part's test results
+against its baselines, read from `reports/`. It reads the existing shared outputs; an official
 portal connection is not needed to browse the supplied analysis.
 
 ```bash
