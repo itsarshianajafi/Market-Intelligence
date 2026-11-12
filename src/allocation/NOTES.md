@@ -183,6 +183,13 @@ commission of 2% on Ready and 4% on Off-Plan, and the constraint limits.
   optimiser's edge goes (99.4% against 99.2%). So Imza's goal, commission or number of deals, is the
   most important input of all, and Imza has to decide it.
 
+**What if the market moves?** The forecast only knows past sales, so it cannot see a conflict or
+a rate change. The optional config key `demand_change`, for example `{"Off-Plan": -0.3}`, scales
+the forecast by registration type before planning; the dashboard's form sets it. On the 2026Q4
+plan, off-plan sales 30% lower costs about 7% of the estimated commission and moves 2 of the 20
+agents; off-plan 50% and ready 20% lower costs about 16% and moves 3. The plan changes little
+because an agent's deals level off with market share, so the same areas stay the best ones.
+
 `reports/part4/team_size.csv` shows how value grows with team size (exact solver, 5 to 50 agents).
 An added agent is worth about AED 233k a quarter around 10 agents and about AED 134k around 50.
 

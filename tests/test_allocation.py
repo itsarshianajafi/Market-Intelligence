@@ -284,6 +284,17 @@ class SharedFileTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'rerun Part 2'):
             load_inputs({**self.cfg, 'market_trends': base / 'trends.csv'})
 
+    def test_what_if_scales_demand_by_registration_type(self):
+        inputs = load_inputs(self.cfg)
+        base = deployment_candidates(inputs, self.cfg).set_index(['area', 'registration_type']).demand
+        shocked = deployment_candidates(inputs, {**self.cfg, 'demand_change': {'Off-Plan': -0.5}}).set_index(
+            ['area', 'registration_type']).demand
+        offplan = base.index.get_level_values('registration_type') == 'Off-Plan'
+        np.testing.assert_allclose(shocked[offplan], base[offplan] * 0.5)
+        np.testing.assert_allclose(shocked[~offplan], base[~offplan])
+        with self.assertRaisesRegex(ValueError, 'demand_change'):
+            deployment_candidates(inputs, {**self.cfg, 'demand_change': {'Ready': -1.0}})
+
     def test_every_row_has_a_note_that_fits(self):
         small = self.out[self.out.note.eq('Forecast below min_forecast_sales')]
         self.assertTrue(small.forecast_sales.lt(self.cfg['min_forecast_sales']).all())

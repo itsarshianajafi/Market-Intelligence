@@ -33,7 +33,8 @@ of `python` after creating the virtual environment described below.
 
 Filter areas, registration type, property types and months, download the current
 selection, inspect held-out forecasts, or click **Generate custom plan** to adjust
-team size, deal rate, market share, commission rates and planning objective.
+team size, deal rate, market share, commission rates and planning objective. The same form has a
+what-if: change off-plan or ready sales by a percentage to test a shock the forecast cannot see.
 Custom plans run only on submission, persist in the current browser session, and
 can be downloaded with their assumptions. They use disposable temporary output
 folders and never replace `data/shared/` or the committed reports. This is the

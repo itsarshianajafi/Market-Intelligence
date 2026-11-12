@@ -93,6 +93,11 @@ def deployment_candidates(inputs, cfg):
                   & fc.forecast_value.ge(cfg['min_forecast_sales'])]
     frame = activity.rename(columns={'forecast_value': 'demand', 'last_actual': 'last_sales'})[
         KEYS + ['demand', 'last_sales', 'status']]
+    # What-if: scale the forecast by registration type, for shocks the forecast cannot know about.
+    change = frame.registration_type.map(cfg.get('demand_change', {})).fillna(0.0)
+    if change.le(-1).any():
+        raise ValueError('demand_change must be above -1 (a 100% drop leaves no market)')
+    frame['demand'] = frame.demand * (1 + change)
     price = fc[fc.target.eq(PRICE) & fc.status.isin(USABLE)].rename(columns={'status': 'price_status'})
     price = price.assign(price_ratio=price.forecast_value / price.last_actual)
     frame = frame.merge(price[KEYS + ['price_ratio', 'price_status']], on=KEYS, how='left')
