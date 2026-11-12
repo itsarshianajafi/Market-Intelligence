@@ -196,7 +196,7 @@ The analysis itself still uses DLD's names; the common name is only shown beside
 
 Some official names are not the ones agents say (Al Thanyah Fifth comes out as "DMCC Master
 Community", which people call JLT). Put corrections in `data/area_name_overrides.csv`
-(`area,common_name`); they win over the data the next time the command runs.
+(`area,common_name`); they win over the data the next time the command or the update runs.
 
 ## How to update the data
 
@@ -210,6 +210,7 @@ python -m src.update --input data/raw/export_1.csv data/raw/export_2.csv
 ```
 
 It cleans the export (Part 1), copies the new monthly sales and quality report to `data/shared/`,
+refreshes the area names,
 moves Part 3's forecast to the newest complete quarter, reruns Parts 2, 3 and 4 and checks that the
 results belong together. Every model is refitted from scratch; nothing is carried over from the last
 run. It takes about 5 minutes. If any step fails, the shared files, reports and configs are put back
