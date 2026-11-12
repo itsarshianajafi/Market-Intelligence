@@ -169,7 +169,9 @@ function showWhatIf(result, sent, saved) {
   const stats = fill(el('div', 'stats'), [
     stat('Expected commission', millions(plan.commission),
       Math.abs(change) < 0.005 ? `Same as the saved plan` : `${moved(change)} from ${millions(compare.commission_before)}`, change <= -0.005),
-    stat('Agents in a new place', `${compare.moved} of ${plan.agents}`, `${plan.areas} areas in this plan`)]);
+    plan.agents === saved.agents
+      ? stat('Agents in a new place', `${compare.moved} of ${plan.agents}`, `${plan.areas} areas in this plan`)
+      : stat('Team', `${plan.agents} agents`, `${plan.areas} areas in this plan · the saved plan has ${saved.agents} agents`)]);
   const rows = compare.rows.map((r) => {
     const diff = r.after - r.before;
     const words = diff === 0 ? 'Same' : r.before === 0 ? `New: ${r.after} agents` : r.after === 0 ? 'No longer used'
