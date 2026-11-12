@@ -2,10 +2,12 @@
 import json
 from pathlib import Path
 import unittest
+
+import pandas as pd
 from unittest.mock import patch
 
 from src.dashboard.data import (ROOT, explain_trend, filter_rows, forecast_table, load_bundle, load_evidence,
-                                monthly_summary, source_signature)
+                                monthly_summary, quarter_name, quarter_progress, source_signature)
 from src.dashboard.planning import generate_plan
 from src.forecasting.data import fingerprint
 
@@ -55,6 +57,22 @@ class DashboardDataTests(unittest.TestCase):
         self.assertTrue(unavailable.sales_change_pct.isna().all())   # blank stays blank, never zero
         self.assertTrue(unavailable.sales_range.eq('').all())
         self.assertTrue(table.sales_range.ne('').any())
+
+    def test_quarter_so_far_and_pace(self):
+        self.assertEqual(quarter_name('2026Q4'), 'Oct–Dec 2026')
+        forecasts = pd.DataFrame({'area': 'A', 'registration_type': 'Ready', 'property_scope': 'Unit|Villa',
+                                  'target': ['sales_count', 'weighted_geomean_monthly_median_aed_m2'],
+                                  'forecast_value': [300.0, 9000.0], 'last_actual': [280.0, 8800.0],
+                                  'status': 'ok', 'range_low': [200.0, 8000.0], 'range_high': [400.0, 9900.0]})
+        monthly = pd.DataFrame({'area': 'A', 'registration_type': 'Ready', 'month': ['2026-09', '2026-10', '2026-10'],
+                                'property_type': ['Unit', 'Unit', 'Land'], 'transaction_count': [90, 46, 500]})
+        so_far, share = quarter_progress(monthly, forecasts, '2026Q4', '2026-10-23')
+        self.assertEqual(so_far.sales_so_far.tolist(), [46])          # October only, land is out of scope
+        self.assertAlmostEqual(share, 23 / 92)
+        row = forecast_table(forecasts, so_far, share).iloc[0]
+        self.assertAlmostEqual(row.sales_pace, 184)
+        self.assertEqual(row.pace_note, 'Below the range')
+        self.assertEqual(quarter_progress(monthly, forecasts, '2026Q4', '2026-09-30'), (None, 0.0))
 
     def test_mixed_snapshot_is_rejected(self):
         with patch('src.dashboard.data.fingerprint', return_value='different-source-hash'):

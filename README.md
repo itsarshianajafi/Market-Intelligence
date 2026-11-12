@@ -18,7 +18,8 @@ off-plan and ready sales are always kept apart.
 The Streamlit interface provides Overview, Data Explorer, Market Trends, Forecasts,
 Agent Allocation and Evidence pages. Market Trends replays the fuzzy rules for any segment
 (inputs, membership degrees, rules fired), and Evidence shows each part's test results
-against its baselines, read from `reports/`. It reads the existing shared outputs; an official
+against its baselines, read from `reports/`. Quarters are shown as months (Oct–Dec 2026). When the
+forecast quarter has already started, Forecasts shows the sales recorded so far beside each forecast. It reads the existing shared outputs; an official
 portal connection is not needed to browse the supplied analysis.
 
 ```bash

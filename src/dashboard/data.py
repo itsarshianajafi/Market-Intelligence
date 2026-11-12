@@ -89,13 +89,39 @@ def method_name(model_id):
     return {'naive_v1': 'Last quarter repeated', 'seasonal_naive_v1': 'Same quarter last year'}.get(model_id, '—')
 
 
+def quarter_name(code):
+    """'2026Q3' -> 'Jul–Sep 2026': people think in months, not quarter codes."""
+    quarter = pd.Period(code, freq='Q')
+    return f'{quarter.start_time:%b}–{quarter.end_time:%b} {quarter.year}'
+
+
+def quarter_progress(monthly, forecasts, forecast_quarter, date_max):
+    """Sales already recorded in the forecast quarter, per segment, and the share of its days observed.
+
+    The forecast quarter can already be running when the data was exported. Returns (None, 0.0)
+    when the data stops before it starts.
+    """
+    quarter = pd.Period(forecast_quarter, freq='Q')
+    seen = (min(pd.Timestamp(date_max), quarter.end_time).normalize() - quarter.start_time).days + 1
+    if seen <= 0:
+        return None, 0.0
+    scope = forecasts.property_scope.iloc[0].split('|')
+    rows = monthly[monthly.property_type.isin(scope) & (pd.PeriodIndex(monthly.month, freq='Q') == quarter)]
+    so_far = rows.groupby(['area', 'registration_type']).transaction_count.sum().rename('sales_so_far')
+    return so_far.reset_index(), seen / ((quarter.end_time.normalize() - quarter.start_time).days + 1)
+
+
 def range_text(low, high):
     """'330 – 860', or blank when Part 3 gave no range."""
     return '' if pd.isna(low) or pd.isna(high) else f'{float(low):,.0f} – {float(high):,.0f}'
 
 
-def forecast_table(forecasts):
-    """One row per segment: next quarter's sales and price beside the last observed quarter."""
+def forecast_table(forecasts, so_far=None, share=0.0):
+    """One row per segment: the forecast quarter's sales and price beside the last complete quarter.
+
+    With `so_far` (from quarter_progress) it adds the sales already recorded, the full-quarter total
+    at that pace, and whether that total is inside the forecast's likely range.
+    """
     wide = forecasts.pivot(index=['area', 'registration_type'], columns='target',
                            values=['forecast_value', 'last_actual', 'status', 'range_low', 'range_high']).reset_index()
     out = wide[['area', 'registration_type']].droplevel(1, axis=1)
@@ -107,6 +133,12 @@ def forecast_table(forecasts):
         out[f'{name}_range'] = [range_text(low, high) for low, high in
                                 zip(wide[('range_low', target)], wide[('range_high', target)])]
     out['status'] = wide[('status', SALES)].map(STATUS)
+    if so_far is not None:
+        out = out.merge(so_far, on=['area', 'registration_type'], how='left')
+        out['sales_pace'] = out.sales_so_far / share
+        low, high = wide[('range_low', SALES)].astype(float), wide[('range_high', SALES)].astype(float)
+        out['pace_note'] = np.select([out.sales_pace.isna() | low.isna(), out.sales_pace < low, out.sales_pace > high],
+                                     ['', 'Below the range', 'Above the range'], 'Inside the range')
     return out.sort_values('sales_forecast', ascending=False, na_position='last').reset_index(drop=True)
 
 
