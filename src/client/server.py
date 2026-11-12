@@ -78,7 +78,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == '/api/summary':
             self.answer(summary)
         elif path == '/api/map':
-            self.answer(lambda: {k: v for k, v in view.base_map().items() if k != 'places'})
+            self.answer(lambda: {**{k: v for k, v in view.base_map().items() if k != 'places'}, 'communities': view.communities()})
         elif path == '/favicon.ico':
             self.send(204, b'', 'image/x-icon')
         elif path in FILES:     # a fixed list, so a request can never reach other files

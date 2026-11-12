@@ -159,8 +159,9 @@ const Charts = (() => {
     }, Math.max(160, rows.length * 34 + 48));
   }
 
-  // ---- map: a Leaflet map of Dubai with one circle per area ----
-  // points: [{lat, lon, size, color, ring, name, detail:[[label, value]], label}]
+  // ---- map: a Leaflet map of Dubai, each area shaded inside its official boundary ----
+  // points: [{area, lat, lon, size, color, ring, name, detail:[[label, value]], label}]
+  // shapes: GeoJSON features with properties.area; an area without one is drawn as a circle sized by `size`
   // Basemaps in order of preference. Stadia needs no key on localhost; a hosted copy needs a free Stadia
   // account. Esri's light grey canvas is the backup, and the saved OpenStreetMap lines the last resort.
   const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -183,7 +184,7 @@ const Charts = (() => {
     return box;
   }
 
-  function map(container, { base: lines, points, height = 460, label, maxRadius = 22 }) {
+  function map(container, { base: lines, points, shapes = [], height = 460, label, maxRadius = 22 }) {
     const h = container.clientWidth < 520 ? 360 : height;
     if (!window.L) return SvgMap.map(container, { base: lines, points, height: h, label, maxRadius });     // Leaflet failed to load
     if (container._leaflet) { container._leaflet.off(); container._leaflet.remove(); container._leaflet = null; }
@@ -226,13 +227,18 @@ const Charts = (() => {
     const biggest = Math.max(...points.map((p) => p.size), 1);
     const radius = (size) => Math.max(4, maxRadius * Math.sqrt(size / biggest));      // circle area, not radius, carries the value
     const ordered = points.slice().sort((a, b) => b.size - a.size);
-    const markers = ordered.slice().reverse().map((p) => L.circleMarker([p.lat, p.lon], {
-      radius: radius(p.size), color: p.ring ? p.color : SURFACE, weight: p.ring ? 1.5 : 1.5,
-      fillColor: p.color, fillOpacity: p.ring ? 0.05 : 0.8,
-    }).bindTooltip(tooltipNode(p.name, p.detail), { direction: 'top', offset: [0, -radius(p.size)], className: 'map-tooltip', opacity: 1 })
-      .on('mouseover', function () { this.setStyle({ color: INK, weight: 2 }); })
-      .on('mouseout', function () { this.setStyle({ color: p.ring ? p.color : SURFACE, weight: 1.5 }); }));
-    L.featureGroup(markers).addTo(view);
+    const outline = new Map(shapes.map((feature) => [feature.properties.area, feature]));
+    const look = (p) => (p.ring ? { color: '#8D97A3', weight: 1, fillColor: SURFACE, fillOpacity: 0.35 }
+      : { color: SURFACE, weight: 1, fillColor: p.color, fillOpacity: 0.78 });
+    const layers = ordered.slice().reverse().map((p) => {
+      const shape = outline.get(p.area);
+      const layer = shape ? L.geoJSON(shape, { style: () => look(p) })
+        : L.circleMarker([p.lat, p.lon], { ...look(p), weight: 1.5, radius: radius(p.size) });
+      return layer.bindTooltip(tooltipNode(p.name, p.detail), { sticky: true, direction: 'top', offset: [0, -8], className: 'map-tooltip', opacity: 1 })
+        .on('mouseover', (event) => { const target = event.layer || event.target; target.setStyle({ color: INK, weight: 2 }); target.bringToFront(); })
+        .on('mouseout', (event) => { (event.layer || event.target).setStyle(look(p)); });
+    });
+    L.featureGroup(layers).addTo(view);
 
     // Names on the biggest circles, skipping any that would overlap at the current zoom.
     const names = L.layerGroup().addTo(view);
@@ -240,14 +246,16 @@ const Charts = (() => {
       names.clearLayers();
       const placed = [];
       for (const p of ordered.filter((q) => q.label)) {
-        const at = view.latLngToContainerPoint([p.lat, p.lon]), r = radius(p.size);
+        const at = view.latLngToContainerPoint([p.lat, p.lon]);
+        const inside = outline.has(p.area), offset = inside ? 0 : radius(p.size) + 5;
         if (placed.some((q) => Math.abs(q.x - at.x) < 120 && Math.abs(q.y - at.y) < 16)) continue;
         placed.push(at);
         names.addLayer(L.marker([p.lat, p.lon], { pane: 'labels', interactive: false, keyboard: false,
-          icon: L.divIcon({ className: 'map-name', html: esc(p.label), iconSize: null, iconAnchor: [-(r + 5), 8] }) }));
+          icon: L.divIcon({ className: inside ? 'map-name centred' : 'map-name', html: `<span>${esc(p.label)}</span>`, iconSize: [0, 0],
+            iconAnchor: [-offset, 8] }) }));
       }
     };
-    view.fitBounds(L.latLngBounds(points.map((p) => [p.lat, p.lon])), { padding: [24, 24] });
+    view.fitBounds(L.latLngBounds(points.map((p) => [p.lat, p.lon])), { padding: [16, 16] });
     view.on('zoomend', placeNames);
     placeNames();
     if (!container._watcher) {      // one watcher per container, always pointing at the current map

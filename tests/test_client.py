@@ -1,12 +1,16 @@
 """Client view: the facts it shows match the shared files, and the local server only serves what it should."""
 import json
+from pathlib import Path
+import tempfile
 import threading
 import unittest
 from http.server import ThreadingHTTPServer
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-from src.client import basemap, view
+import pandas as pd
+
+from src.client import basemap, boundaries, view
 from src.client.server import Handler, summary
 from src.dashboard.data import load_bundle, load_evidence
 
@@ -96,6 +100,41 @@ class BasemapTests(unittest.TestCase):
         self.assertEqual(basemap.simplify(corner, 0.001), corner)
 
 
+KML = """<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<Placemark><ExtendedData><SchemaData>
+<SimpleData name="COMM_NUM">392</SimpleData><SimpleData name="CNAME_E">MARSA DUBAI</SimpleData></SchemaData></ExtendedData>
+<Polygon><outerBoundaryIs><LinearRing><coordinates>55.0,25.0 55.2,25.0 55.2,25.2 55.0,25.2 55.0,25.0</coordinates></LinearRing></outerBoundaryIs></Polygon>
+</Placemark>
+<Placemark><ExtendedData><SchemaData><SimpleData name="COMM_NUM">999</SimpleData></SchemaData></ExtendedData>
+<Polygon><outerBoundaryIs><LinearRing><coordinates>56,26 56.1,26 56.1,26.1 56,26</coordinates></LinearRing></outerBoundaryIs></Polygon>
+</Placemark></Document></kml>"""
+
+
+class BoundaryTests(unittest.TestCase):
+    def test_areas_join_polygons_by_municipality_number_only(self):
+        lookup = pd.DataFrame({'area_id': [330, 1, 2], 'name_en': ['Marsa Dubai', 'No Polygon', 'Not In Dubai Municipality'],
+                               'name_ar': ['', '', ''], 'municipality_number': ['392', '555', '0']})
+        with tempfile.TemporaryDirectory() as folder:
+            collection, unmatched = boundaries.build(KML.encode(), lookup, Path(folder) / 'shapes.geojson', Path(folder) / 'lookup.csv')
+            self.assertEqual([f['properties']['area'] for f in collection['features']], ['Marsa Dubai'])
+            self.assertEqual(unmatched, ['No Polygon'])        # a number with no polygon is reported, a 0 is not
+            feature = collection['features'][0]
+            self.assertEqual(feature['properties']['comm_num'], '392')
+            self.assertEqual(feature['properties']['centre'], [25.1, 55.1])       # the square's centre, as lat, lon
+            self.assertEqual(json.loads((Path(folder) / 'shapes.geojson').read_text())['features'][0]['geometry']['type'], 'Polygon')
+
+    def test_every_forecast_area_has_an_official_boundary(self):
+        shapes = {f['properties']['area'] for f in view.communities()['features']}
+        forecasts = self.bundle_forecasts()
+        usable = set(forecasts[forecasts.target.eq('sales_count') & forecasts.status.isin(['ok', 'fallback'])].area)
+        self.assertEqual(usable - shapes, set())
+
+    @staticmethod
+    def bundle_forecasts():
+        return load_bundle()['forecasts']
+
+
 class ServerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -130,6 +169,7 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertTrue(shape['coast'] and shape['roads'] and 'OpenStreetMap' in shape['attribution'])
         self.assertNotIn('places', shape)
+        self.assertTrue(shape['communities']['features'])
 
     def test_only_listed_files_are_served(self):
         for path in ['/../README.md', '/server.py', '/static/app.js', '/api/unknown']:
