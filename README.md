@@ -13,9 +13,25 @@ the Dubai Land Department's public sales records into four things an agency can 
 Each part reads the files of the parts before it. Areas are DLD's official area names, and
 off-plan and ready sales are always kept apart.
 
-## Interactive dashboard
+## Client view
 
-The Streamlit interface provides Overview, Data Explorer, Market Trends, Forecasts,
+Three plain screens for an agency: how the market is doing, where the team should work, and what
+happens if the team or the market changes.
+
+```bash
+python -m src.client        # then open http://localhost:8600
+```
+
+It needs nothing beyond the core requirements (the server is Python's standard library, the pages are
+plain HTML, CSS and JavaScript in `src/client/static/`). It reads the same shared files as the
+dashboard below, runs the same consistency checks, and uses the same custom planner for the What if
+screen, which takes a few seconds per plan. It listens on this machine only. `src/client/view.py`
+turns the shared results into the facts the screens show; `tests/test_client.py` checks them against
+the files and exercises the server.
+
+## Analyst dashboard
+
+The Streamlit interface is the detailed view behind the client view. It provides Overview, Data Explorer, Market Trends, Forecasts,
 Agent Allocation and Evidence pages. Market Trends replays the fuzzy rules for any segment
 (inputs, membership degrees, rules fired), and Evidence shows each part's test results
 against its baselines, read from `reports/`. Quarters are shown as months (Oct–Dec 2026), and areas

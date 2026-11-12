@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Intelligence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-row">
+    <div class="brand">
+      <span class="brand-name">Imza · Market Intelligence</span>
+      <span class="brand-note" id="cutoff">Dubai home sales, from official DLD records</span>
+    </div>
+    <nav aria-label="Sections" class="tabs">
+      <a href="#market" data-tab="market">Market</a>
+      <a href="#plan" data-tab="plan">Team plan</a>
+      <a href="#whatif" data-tab="whatif">What if</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p id="status" class="status" role="status">Loading the latest results…</p>
+
+  <section id="market" class="screen" hidden>
+    <p class="eyebrow" id="market-eyebrow"></p>
+    <h1 id="market-headline"></h1>
+    <p class="lead" id="market-lead"></p>
+    <div class="stats" id="market-stats"></div>
+    <div class="split">
+      <div class="card grow-3">
+        <div class="card-head">
+          <h2>Homes sold each quarter</h2>
+          <div class="legend"><span><i class="dot offplan"></i>Off-plan</span><span><i class="dot ready"></i>Ready</span></div>
+        </div>
+        <div class="bars" id="market-bars" role="img"></div>
+      </div>
+      <div class="card grow-2">
+        <h2 id="direction-title"></h2>
+        <p class="muted" id="direction-note"></p>
+        <div class="meters" id="direction-meters"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 id="busiest-title"></h2>
+      <p class="muted">The five busiest areas in the forecast, with the change from the last full quarter.</p>
+      <div class="rows" id="busiest-rows"></div>
+      <p class="muted small" id="forecast-note"></p>
+    </div>
+    <div class="banner">
+      <p id="market-next"></p>
+      <a class="button light" href="#plan">See the team plan</a>
+    </div>
+  </section>
+
+  <section id="plan" class="screen" hidden>
+    <p class="eyebrow" id="plan-eyebrow"></p>
+    <h1 id="plan-headline"></h1>
+    <p class="lead">This split is expected to earn the most commission, given how many homes should sell in each area, what a typical deal is worth and your commission rates.</p>
+    <div class="stats" id="plan-stats"></div>
+    <div class="cards" id="plan-cards"></div>
+    <div class="card row-between">
+      <div>
+        <h2>This plan uses these numbers</h2>
+        <p id="plan-assumptions"></p>
+        <p class="muted small">If these are not your real numbers, change them and the plan is worked out again.</p>
+      </div>
+      <a class="button dark" href="#whatif">Change the numbers</a>
+    </div>
+    <p class="muted small" id="plan-evidence"></p>
+  </section>
+
+  <section id="whatif" class="screen" hidden>
+    <p class="eyebrow">Try your own numbers</p>
+    <h1>What if things change?</h1>
+    <p class="lead">Change the team or the market and see the new plan. The forecast only knows past sales, so this is how to test something it cannot see, such as a conflict or a change in interest rates.</p>
+    <div class="split start">
+      <form class="card grow-2 form" id="whatif-form">
+        <h2>Your team</h2>
+        <div class="field">
+          <div class="field-head"><label for="agents">Agents</label><output id="agents-out" for="agents"></output></div>
+          <input id="agents" type="range" min="5" max="60" step="1">
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="deals">Deals per agent each quarter</label><output id="deals-out" for="deals"></output></div>
+          <input id="deals" type="range" min="0.5" max="10" step="0.5">
+        </div>
+        <div class="pair">
+          <div class="field"><label for="ready-rate">Ready commission</label><div class="unit"><input id="ready-rate" type="number" min="0.1" max="20" step="0.1"><span>%</span></div></div>
+          <div class="field"><label for="offplan-rate">Off-plan commission</label><div class="unit"><input id="offplan-rate" type="number" min="0.1" max="20" step="0.1"><span>%</span></div></div>
+        </div>
+        <hr>
+        <h2>The market</h2>
+        <div class="field">
+          <div class="field-head"><label for="offplan-change">Off-plan sales</label><output id="offplan-change-out" for="offplan-change"></output></div>
+          <input id="offplan-change" type="range" min="-90" max="100" step="5" value="0">
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="ready-change">Ready sales</label><output id="ready-change-out" for="ready-change"></output></div>
+          <input id="ready-change" type="range" min="-90" max="100" step="5" value="0">
+        </div>
+        <button class="button dark" type="submit" id="whatif-submit">Update the plan</button>
+        <button class="button plain" type="button" id="whatif-reset">Back to the saved numbers</button>
+      </form>
+      <div class="grow-3 results" id="whatif-results" aria-live="polite">
+        <div class="card empty" id="whatif-empty">
+          <h2>Change a number, then press Update the plan</h2>
+          <p class="muted">The new plan takes a few seconds to work out. It is compared with the saved plan on the Team plan screen.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
