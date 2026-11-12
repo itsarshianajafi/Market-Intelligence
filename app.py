@@ -7,8 +7,8 @@ import pandas as pd
 import streamlit as st
 
 from src.dashboard.data import (PRICE, ROOT, SALES, STATUS, explain_trend, filter_rows, forecast_table,
-                                load_bundle, load_evidence, method_name, monthly_summary, range_text,
-                                source_signature)
+                                load_bundle, load_evidence, method_name, monthly_summary, quarter_name,
+                                quarter_progress, range_text, source_signature)
 from src.dashboard.planning import generate_plan
 
 # Same colours as the report figures: direction is orange / grey / blue, registration is blue / aqua.
@@ -85,20 +85,47 @@ def plan_bars(chosen):
 
 def overview(bundle):
     st.header('Dubai’s property market, in context')
-    st.write('Official sales records, the direction each area is moving in, a forecast for next quarter '
+    st.write('Official sales records, the direction each area is moving in, a forecast for the next quarter '
              'and a plan for where a sales team should work.')
     q, monthly, trends = bundle['quality'], bundle['monthly'], bundle['trends']
     latest = trends.quarter.max()
-    by_quarter = monthly.groupby(pd.PeriodIndex(monthly.month, freq='Q').astype(str)).transaction_count.sum()
+    target_quarter = bundle['forecast_manifest']['forecast_quarter']
+    quarters = pd.PeriodIndex(monthly.month, freq='Q').astype(str)
+    by_quarter = monthly.groupby(quarters).transaction_count.sum()
+    by_type = monthly.groupby([quarters, 'registration_type']).transaction_count.sum()
     year_ago = str(pd.Period(latest, freq='Q') - 4)
     labelled = trends[trends.quarter.eq(latest) & trends.status.eq('ok')]
+    plan = bundle['allocation']
+    chosen = plan[plan.agents.gt(0)]
     a, b, c, d = st.columns(4)
-    a.metric(f'Sales in {latest}', f'{by_quarter[latest]:,}',
-             f'{by_quarter[latest] / by_quarter[year_ago] - 1:+.1%} vs {year_ago}')
+    a.metric(f'Sales, {quarter_name(latest)}', f'{by_quarter[latest]:,}',
+             f'{by_quarter[latest] / by_quarter[year_ago] - 1:+.1%} vs {quarter_name(year_ago)}',
+             help='The last complete quarter in the data.')
     b.metric('Areas in the data', monthly.area.nunique())
     c.metric('Segments with a trend label', len(labelled),
              help='A segment is one area, off-plan or ready. Segments with too few sales get no label.')
-    d.metric('Forecast quarter', bundle['forecast_manifest']['forecast_quarter'])
+    months, year = quarter_name(target_quarter).rsplit(' ', 1)
+    d.metric('Forecast for', months, year, delta_color='off', delta_arrow='off',
+             help=f"The data ends on {q['date_max']}, so this is the quarter after the last complete one.")
+
+    with st.container(border=True):
+        st.markdown('**What this says**')
+        change = {name: by_type[latest, name] / by_type[year_ago, name] - 1 for name in REGISTRATION}
+        counts = labelled.trend_label.value_counts().reindex(list(TREND), fill_value=0)
+        sales = bundle['forecasts'][bundle['forecasts'].target.eq(SALES)]
+        biggest = sales.groupby('area').forecast_value.sum().nlargest(3)
+        teams = chosen.groupby('area').agents.sum().sort_values(ascending=False)
+        st.markdown(
+            f"- **The market is {'down' if by_quarter[latest] < by_quarter[year_ago] else 'up'}.** "
+            f"{quarter_name(latest)} had {by_quarter[latest]:,} sales, {by_quarter[latest] / by_quarter[year_ago] - 1:+.0%} "
+            f"on a year earlier (off-plan {change['Off-Plan']:+.0%}, ready {change['Ready']:+.0%}).\n"
+            f"- **Direction by area.** Of {len(labelled)} area segments with enough sales, {counts['Stable']} are "
+            f"stable, {counts['Rising']} rising and {counts['Declining']} declining over the last year.\n"
+            f"- **Most sales are expected in** {', '.join(f'{area} (about {value:,.0f})' for area, value in biggest.items())} "
+            f"in {quarter_name(target_quarter)}. These are rough sizes, not exact numbers.\n"
+            f"- **The plan puts {int(chosen.agents.sum())} agents in {chosen.area.nunique()} areas**, most in "
+            f"{teams.index[0]} ({int(teams.iloc[0])}), where forecast sales, deal size and commission rate together "
+            f"are worth most. It uses placeholder business assumptions until real ones are entered.")
 
     st.subheader('Sales per month')
     full = st.toggle('Show the full history', help='Records go back to 1975 but are sparse before 2019.')
@@ -115,15 +142,14 @@ def overview(bundle):
 
     left, right = st.columns(2)
     with left:
-        st.subheader(f'Market direction, {latest}')
+        st.subheader(f'Market direction, {quarter_name(latest)}')
         st.altair_chart(label_bars(labelled.trend_label), width='stretch')
         missing = int(trends.quarter.eq(latest).sum() - len(labelled))
         st.caption(f'Labels describe the last year, they do not predict the next. '
                    f'{missing} more segments had too few sales to label.')
     with right:
-        st.subheader('Saved agent plan')
-        plan = bundle['allocation']
-        st.altair_chart(plan_bars(plan[plan.agents.gt(0)]), width='stretch')
+        st.subheader(f'Saved agent plan, {quarter_name(target_quarter)}')
+        st.altair_chart(plan_bars(chosen), width='stretch')
         st.caption('Uses placeholder business assumptions. Change them on the Agent Allocation page.')
     with st.expander('Source and data quality'):
         st.write(f"Official DLD / Data Dubai export. Observed records: {q['date_min']} to {q['date_max']}.")
@@ -200,7 +226,7 @@ def trends(bundle, evidence, area, registration):
                'They are not predictions of future prices.')
     frame = filter_rows(bundle['trends'], area, registration)
     if empty(frame): return
-    quarter = st.selectbox('Quarter', sorted(frame.quarter.unique(), reverse=True))
+    quarter = st.selectbox('Quarter', sorted(frame.quarter.unique(), reverse=True), format_func=quarter_name)
     current = frame[frame.quarter.eq(quarter)]
     labelled = current[current.status.eq('ok')].sort_values('trend_score', ascending=False)
     cards = st.columns(4)
@@ -208,7 +234,7 @@ def trends(bundle, evidence, area, registration):
         card.metric(name, int(labelled.trend_label.eq(name).sum()))
     cards[3].metric('Too few sales to label', len(current) - len(labelled))
     if current.provisional.any():
-        st.caption(f'{quarter} is the latest quarter. Its records can still be corrected by DLD, so its labels are provisional.')
+        st.caption(f'{quarter_name(quarter)} is the latest complete quarter. Its records can still be corrected by DLD, so its labels are provisional.')
     if labelled.empty:
         st.info('No segment here has enough sales, now and a year earlier, for a label.')
     else:
@@ -231,24 +257,41 @@ def forecasts(bundle, area, registration):
     st.header('Forecasts')
     manifest = bundle['forecast_manifest']
     quarter, origin = manifest['forecast_quarter'], manifest['origin_quarter']
-    st.caption(f'{quarter}, one quarter ahead of {origin}. Units and villas. Sales are per quarter and price is AED per m².')
+    target_name, origin_name = quarter_name(quarter), quarter_name(origin)
+    cutoff = pd.Timestamp(bundle['quality']['date_max'])
+    so_far, share = quarter_progress(bundle['monthly'], bundle['forecasts'], quarter, cutoff)
+    st.caption(f'Forecast for {target_name}, made from data up to the end of {origin_name}, the last complete quarter. '
+               'Units and villas. Sales are per quarter and price is AED per m².')
+    if so_far is not None:
+        st.info(f'{target_name} has already started: the data runs to {cutoff.day} {cutoff:%b %Y}, {share:.0%} of the quarter. '
+                'Sales recorded so far are shown beside each forecast. They were not used to make it.')
     available = filter_rows(bundle['forecasts'], area, registration)
     if empty(available): return
-    table = forecast_table(available).round({'sales_forecast': 0, 'sales_last': 0, 'price_forecast': 0, 'price_last': 0})
+    table = forecast_table(available, so_far, share).round(
+        {'sales_forecast': 0, 'sales_last': 0, 'price_forecast': 0, 'price_last': 0, 'sales_pace': 0})
     level = manifest['forecast_ranges'][SALES]['ok']['level']
     likely = st.column_config.TextColumn('Likely range', help=f'Where about {level:.0%} of past forecasts of this kind landed, applied to this forecast.')
-    order = ['area', 'registration_type', 'sales_forecast', 'sales_range', 'sales_last', 'sales_change_pct',
+    progress = ['sales_so_far', 'sales_pace', 'pace_note'] if so_far is not None else []
+    order = ['area', 'registration_type', 'sales_forecast', 'sales_range', *progress, 'sales_last', 'sales_change_pct',
              'price_forecast', 'price_range', 'price_last', 'price_change_pct', 'status']
     st.dataframe(table[order], hide_index=True, width='stretch', column_config={
         'area': 'Area', 'registration_type': 'Type', 'sales_range': likely, 'price_range': likely,
-        'sales_forecast': number(f'Sales, {quarter}'), 'sales_last': number(f'Sales, {origin}'),
+        'sales_forecast': number(f'Sales forecast, {target_name}'), 'sales_last': number(f'Sales, {origin_name}'),
+        'sales_so_far': number(f'So far (to {cutoff.day} {cutoff:%b})', help='Sales already recorded in the forecast quarter.'),
+        'sales_pace': number('At this pace', help='So far, scaled up to the whole quarter as if sales came evenly.'),
+        'pace_note': st.column_config.TextColumn('Pace vs forecast', help='Is the pace inside the forecast\'s likely range?'),
         'sales_change_pct': percent('Change'),
-        'price_forecast': number(f'AED/m², {quarter}'), 'price_last': number(f'AED/m², {origin}'),
+        'price_forecast': number(f'AED/m² forecast, {target_name}'), 'price_last': number(f'AED/m², {origin_name}'),
         'price_change_pct': percent('Change'),
         'status': st.column_config.TextColumn('How it was made', help='Blank numbers mean no forecast could be made. They are never zero.')})
     st.caption(f'The likely range comes from past forecast errors, pooled over all areas: about {level:.0%} of past '
                'forecasts landed inside it. It is wider for forecasts made by repeating last quarter. '
                'The Evidence page shows how well it held.')
+    if so_far is not None:
+        paced = table.pace_note[table.pace_note.ne('')].value_counts()
+        st.caption(f"Pace check: of {int(paced.sum())} forecasts with sales so far, {paced.get('Inside the range', 0)} are on pace "
+                   f"inside their range, {paced.get('Below the range', 0)} below and {paced.get('Above the range', 0)} above. "
+                   'Sales do not come evenly through a quarter and the latest weeks can still be added to, so treat the pace as a rough check.')
 
     st.subheader('One area in detail')
     areas = sorted(available.area.unique())
@@ -260,10 +303,14 @@ def forecasts(bundle, area, registration):
         value = f'{row.forecast_value:,.0f}' if pd.notna(row.forecast_value) else 'Unavailable'
         change = None
         if pd.notna(row.forecast_value) and pd.notna(row.last_actual) and row.last_actual > 0:
-            change = f'{row.forecast_value / row.last_actual - 1:+.1%} vs {origin}'
+            change = f'{row.forecast_value / row.last_actual - 1:+.1%} vs {origin_name}'
         column.metric(f'{row.registration_type} · {name}', value, change)
         span = range_text(row.range_low, row.range_high)
         column.caption((f'Likely {span} · ' if span else '') + f'{STATUS[row.status]} · {method_name(row.model_id)}')
+        if row.target == SALES and so_far is not None:
+            seen = table[table.area.eq(row.area) & table.registration_type.eq(row.registration_type)].iloc[0]
+            if pd.notna(seen.sales_so_far):
+                column.caption(f'So far {seen.sales_so_far:,.0f} to {cutoff.day} {cutoff:%b}, about {seen.sales_pace:,.0f} at this pace. {seen.pace_note}.')
         if row.status != 'ok':
             column.info(row.reason)
     st.subheader('Past forecasts against what happened')
@@ -280,7 +327,7 @@ def forecasts(bundle, area, registration):
         st.line_chart(history.set_index('forecast_quarter')[['actual', 'prediction']].sort_index().rename(
             columns={'actual': 'Actual', 'prediction': 'Forecast'}), color=['#898781', '#2a78d6'])
     periods = manifest['evaluation_periods']
-    st.caption(f"Test periods: {periods['test_start']}–{periods['test_end']}. Each forecast used only data available before its quarter.")
+    st.caption(f"Test quarters: {quarter_name(periods['test_start'])} to {quarter_name(periods['test_end'])}. Each forecast used only data available before its quarter.")
     download(current, 'Download area forecasts', 'selected_forecasts.csv', 'forecast-download')
 
 
@@ -400,8 +447,8 @@ def evidence_page(evidence, manifest):
                             delta_color='off', delta_arrow='off',
                             help='Each test quarter\'s range used only the errors of earlier quarters.')
         periods = manifest['evaluation_periods']
-        st.write(f"The method for each target was chosen on {periods['validation_start']}–{periods['validation_end']} and then "
-                 f"tested on {periods['test_start']}–{periods['test_end']}, forecasting each quarter with only the data before it. "
+        st.write(f"The method for each target was chosen on {quarter_name(periods['validation_start'])} to {quarter_name(periods['validation_end'])} and then "
+                 f"tested on {quarter_name(periods['test_start'])} to {quarter_name(periods['test_end'])}, forecasting each quarter with only the data before it. "
                  'A chosen method that does not beat "last quarter repeated" on the test is still kept, '
                  'because the choice was fixed before the test.')
         figure('part3/baseline_comparison.png', 'Test error by method')
@@ -444,7 +491,7 @@ def main():
     page = st.sidebar.radio('Explore', ['Overview', 'Data Explorer', 'Market Trends', 'Forecasts',
                                         'Agent Allocation', 'Evidence'])
     st.sidebar.divider()
-    st.sidebar.caption(f"Data through {bundle['quality']['date_max']} · Forecast {bundle['forecast_manifest']['forecast_quarter']}")
+    st.sidebar.caption(f"Data to {bundle['quality']['date_max']} · Forecast for {quarter_name(bundle['forecast_manifest']['forecast_quarter'])}")
     area, registration = 'All areas', 'Both'
     if page in ('Data Explorer', 'Market Trends', 'Forecasts'):
         area = st.sidebar.selectbox('Area', ['All areas'] + sorted(bundle['monthly'].area.unique()))
