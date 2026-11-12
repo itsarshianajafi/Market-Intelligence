@@ -180,19 +180,27 @@ Notes:
 
 ## How to update the data
 
-The pipeline is semi-automated. Downloading is manual (the DLD portal needs a
-CAPTCHA); cleaning, validation and organisation are automated.
+Downloading is manual, because the DLD portal needs a CAPTCHA. Everything after that is one command:
 
-1. Download a new export from DLD or Data Dubai.
-2. Put the file(s) in data/raw/.
-3. Run the pipeline command above with a NEW --output-dir name (e.g. run-2026-11).
-4. Copy the new monthly_sales.csv and quality_report.json to data/shared/.
-5. Rerun Part 2 (`python -m src.trend_analysis.run`). It picks up the latest full quarter by itself.
-6. If a new quarter is complete, set `origin_quarter` and `test_end` to it and `forecast_quarter` to the
-   next one in `src/forecasting/config.json` (Part 3 stops with this message if you forget).
-7. Rerun Parts 3 and 4 (commands at the top), then push.
+1. Download a new export from DLD or Data Dubai and put the file(s) in `data/raw/`.
+2. Run the update with all parts of the export:
 
-Overlapping exports are fine, duplicates across files are removed.
+```bash
+python -m src.update --input data/raw/export_1.csv data/raw/export_2.csv
+```
+
+It cleans the export (Part 1), copies the new monthly sales and quality report to `data/shared/`,
+moves Part 3's forecast to the newest complete quarter, reruns Parts 2, 3 and 4 and checks that the
+results belong together. Every model is refitted from scratch; nothing is carried over from the last
+run. It takes about 5 minutes. If any step fails, the shared files, reports and configs are put back
+as they were.
+
+3. Run the tests, look at the dashboard, then commit `data/shared/`, `reports/` and
+   `src/forecasting/config.json`.
+
+Overlapping exports are fine, duplicates across files are removed. The dashboard's sidebar shows how
+old the data is and warns once the forecast quarter is over. The parts can still be run one by one
+with the commands at the top.
 
 ## Member 2: Market Trend Analysis
 
