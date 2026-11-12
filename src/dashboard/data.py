@@ -23,6 +23,7 @@ STATUS = {'ok': 'Model forecast', 'fallback': 'Last quarter repeated (short hist
 def source_signature():
     """Invalidate the UI cache and custom plans whenever an upstream file changes."""
     paths = [SHARED / name for name in FILES] + [ROOT / 'reports' / name for name in REPORTS]
+    paths += [path for path in [SHARED / 'area_names.csv'] if path.exists()]
     return tuple((str(path), path.stat().st_mtime_ns, path.stat().st_size) for path in paths)
 
 
@@ -54,7 +55,7 @@ def load_bundle():
         raise ValueError('Source files changed while reading. Wait for the update to finish and refresh.')
     return dict(monthly=monthly, quality=quality, forecasts=forecasts,
                 forecast_manifest=forecast_manifest, allocation_manifest=allocation_manifest,
-                trends=trends, allocation=allocation)
+                trends=trends, allocation=allocation, names=load_area_names())
 
 
 def filter_rows(frame, area='All areas', registration='Both'):
@@ -71,6 +72,21 @@ def monthly_summary(frame):
     """Sum counts and consideration; do not present averages of medians as medians."""
     return frame.groupby('date')[['transaction_count', 'total_price_aed']].sum().rename(
         columns={'transaction_count': 'Sales', 'total_price_aed': 'Transaction value (AED)'})
+
+
+def load_area_names():
+    """{DLD area: name people use}, from area_names.csv if Part 1 wrote one. Names equal to the area are left out."""
+    path = SHARED / 'area_names.csv'
+    if not path.exists():
+        return {}
+    names = pd.read_csv(path, keep_default_na=False)
+    names = names[names.common_name.ne('') & names.common_name.str.casefold().ne(names.area.str.casefold())]
+    return dict(zip(names.area, names.common_name))
+
+
+def area_label(area, names):
+    """'Dubai Marina (Marsa Dubai)': the name people use first, DLD's official name after it."""
+    return f'{names[area]} ({area})' if area in names else area
 
 
 def load_evidence():

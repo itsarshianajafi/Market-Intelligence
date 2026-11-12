@@ -6,7 +6,7 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from src.dashboard.data import (PRICE, ROOT, SALES, STATUS, explain_trend, filter_rows, forecast_table,
+from src.dashboard.data import (PRICE, ROOT, SALES, STATUS, area_label, explain_trend, filter_rows, forecast_table,
                                 load_bundle, load_evidence, method_name, monthly_summary, quarter_name,
                                 quarter_progress, range_text, source_signature)
 from src.dashboard.planning import generate_plan
@@ -74,10 +74,21 @@ def label_bars(labels):
         tooltip=['Label', 'Segments']).properties(height=alt.Step(40))
 
 
-def plan_bars(chosen):
+def known_as(frame, names):
+    """Put the name people use right after the DLD area column."""
+    frame = frame.copy()
+    frame.insert(frame.columns.get_loc('area') + 1, 'known_as', frame.area.map(names).fillna(''))
+    return frame
+
+
+KNOWN_AS = {'known_as': st.column_config.TextColumn('Known as', help='The master project with most of the area\'s sales in the DLD records. Blank when sales are spread over many projects.')}
+
+
+def plan_bars(chosen, names):
     """Agents per area, split by off-plan and ready."""
+    chosen = chosen.assign(area=chosen.area.map(lambda area: area_label(area, names)))
     return alt.Chart(chosen).mark_bar(cornerRadiusEnd=4).encode(
-        y=alt.Y('area:N', sort='-x', title=None, axis=alt.Axis(labelLimit=220)), x=alt.X('sum(agents):Q', title='Agents', axis=alt.Axis(tickMinStep=1)),
+        y=alt.Y('area:N', sort='-x', title=None, axis=alt.Axis(labelLimit=320)), x=alt.X('sum(agents):Q', title='Agents', axis=alt.Axis(tickMinStep=1)),
         color=colour('registration_type', REGISTRATION), order=alt.Order('registration_type:N'),
         tooltip=[alt.Tooltip('area', title='Area'), alt.Tooltip('registration_type', title='Type'),
                  alt.Tooltip('agents', title='Agents')]).properties(height=alt.Step(30))
@@ -87,7 +98,7 @@ def overview(bundle):
     st.header('Dubai’s property market, in context')
     st.write('Official sales records, the direction each area is moving in, a forecast for the next quarter '
              'and a plan for where a sales team should work.')
-    q, monthly, trends = bundle['quality'], bundle['monthly'], bundle['trends']
+    q, monthly, trends, names = bundle['quality'], bundle['monthly'], bundle['trends'], bundle['names']
     latest = trends.quarter.max()
     target_quarter = bundle['forecast_manifest']['forecast_quarter']
     quarters = pd.PeriodIndex(monthly.month, freq='Q').astype(str)
@@ -121,10 +132,10 @@ def overview(bundle):
             f"on a year earlier (off-plan {change['Off-Plan']:+.0%}, ready {change['Ready']:+.0%}).\n"
             f"- **Direction by area.** Of {len(labelled)} area segments with enough sales, {counts['Stable']} are "
             f"stable, {counts['Rising']} rising and {counts['Declining']} declining over the last year.\n"
-            f"- **Most sales are expected in** {', '.join(f'{area} (about {value:,.0f})' for area, value in biggest.items())} "
+            f"- **Most sales are expected in** {'; '.join(f'{area_label(area, names)}, about {value:,.0f}' for area, value in biggest.items())} "
             f"in {quarter_name(target_quarter)}. These are rough sizes, not exact numbers.\n"
             f"- **The plan puts {int(chosen.agents.sum())} agents in {chosen.area.nunique()} areas**, most in "
-            f"{teams.index[0]} ({int(teams.iloc[0])}), where forecast sales, deal size and commission rate together "
+            f"{area_label(teams.index[0], names)} ({int(teams.iloc[0])} agents), where forecast sales, deal size and commission rate together "
             f"are worth most. It uses placeholder business assumptions until real ones are entered.")
 
     st.subheader('Sales per month')
@@ -149,7 +160,7 @@ def overview(bundle):
                    f'{missing} more segments had too few sales to label.')
     with right:
         st.subheader(f'Saved agent plan, {quarter_name(target_quarter)}')
-        st.altair_chart(plan_bars(chosen), width='stretch')
+        st.altair_chart(plan_bars(chosen, names), width='stretch')
         st.caption('Uses placeholder business assumptions. Change them on the Agent Allocation page.')
     with st.expander('Source and data quality'):
         st.write(f"Official DLD / Data Dubai export. Observed records: {q['date_min']} to {q['date_max']}.")
@@ -184,12 +195,12 @@ def explorer(bundle, area, registration):
     download(frame.drop(columns='date'), 'Download selected data', 'selected_monthly_sales.csv', 'explorer-download')
 
 
-def why_this_label(labelled, history, scales):
+def why_this_label(labelled, history, scales, known):
     """Replay the fuzzy rules for one segment: inputs, how strongly each set applies, which rules fire."""
     st.subheader('Why this label?')
     st.caption('Part 2 is a fuzzy classifier. Pick a segment to see its inputs, how far each one counts as '
                'falling, flat or rising, and which rules decided the label.')
-    names = (labelled.area + ' · ' + labelled.registration_type).tolist()
+    names = [f'{area_label(area, known)} · {kind}' for area, kind in zip(labelled.area, labelled.registration_type)]
     row = labelled.iloc[names.index(st.selectbox('Segment', names))]
     sets, rules, degrees = explain_trend(row, scales)
     a, b, c, d = st.columns(4)
@@ -239,17 +250,18 @@ def trends(bundle, evidence, area, registration):
         st.info('No segment here has enough sales, now and a year earlier, for a label.')
     else:
         table = labelled.assign(price=labelled.price_change_yoy * 100, volume=labelled.volume_change_yoy * 100)
-        st.dataframe(table[['area', 'registration_type', 'trend_label', 'trend_score', 'price', 'volume',
-                            'volatility', 'sales_count', 'baseline_label', 'kmeans_label']],
+        st.dataframe(known_as(table, bundle['names'])[['area', 'known_as', 'registration_type', 'trend_label', 'trend_score',
+                                                         'price', 'volume', 'volatility', 'sales_count', 'baseline_label',
+                                                         'kmeans_label']],
                      hide_index=True, width='stretch', column_config={
-            'area': 'Area', 'registration_type': 'Type', 'trend_label': 'Trend',
+            **KNOWN_AS, 'area': 'Area', 'registration_type': 'Type', 'trend_label': 'Trend',
             'trend_score': number('Score', '%+.2f', '−1 declining, +1 rising'),
             'price': percent('Price per m²', 'Change against the same quarter a year earlier, like for like.'),
             'volume': percent('Sales volume', 'Change against the same quarter a year earlier.'),
             'volatility': number('Volatility', '%.3f'), 'sales_count': number('Sales'),
             'baseline_label': st.column_config.TextColumn('Crisp rules say', help='Baseline: fixed price thresholds.'),
             'kmeans_label': st.column_config.TextColumn('k-means says', help='Baseline: three clusters.')})
-        why_this_label(labelled, frame, evidence['trends']['scales'])
+        why_this_label(labelled, frame, evidence['trends']['scales'], bundle['names'])
     download(current, 'Download trend selection', 'selected_trends.csv', 'trends-download')
 
 
@@ -272,10 +284,10 @@ def forecasts(bundle, area, registration):
     level = manifest['forecast_ranges'][SALES]['ok']['level']
     likely = st.column_config.TextColumn('Likely range', help=f'Where about {level:.0%} of past forecasts of this kind landed, applied to this forecast.')
     progress = ['sales_so_far', 'sales_pace', 'pace_note'] if so_far is not None else []
-    order = ['area', 'registration_type', 'sales_forecast', 'sales_range', *progress, 'sales_last', 'sales_change_pct',
+    order = ['area', 'known_as', 'registration_type', 'sales_forecast', 'sales_range', *progress, 'sales_last', 'sales_change_pct',
              'price_forecast', 'price_range', 'price_last', 'price_change_pct', 'status']
-    st.dataframe(table[order], hide_index=True, width='stretch', column_config={
-        'area': 'Area', 'registration_type': 'Type', 'sales_range': likely, 'price_range': likely,
+    st.dataframe(known_as(table, bundle['names'])[order], hide_index=True, width='stretch', column_config={
+        **KNOWN_AS, 'area': 'Area', 'registration_type': 'Type', 'sales_range': likely, 'price_range': likely,
         'sales_forecast': number(f'Sales forecast, {target_name}'), 'sales_last': number(f'Sales, {origin_name}'),
         'sales_so_far': number(f'So far (to {cutoff.day} {cutoff:%b})', help='Sales already recorded in the forecast quarter.'),
         'sales_pace': number('At this pace', help='So far, scaled up to the whole quarter as if sales came evenly.'),
@@ -295,7 +307,8 @@ def forecasts(bundle, area, registration):
 
     st.subheader('One area in detail')
     areas = sorted(available.area.unique())
-    selected_area = st.selectbox('Forecast area', areas, index=areas.index('Business Bay') if 'Business Bay' in areas else 0)
+    selected_area = st.selectbox('Forecast area', areas, index=areas.index('Business Bay') if 'Business Bay' in areas else 0,
+                                 format_func=lambda area: area_label(area, bundle['names']))
     current = available[available.area.eq(selected_area)]
     columns = st.columns(len(current))
     for column, row in zip(columns, current.itertuples()):
@@ -392,12 +405,12 @@ def allocation(bundle, signature):
     cap = max(math.ceil(assumptions['max_area_share'] * count), assumptions['min_team_per_area'] + 1)
     low, high = assumptions['offplan_share']
     st.caption(f"Effective limits: at most {cap} agents per area; {math.floor(low * count)}–{math.ceil(high * count)} off-plan agents; at most {assumptions['max_areas']} areas.")
-    st.altair_chart(plan_bars(chosen), width='stretch')
-    st.dataframe(chosen.assign(selection=chosen.selection_rate * 100, forecast_sales=chosen.forecast_sales.round())[[
-        'area', 'registration_type', 'agents', 'forecast_sales', 'ticket_aed', 'expected_deals',
+    st.altair_chart(plan_bars(chosen, bundle['names']), width='stretch')
+    st.dataframe(known_as(chosen, bundle['names']).assign(selection=chosen.selection_rate * 100, forecast_sales=chosen.forecast_sales.round())[[
+        'area', 'known_as', 'registration_type', 'agents', 'forecast_sales', 'ticket_aed', 'expected_deals',
         'expected_commission_aed', 'next_agent_value_aed', 'selection', 'trend_label']],
         hide_index=True, width='stretch', column_config={
-            'area': 'Area', 'registration_type': 'Type', 'agents': number('Agents'),
+            **KNOWN_AS, 'area': 'Area', 'registration_type': 'Type', 'agents': number('Agents'),
             'forecast_sales': number('Forecast sales', help='Part 3\'s forecast for the whole segment.'),
             'ticket_aed': number('Typical deal (AED)', help='Typical recent sale price in the segment.'),
             'expected_deals': number('Expected deals', '%.1f', 'Deals this team is expected to close, with diminishing returns as it grows.'),
@@ -514,7 +527,8 @@ def main():
         st.sidebar.warning('The forecast quarter is over. Download a new export and run the update command in the README.')
     area, registration = 'All areas', 'Both'
     if page in ('Data Explorer', 'Market Trends', 'Forecasts'):
-        area = st.sidebar.selectbox('Area', ['All areas'] + sorted(bundle['monthly'].area.unique()))
+        area = st.sidebar.selectbox('Area', ['All areas'] + sorted(bundle['monthly'].area.unique()),
+                                    format_func=lambda name: area_label(name, bundle['names']))
         registration = st.sidebar.selectbox('Registration', ['Both', 'Ready', 'Off-Plan'])
     st.sidebar.caption('Official DLD data · University research project')
     if page == 'Overview': overview(bundle)
