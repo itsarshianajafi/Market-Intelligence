@@ -508,6 +508,10 @@ def main():
                                         'Agent Allocation', 'Evidence'])
     st.sidebar.divider()
     st.sidebar.caption(f"Data to {bundle['quality']['date_max']} · Forecast for {quarter_name(bundle['forecast_manifest']['forecast_quarter'])}")
+    today = pd.Timestamp.now(tz='Asia/Dubai').tz_localize(None).normalize()
+    st.sidebar.caption(f"The data is {(today - pd.Timestamp(bundle['quality']['date_max'])).days} days old.")
+    if today > pd.Period(bundle['forecast_manifest']['forecast_quarter'], freq='Q').end_time:
+        st.sidebar.warning('The forecast quarter is over. Download a new export and run the update command in the README.')
     area, registration = 'All areas', 'Both'
     if page in ('Data Explorer', 'Market Trends', 'Forecasts'):
         area = st.sidebar.selectbox('Area', ['All areas'] + sorted(bundle['monthly'].area.unique()))
