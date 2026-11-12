@@ -344,6 +344,11 @@ def allocation(bundle, signature):
         ready = a.number_input('Ready commission (%)', min_value=0.1, max_value=100.0, value=2.0, step=0.1)
         offplan = b.number_input('Off-plan commission (%)', min_value=0.1, max_value=100.0, value=4.0, step=0.1)
         objective = c.selectbox('Planning objective', ['commission', 'deals'], format_func=str.title)
+        st.markdown('**What if the market moves?** The forecast only knows past sales. Use these to test a shock '
+                    'it cannot see, such as a conflict or a rate change.')
+        a, b, c = st.columns(3)
+        offplan_change = a.number_input('Off-plan sales change (%)', min_value=-90, max_value=100, value=0, step=5)
+        ready_change = b.number_input('Ready sales change (%)', min_value=-90, max_value=100, value=0, step=5)
         st.caption('Existing model limits use whole-agent rounding. The generated plan shows its effective area and off-plan limits; small teams can exceed the nominal percentage caps.')
         submitted = st.form_submit_button('Generate custom plan', type='primary')
     if submitted:
@@ -351,9 +356,11 @@ def allocation(bundle, signature):
             # Recheck the complete snapshot immediately before invoking the optimiser.
             load_bundle()
             with st.spinner('Generating your plan…'):
-                table, manifest = generate_plan(agents, deals, share / 100, ready / 100, offplan / 100, objective)
+                table, manifest = generate_plan(agents, deals, share / 100, ready / 100, offplan / 100, objective,
+                                                ready_change / 100, offplan_change / 100)
             st.session_state['custom_plan'] = (signature, table, manifest, dict(
-                agents=agents, deals_per_agent=deals, market_share=share, ready=ready, offplan=offplan, objective=objective))
+                agents=agents, deals_per_agent=deals, market_share=share, ready=ready, offplan=offplan, objective=objective,
+                ready_change=ready_change, offplan_change=offplan_change))
         except (ValueError, OSError, KeyError) as exc:
             st.error(f'Could not generate a plan: {exc}')
     saved = st.session_state.get('custom_plan')
@@ -365,12 +372,21 @@ def allocation(bundle, signature):
     st.subheader('Custom plan' if saved else 'Saved default plan')
     if saved:
         params = saved[3]
-        st.caption(f"Generated for {params['agents']} agents · {params['deals_per_agent']} deals/agent · {params['market_share']}% market share · Ready {params['ready']}% / Off-Plan {params['offplan']}% commission · objective: {params['objective']}. Form edits apply only after Generate.")
+        st.caption(f"Generated for {params['agents']} agents · {params['deals_per_agent']} deals/agent · {params['market_share']}% market share · Ready {params['ready']}% / Off-Plan {params['offplan']}% commission · objective: {params['objective']} · what if: off-plan sales {params['offplan_change']:+d}%, ready {params['ready_change']:+d}%. Form edits apply only after Generate.")
     chosen = table[table.agents.gt(0)]
     a, b, c = st.columns(3)
     a.metric('Agents placed', int(chosen.agents.sum()))
     b.metric('Areas selected', chosen.area.nunique())
-    c.metric('Estimated commission', f'AED {chosen.expected_commission_aed.sum():,.0f}')
+    default = bundle['allocation']
+    versus = None
+    if saved:
+        versus = f"{chosen.expected_commission_aed.sum() / default.expected_commission_aed.sum() - 1:+.0%} vs the saved plan"
+    c.metric('Estimated commission', f'AED {chosen.expected_commission_aed.sum():,.0f}', versus)
+    if saved:
+        keys = ['area', 'registration_type']
+        both = chosen[keys + ['agents']].merge(default[keys + ['agents']], on=keys, how='left', suffixes=('', '_saved'))
+        moved = int((both.agents - both.agents_saved.fillna(0)).clip(lower=0).sum())
+        st.caption(f'{moved} of {int(chosen.agents.sum())} agents sit in a different segment than in the saved plan.')
     count = int(manifest['agents'])
     assumptions = manifest['assumptions_not_from_data']
     cap = max(math.ceil(assumptions['max_area_share'] * count), assumptions['min_team_per_area'] + 1)

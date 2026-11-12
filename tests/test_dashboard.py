@@ -82,7 +82,8 @@ class DashboardDataTests(unittest.TestCase):
     def test_custom_planner_rejects_bad_assumptions(self):
         for changes in [(0, 2, .05, .02, .04, 'commission'),
                         (20, 2, 0, .02, .04, 'commission'),
-                        (20, 2, .05, .02, .04, 'unknown')]:
+                        (20, 2, .05, .02, .04, 'unknown'),
+                        (20, 2, .05, .02, .04, 'commission', -0.95, 0)]:
             with self.assertRaises(ValueError):
                 generate_plan(*changes)
 
@@ -93,6 +94,9 @@ class DashboardDataTests(unittest.TestCase):
         self.assertEqual(int(frame.agents.sum()), 20)
         self.assertTrue(manifest['feasible'])
         self.assertEqual(before, {p: fingerprint(p) for p in before})
+        shocked, _ = generate_plan(20, 2, .05, .02, .04, 'commission', offplan_change=-0.5)
+        self.assertEqual(int(shocked.agents.sum()), 20)
+        self.assertLess(shocked.expected_commission_aed.sum(), frame.expected_commission_aed.sum())
 
 
 @unittest.skipUnless(AppTest, 'Install requirements-dashboard.txt for Streamlit interaction tests')
