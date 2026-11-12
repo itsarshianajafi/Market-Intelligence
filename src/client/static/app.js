@@ -2,6 +2,16 @@
 'use strict';
 
 const C = { offplan: '#1F5A99', ready: '#C77B1F', rising: '#1F5A99', steady: '#9AA3AD', falling: '#B5372E', brand: '#12355B' };
+const RAMP = ['#B7D3F6', '#6DA7EC', '#2A78D6', '#1C5CAB', '#104281'];      // one hue, light to dark: more expected sales
+
+// Five classes holding about the same number of areas, so the colours spread over the whole map.
+function classes(values) {
+  const sorted = values.slice().sort((a, b) => a - b);
+  const cuts = [1, 2, 3, 4].map((k) => sorted[Math.floor(sorted.length * k / 5)]);
+  const nice = (v) => { const p = 10 ** Math.max(0, Math.floor(Math.log10(v)) - 1); return Math.round(v / p) * p; };
+  const edges = [...new Set(cuts.map(nice))];
+  return { edges, of: (v) => edges.filter((e) => v >= e).length };
+}
 const $ = (id) => document.getElementById(id);
 const whole = Charts.whole;
 const percent = (x) => `${Math.abs(Math.round(x * 100))}%`;
@@ -73,19 +83,27 @@ function showMarket(m) {
     .concat(a.low !== null ? [['rough range', `${whole(a.low)} – ${whole(a.high)}`]] : [])
     .concat(a.change !== null ? [[`on ${m.quarter}`, signed(a.change)]] : [])
     .concat([['direction', a.direction || 'too few sales to say']]).concat(a.dld ? [['DLD name', a.dld]] : []);
+  const scale = classes(m.areas.map((a) => a.forecast));
+  const swatch = (colour, text, hollow) => {
+    const box = el('i', 'swatch');
+    box.style.background = hollow ? '#FFFFFF' : colour;
+    if (hollow) box.style.border = '1px solid #8D97A3';
+    return fill(el('span'), [box, document.createTextNode(text)]);
+  };
   const drawMap = (mode) => {
-    const colour = (a) => mode === 'sales' ? C.offplan : a.direction ? C[a.direction] : C.steady;
-    Charts.map($('market-map'), { base: baseMap, label: `Map of Dubai with a circle for each of ${m.areas.length} areas, sized by expected sales.`,
-      points: m.areas.map((a, i) => ({ lat: a.lat, lon: a.lon, size: a.forecast, color: colour(a), ring: mode === 'direction' && !a.direction,
+    const colour = (a) => mode === 'sales' ? RAMP[scale.of(a.forecast)] : a.direction ? C[a.direction] : C.steady;
+    Charts.map($('market-map'), { base: baseMap, shapes: baseMap.communities.features,
+      label: `Map of Dubai with ${m.areas.length} areas shaded by ${mode === 'sales' ? 'expected sales' : 'direction'}.`,
+      points: m.areas.map((a, i) => ({ area: a.area, lat: a.lat, lon: a.lon, size: a.forecast, color: colour(a), ring: mode === 'direction' && !a.direction,
         name: a.name, detail: detail(a), label: i < 8 ? a.name : null })) });
-    $('map-note').textContent = mode === 'sales' ? 'Circle size is the number of homes expected to sell.'
-      : 'Circle size is expected sales. Colour is how the area moved over the last year.';
-    fill($('map-legend'), mode === 'sales' ? [] : [['rising', 'Rising'], ['steady', 'Steady'], ['falling', 'Falling']]
-      .map(([key, text]) => {
-        const dot = el('i', 'key dot');
-        dot.style.background = C[key];
-        return fill(el('span'), [dot, document.createTextNode(text)]);
-      }).concat([fill(el('span'), [el('i', 'key dot none'), document.createTextNode('Too few sales to say')])]));
+    $('map-note').textContent = mode === 'sales' ? 'Each area is shaded by the number of homes expected to sell.'
+      : 'Each area is shaded by how it moved over the last year.';
+    const e = scale.edges;
+    fill($('map-legend'), mode === 'sales'
+      ? RAMP.slice(0, e.length + 1).map((colour, i) => swatch(colour, i === 0 ? `under ${whole(e[0])}` : i === e.length ? `${whole(e[i - 1])}+` : `${whole(e[i - 1])}–${whole(e[i])}`))
+        .concat([swatch(null, 'no forecast', true)])
+      : [['rising', 'Rising'], ['steady', 'Steady'], ['falling', 'Falling']].map(([key, text]) => swatch(C[key], text))
+        .concat([swatch(null, 'too few sales to say', true)]));
   };
   for (const button of document.querySelectorAll('.switch button')) {
     button.addEventListener('click', () => {
@@ -145,8 +163,9 @@ function showPlan(plan, backtest, m) {
     tile('Areas covered', String(plan.areas), `of ${new Set(plan.segments.map((s) => s.name)).size} considered`),
     splitTile]);
 
-  Charts.map($('plan-map'), { base: baseMap, maxRadius: 20, height: 520, label: `Map of Dubai showing the ${plan.areas} areas in the plan, sized by agents.`,
-    points: m.areas.map((a) => ({ lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.brand : C.steady, ring: !a.agents,
+  Charts.map($('plan-map'), { base: baseMap, shapes: baseMap.communities.features, maxRadius: 20, height: 520,
+    label: `Map of Dubai with the ${plan.areas} areas in the plan shaded.`,
+    points: m.areas.map((a) => ({ area: a.area, lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.brand : C.steady, ring: !a.agents,
       name: a.name, label: a.agents ? `${a.name} (${a.agents})` : null,
       detail: [['agents', String(a.agents)], ['expected sales', whole(a.forecast)]].concat(a.dld ? [['DLD name', a.dld]] : []) })) });
 

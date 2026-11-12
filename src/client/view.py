@@ -10,6 +10,7 @@ import pandas as pd
 from src.dashboard.data import PRICE, ROOT, SALES, quarter_name
 
 MAP = ROOT / 'data/reference/dubai_map.json'
+SHAPES = ROOT / 'data/reference/dubai_communities.geojson'
 START = '2020-01'       # the analysis window of Parts 2 to 4
 
 KEYS = ['area', 'registration_type']
@@ -24,6 +25,11 @@ def display(area, names):
 def base_map():
     """Coastline, motorways and a point per area, fetched once from OpenStreetMap by src.client.basemap."""
     return json.loads(MAP.read_text()) if MAP.exists() else {'coast': [], 'roads': [], 'places': {}, 'attribution': ''}
+
+
+def communities():
+    """Official community boundaries joined to DLD areas (Data Dubai), from src.client.boundaries."""
+    return json.loads(SHAPES.read_text()) if SHAPES.exists() else {'type': 'FeatureCollection', 'features': []}
 
 
 def monthly_series(monthly, cutoff):
@@ -51,7 +57,10 @@ def price_series(monthly, scope, latest):
 def area_points(bundle):
     """Every area that has a forecast and a place on the map: expected sales, direction and agents in the plan."""
     forecasts, trends, plan = bundle['forecasts'], bundle['trends'], bundle['allocation']
-    places = base_map()['places']
+    places = {area: {'lat': p['lat'], 'lon': p['lon']} for area, p in base_map()['places'].items()}
+    for feature in communities()['features']:      # the official boundary's centre beats an OpenStreetMap point
+        lat, lon = feature['properties']['centre']
+        places[feature['properties']['area']] = {'lat': lat, 'lon': lon}
     sales = forecasts[forecasts.target.eq(SALES) & forecasts.forecast_value.notna()]
     latest = trends[trends.quarter.eq(bundle['forecast_manifest']['origin_quarter']) & trends.status.eq('ok')]
     agents = plan[plan.agents.gt(0)].groupby('area').agents.sum()
@@ -63,7 +72,7 @@ def area_points(bundle):
         name, dld = display(area, bundle['names'])
         own = latest[latest.area.eq(area)].sort_values('sales_count', ascending=False)     # the busier segment decides
         last = rows.last_actual.sum(min_count=1)
-        out.append({'name': name, 'dld': dld, 'lat': places[area]['lat'], 'lon': places[area]['lon'],
+        out.append({'area': area, 'name': name, 'dld': dld, 'lat': places[area]['lat'], 'lon': places[area]['lon'],
                     'forecast': float(rows.forecast_value.sum()),
                     'low': float(rows.range_low.sum(min_count=1)) if rows.range_low.notna().all() else None,
                     'high': float(rows.range_high.sum(min_count=1)) if rows.range_high.notna().all() else None,

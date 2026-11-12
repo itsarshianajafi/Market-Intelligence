@@ -1,0 +1,302 @@
+area_id,name_en,name_ar,municipality_number
+229,Um Suqaim,ام سقيم,0
+230,Abu Hail,ابو هيل,126
+231,Al Mamzer,الممزر,134
+232,Mirdif,مردف,251
+233,Hor Al Anz,هور العنز,127
+234,Hor Al Anz East,هور العنز شرق,133
+235,Eyal Nasser,عيال ناصر,116
+236,Burj Nahar,برج نهار,0
+237,Al Sabkha,السبخه,115
+238,Al Dhagaya,الضغايه,113
+239,Al Baraha,البراحه,122
+240,Port Saeed,بور سعيد,129
+241,Al Qusais Old,القصيص القديمة,0
+242,Al Ras,الراس,112
+243,Al-Safiyyah,الصفيه,0
+244,Al Murqabat,المرقبات,124
+245,Al-Murar Qadeem,المرر القديم,0
+246,Al-Murar Jadeed,المرر الجديد,0
+247,Al Khabeesi,الخبيصى,128
+248,Um Ramool,ام رمول,215
+249,Al Muteena,المطينه,123
+250,Al-Souq Al Kabeer (Deira),السوق الكبير - ديرة,0
+251,Naif South,نايف جنوب,0
+252,Al-Riqqa East,الرقه شرق,0
+253,Al-Riqqa West,الرقه غرب,0
+254,Al Buteen,البطين,114
+255,Rega Al Buteen,رقه البطين,125
+256,Al-Tawar,الطوار,0
+257,Al Khawaneej,الخوانيج,0
+258,Muhaisna,محيصنه,0
+259,Al-Musalla (Deira),المصلى - ديرة,0
+260,Al-Souq Al-Muqayatah,سوق المخايطه,0
+261,Souq Al-Tamar,سوق التمر,0
+262,Al-Zarouniyyah,الزرعونيه,0
+263,Al-Nahdah,النهده,0
+264,Nad Al Hamar,ند الحمر,416
+265,Al-Muhaisnah North,محيصنه شمال,0
+266,Al Satwa,السطوه,334
+267,Al Raffa,الرفاعه,316
+268,Al Musalla (Dubai),المصلى - دبي,0
+269,Al Hamriya,الحمريه,313
+270,Al Safaa,الصفا,0
+271,Al Karama,الكرامه,318
+272,Al Baharna,البحارنه,0
+273,Al-Baloosh,البلوش,0
+274,Shandagha East,الشندغه شرق,0
+275,Shandagha West,الشندغه غرب,0
+276,Al Bada,البدع,333
+277,Al Qoaz,القوز,0
+278,Mankhool,منخول,317
+279,Tawaa Al Sayegh,طوى الصايغ,451
+280,Zareeba Duviya,زريبه دوييه,0
+281,Al Asbaq,العسبق,0
+282,Ras Al Khor,راس الخور,413
+283,Al Fahidi,الفهيدى,0
+284,Jabal Ali,جبل على,500
+285,Nad Al Shiba,ند الشبا,600
+286,Zabeel East,زعبيل شرق,0
+287,Al Sanaiyya,الصناعيه,0
+288,Al Marmoom,المرموم,917
+289,Al Baagh,الباغ,0
+290,Al-Nabgha,النبغا,0
+291,Tareeq Al Aweer,طريق العوير,0
+292,Al Barsha,البرشاء,0
+293,Umm Hurair,ام هرير,0
+294,Lehbab,لهباب,0
+295,Margham,مرغم,841
+296,Al Ruwayyah,الرويه,900
+297,Al Warqa First,الورقاء الاولى,421
+298,Al Warqa Third,الورقاء الثالثه,423
+299,Al Warqa Fourth,الورقاء الرابعه,424
+300,Al Rashidiya,الراشديه,216
+301,Al Nahda Second,النهده الثانيه,241
+302,Tawi Al Muraqqab,طوى مرقب,0
+303,Um Suqaim First,ام سقيم الاولى,356
+304,Um Suqaim Second,ام سقيم الثانيه,362
+305,AL QUSAIS,القصيص,232
+306,Al Twar Fourth,الطوار الرابعة,234
+307,Al Safouh First,الصفوح الاولى,372
+308,Al Goze Industrial First,القوز الصناعيه الاولى,364
+309,Al Goze Industrial Third,القوز الصناعيه الثالثه,368
+310,Al Twar Second,الطوار الثانيه,227
+311,Muhaisanah Third,محيصنه الثالثه,244
+312,Muhaisanah First,محيصنه الاولى,261
+313,Al Saffa First,الصفا الاولى,353
+314,Al Saffa Second,الصفا الثانيه,357
+315,Al Manara,المناره,363
+316,Al Mizhar First,المزهر الاولى,262
+317,Jumeirah First,جميرا الاولى,332
+318,Jumeirah Third,جميرا الثالثه,352
+319,Ras Al Khor Industrial Second,راس الخور الصناعيه الثانيه,613
+320,Al Qusais Industrial Second,القصيص الصناعيه الثانيه,243
+321,Al Qusais Industrial Third,القصيص الصناعيه الثالثه,246
+322,Al Qusais Industrial Fourth,القصيص الصناعيه الرابعه,247
+323,Al Qusais Industrial Fifth,القصيص الصناعيه الخامسه,248
+324,Shandagha,الشندغه,311
+325,Um Hurair First,ام هرير الاولى,314
+326,Um Hurair Second,ام هرير الثانيه,315
+327,Nad Shamma,ند شما,213
+328,Al Jafliya,الجافليه,323
+329,Trade Center Second,المركز التجارى الثانيه,336
+330,Marsa Dubai,مرسى دبي,392
+331,Zaabeel First,زعبيل الاولى,325
+332,Zaabeel Second,زعبيل الثانيه,337
+333,Madinat Dubai Almelaheyah,مدينة دبي الملاحية,321
+334,Al Jadaf,الجداف,326
+335,Nad Al Shiba First,ند الشبا الاولى,618
+336,Nad Al Shiba Second,ند الشبا الثانيه,615
+337,Nad Al Shiba Third,ند الشبا الثالثه,616
+338,Al Goze First,القوز الاولى,354
+339,Al Mararr,المرر,117
+340,Ghadeer Al tair,غدير الطير,355
+341,Trade Center First,المركز التجارى الاولى,335
+342,Ras Al Khor Industrial Third,راس الخور الصناعيه الثالثه,614
+343,Al Warsan First,ورسان الاولى,621
+344,Al Warsan Second,ورسان الثانيه,622
+345,Al Warsan Third,ورسان الثالثه,811
+346,Al Hamriya Port,ميناء الحمريه,131
+347,Al Goze Third,القوز الثالثه,358
+348,Al Goze Fourth,القوز الرابعه,359
+349,Grayteesah,قريطيسه,941
+350,Al Thanyah Fifth,الثنيه الخامسة,393
+351,Al Thanyah Third,الثنيه الثالثة,388
+352,Al Thanayah Fourth,الثنيه الرابعة,394
+353,Emirates Hills Fourth,تلال الامارات الرابعه,0
+354,Al Warqa Second,الورقاء الثانيه,422
+355,Al Nahda First,النهده الاولى,231
+356,Al Rega,الرقه,119
+357,AL TWAR FIFTH,الطوار الخامسة,233
+358,Al Twar First,الطوار الاولى,226
+359,Al Twar Third,الطوار الثالثه,228
+360,Muhaisanah Second,محيصنه الثانيه,264
+361,Muhaisanah Fourth,محيصنه الرابعه,245
+362,Naif,نايف,118
+363,Al Qusais Industrial First,القصيص الصناعيه الاولى,242
+364,Al Wasl,الوصل,343
+365,Al Hudaiba,الحضيبه,322
+366,Al Kifaf,الكفاف,324
+367,Al Suq Al Kabeer,السوق الكبير,312
+368,Al Barsha First,البرشاء الاولى,373
+369,Al Barsha Third,البرشاء الثالثه,375
+370,Um Suqaim Third,ام سقيم الثالثه,366
+371,Al Safouh Second,الصفوح الثانيه,382
+372,Al Goze Industrial Second,القوز الصناعيه الثانيه,365
+373,Al Goze Industrial Fourth,القوز الصناعيه الرابعه,369
+374,Um Al Sheif,ام الشيف,367
+375,Jumeirah Second,جميرا الثانيه,342
+376,Ras Al Khor Industrial First,راس الخور الصناعيه الاولى,612
+377,Al-Nakhal,النخل,0
+378,Al Garhoud,القرهود,214
+379,Al-Shumaal,الشمال,0
+380,Al Mizhar,المزهر,0
+381,Oud Al Muteena,عود المطينه,0
+382,Al Waheda,الوحيده,132
+383,Jumeirah,جميرا,0
+384,Bur Dubai,بر دبى,0
+385,Muashrah Al Bahraana,معشره البحارنه,0
+386,Al-Raulah,الروله,0
+387,Al-Bastakiyah,البستكيه,0
+388,Oud Metha,عود ميثا,319
+389,Tareeq Abu Dhabi,طريق ابوظبى,0
+390,Burj Khalifa,برج خليفة,345
+391,Al Lusaily,اللسيلى,931
+392,Nazwah,نزوه,736
+393,Al Barsha Second,البرشاء الثانيه,376
+394,Al Mizhar Second,المزهر الثانيه,263
+395,Jabal Ali Industrial First,جبل على الصناعية الأولى,599
+396,Al Khawaneej First,الخوانيج الأولى,281
+397,Al Khawaneej Second,الخوانيج الثانية,282
+398,Al Aweer First,العوير الأولى,711
+399,Al Aweer Second,العوير الثانية,721
+400,Al Eyas,العياص,283
+401,Wadi Al Amardi,وادي العمردي,271
+402,AL MIZHAR FOURTH,المزهر الرابعة,265
+403,Al Mizhar Third,المزهر الثالثة,266
+404,Mushrif,مشرف,252
+405,Bukadra,بوكدرة,611
+406,Nad Al Shiba Fourth,ند الشبا الرابعه,617
+407,Tawi Alfuqa,طوى الفقع,0
+408,Riqat Masali,رقعه مسالى,0
+409,Al Barshaa South Third,البرشاء جنوب الثالثة,673
+410,Palm Jumeirah,نخلة جميرا,381
+411,Palm Jabal Ali,نخلة جبل علي,501
+412,Al Merkadh,المركاض,347
+413,World Islands,جزر العالم,303
+414,Al Barshaa South Second,البرشاء جنوب الثانية,672
+415,Al Barshaa South First,البرشاء جنوب الاولى,671
+416,Cornich Deira,كورنيش ديره,121
+417,Sikkat Al Khail North,سكه الخيل شمال,0
+418,Naif North,نايف شمال,0
+419,Sikkat Al Khail South,سكه الخيل جنوب,0
+420,Mushrif,مشرف,0
+421,Al-Mustashfa West,المستشفى غرب,0
+422,Sikka Al Khail,سكه الخيل,0
+423,Al-Aweer,العوير,0
+424,Al-Qiyadah,القياده,0
+425,Al-Dzahiyyah Al-Jadeedah,الضاحيه الجديده,0
+426,Souq Sikkat Al Khail,سوق سكه الخيل,0
+427,Nad Rashid,ند راشد,0
+428,Souq Al-Lariyyah,سوق اللاريه,0
+429,Al Zaroob,الزروب,0
+430,Dubai International Airport,مطار دبي الدولي,221
+431,Al-Cornich,الكورنيش,111
+432,Palm Deira,نخلة ديرة,101
+433,Al Thanyah Second,الثنيه الثانية,384
+434,Wadi Al Safa 6,وادي الصفا 6,664
+435,Al Hebiah Fourth,الحبيه الرابعة,682
+436,Festival City First,مدينة المهرجان الأولى,0
+437,Al Kheeran,الخيران,412
+438,Al Ttay,الطي,284
+439,Universe Islands,جزر الكون,888
+440,Almeydan,الميدان,0
+441,Al Barsha South Fourth,البرشاء جنوب الرابعة,681
+442,Al Barsha South Fifth,البرشاء جنوب الخامسة,684
+443,Al Thanyah First,الثنيه الأولى,383
+444,Al Hebiah First,الحبيه الاولى,674
+445,Jabal Ali First,جبل علي الأولى,591
+446,Al Wajehah Al Bhariyah,الواجهة البحرية,502
+447,Al Khairan First,الخيران الأولى,415
+448,Al Khairan  Second,الخيران الثانية,0
+449,Al Yufrah 2,اليفره 2,916
+450,Al Warqa Fifth,الورقاء الخامسة,425
+451,Al Hebiah Fifth,الحبيه الخامسة,683
+452,Al Hebiah Second,الحبيه الثانية,675
+453,Saih Shuaib 2,سيح شعيب 2,531
+454,Saih Shuaib 3,سيح شعيب 3,532
+455,Saih Shuaib 4,سيح شعيب 4,533
+456,Jumeira Island First,جزيرة جميرا الأولى,301
+458,Dubai Investment Park First,مجمع دبي للاستثمار الاول,598
+459,Dubai Investment Park Second,مجمع دبي للاستثمار الثاني,597
+460,Almarmum First,المرموم الاولى,0
+461,Almarmum Third,المرموم الثالثة,0
+462,Madinat Al Mataar,مدينة المطار,521
+463,Wadi Al Safa 7,وادي الصفا 7,665
+464,Wadi Al Safa 2,وادي الصفا 2,643
+465,Wadi Al Safa 3,وادي الصفا 3,645
+466,Wadi Al Safa 4,وادي الصفا 4,646
+467,Wadi Al Safa 5,وادي الصفا 5,648
+468,Yaraah,يراح,861
+469,Al Yufrah 1,اليفره 1,915
+470,Al Faga'A,الفقع,945
+471,Al Rowaiyah Third,الرويه الثالثه,814
+472,Jabal Ali Second,جبل علي الثانية,592
+473,AL Athbah,العذبة,431
+474,OUD AL MUTEENA,عود المطينة,268
+475,Muhaisanah Fifth,محيصنة الخامسة,267
+476,Jabal Ali Third,جبل علي الثالثة,593
+477,Mena Jabal Ali,ميناء جبل علي,594
+478,Jabal Ali Industrial Second,جبل علي الصناعية الثانية,518
+479,Jabal Ali Industrial Third,جبل علي الصناعية الثالثة,516
+480,Saih Shuaib 1,سيح شعيب 1,513
+481,Hessyan Second,حصيان الثانية,512
+482,Hadaeq Sheikh Mohammed Bin Rashid,حدائق الشيخ محمد بن راشد,631
+483,Warsan Fourth,ورسان الرابعة,624
+484,Nadd Hessa,ند حصة,626
+485,Me'Aisem First,معيصم الأول,685
+486,Me'Aisem Second,معيصم الثانية,686
+487,Anakhali,نخلي,724
+488,Al Wohoosh,الوحوش,727
+489,Lehbab First,لهباب الاولى,731
+490,Al Meryal,المريال,735
+492,Al Rowaiyah First,الروية الأولى,812
+493,Al Rowaiyah Second,الروية الثانية,813
+494,Umm Addamin,أم الدمن,824
+495,Mereiyeel,مرييل,821
+496,Le Hemaira,الحميرا,826
+497,Lehbab Second,لهباب الثانية,831
+498,Um Almoameneen,ام المؤمنين,835
+499,Al Maha,المها,845
+500,Um Esalay,ام السلي,847
+501,Remah,رماح,851
+502,Madinat Hind 1,مدينة هند 1,911
+503,Madinat Hind 2,مدينة هند 2,912
+504,Madinat Hind 3,مدينة هند 3,913
+505,Madinat Hind 4,مدينة هند 4,914
+506,Al Yelayiss 1,اليلايس 1,921
+507,Al Yelayiss 2,اليلايس 2,922
+508,Al Yelayiss 3,اليلايس 3,923
+509,Al Yelayiss 4,اليلايس 4,924
+510,Al Yelayiss 5,اليلايس 5,925
+511,Saih Alsalam,سيح السلم,951
+512,Al Hathmah,الحثمة,956
+513,Madinat Latifa,مدينة لطيفة,961
+514,Ghadeer Barashy,غدير براشي,967
+515,Saih Aldahal,سيح الدحل,971
+516,Al Oshoosh,العشوش,975
+517,Saih Shuaelah,سيح شعيله,978
+518,Mugatrah,مقطرة,981
+519,Al Layan1,الليان1,987
+520,Al Layan 2,الليان 2,988
+521,Hafair,حفير,991
+522,Hessyan First,حصيان الاولى,511
+523,Al Hebiah Third,الحبية الثالثة,676
+524,Muragab,مرقب,857
+525,Hatta,حتا,891
+526,Business Bay,الخليج التجارى,346
+527,Island 2,جزيرة 2,302
+528,Al Yufrah 3,اليفره 3,918
+529,Al Yufrah 4,اليفره 4,919
+530,Jumeira Island 2,جزيرة جميرا الثانية,304
+531,Al Hebiah Sixth,الحبيه السادسة,677

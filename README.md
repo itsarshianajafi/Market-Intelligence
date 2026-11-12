@@ -31,7 +31,12 @@ screen, which takes a few seconds per plan. It listens on this machine only. `sr
 turns the shared results into the facts the screens show; `tests/test_client.py` checks them against
 the files and exercises the server. `src/client/static/charts.js` holds every chart and map.
 
-The maps are Leaflet maps with one circle per area. The background tiles come from Stadia Maps
+The maps are Leaflet maps that shade each area inside its official boundary. The boundaries come from
+two open Data Dubai datasets (Dubai Open Data Licence): Dubai Municipality's "Communities" polygons and
+Dubai Land Department's "Lookup Dubai Community Areas", which gives each DLD area its municipality
+number. DLD areas are joined to the polygons by that number, not by name: all 72 areas with a forecast
+have a boundary (224 areas in all). `python -m src.client.boundaries` downloads both again and writes
+`data/reference/dubai_communities.geojson` and `data/reference/dld_dm_area_lookup.csv`. The background tiles come from Stadia Maps
 (Alidade Smooth), which needs no key when the app runs on localhost; a copy hosted elsewhere needs a
 free Stadia account. If Stadia does not load, Esri's light grey map is used, and with no internet at
 all the map draws Dubai's coastline and motorways from `data/reference/dubai_map.json` (OpenStreetMap,
