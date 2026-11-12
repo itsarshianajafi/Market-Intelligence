@@ -17,6 +17,7 @@ import pandas as pd
 
 from .allocation import run as allocation
 from .dashboard.data import load_bundle
+from .dld_data import area_names
 from .dld_data.pipeline import prepare
 from .forecasting import run as forecasting
 from .forecasting.data import last_calendar_complete_quarter
@@ -68,6 +69,10 @@ def update(inputs, output_dir):
     with restored_on_failure([SHARED, REPORTS, forecasting.DEFAULT_CONFIG]):
         for name in PART1_FILES:
             shutil.copy2(Path(output_dir) / name, SHARED / name)
+        try:
+            area_names.build(inputs, SHARED / 'area_names.csv')
+        except ValueError:      # this export layout has no master project column: keep the names we have
+            pass
         config = forecasting.DEFAULT_CONFIG
         config.write_text(advance_quarters(config.read_text(), part1['date_max']))
         trends.run(json.loads(trends.DEFAULT_CONFIG.read_text()))
