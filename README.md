@@ -23,17 +23,20 @@ or the market changes.
 python -m src.client        # then open http://localhost:8600
 ```
 
-It needs nothing beyond the core requirements (the server is Python's standard library, the pages are
-plain HTML, CSS and JavaScript in `src/client/static/`). It reads the same shared files as the
+It needs nothing beyond the core requirements: the server is Python's standard library and the pages
+are HTML, CSS and JavaScript in `src/client/static/`. Charts use Apache ECharts 5.6.0 and maps use
+Leaflet 1.9.4; both are kept in `src/client/static/vendor/`, so no CDN is needed. It reads the same shared files as the
 dashboard below, runs the same consistency checks, and uses the same custom planner for the What if
 screen, which takes a few seconds per plan. It listens on this machine only. `src/client/view.py`
 turns the shared results into the facts the screens show; `tests/test_client.py` checks them against
-the files and exercises the server. The charts are drawn by `src/client/static/charts.js` as plain
-SVG, with no chart library.
+the files and exercises the server. `src/client/static/charts.js` holds every chart and map.
 
-The map shows Dubai's coastline and motorways and one circle per area. These come from OpenStreetMap
-(© OpenStreetMap contributors, ODbL) and are stored in `data/reference/dubai_map.json`, so the view
-needs no network for them. `python -m src.client.basemap` fetches them again. A DLD area is placed at
+The maps are Leaflet maps with one circle per area. The background tiles come from Stadia Maps
+(Alidade Smooth), which needs no key when the app runs on localhost; a copy hosted elsewhere needs a
+free Stadia account. If Stadia does not load, Esri's light grey map is used, and with no internet at
+all the map draws Dubai's coastline and motorways from `data/reference/dubai_map.json` (OpenStreetMap,
+© OpenStreetMap contributors, ODbL). `python -m src.client.basemap` fetches those lines and the area
+positions again. A DLD area is placed at
 the centre of the OpenStreetMap place with the same name, after number words are normalised
 ("Al Barsha South Fourth" is "Al Barsha South 4"). Where the two sources spell a name differently,
 `data/area_place_aliases.csv` says which place is meant (21 areas, for example "Al Goze First" is

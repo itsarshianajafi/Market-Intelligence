@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Market Intelligence</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/vendor/leaflet.min.css">
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
@@ -36,14 +37,12 @@
 
     <div class="grid two">
       <article class="panel">
-        <header class="panel-head"><div><h2>Homes sold each month</h2><p class="note" id="monthly-note"></p></div>
-          <div class="legend"><span><i class="key offplan"></i>Off-plan</span><span><i class="key ready"></i>Ready</span></div></header>
+        <header class="panel-head"><div><h2>Homes sold each month</h2><p class="note" id="monthly-note"></p></div></header>
         <div class="chart" id="monthly-chart"></div>
         <p class="foot" id="monthly-foot"></p>
       </article>
       <article class="panel">
-        <header class="panel-head"><div><h2>Typical price per m²</h2><p class="note">AED, units and villas, each quarter</p></div>
-          <div class="legend"><span><i class="key offplan"></i>Off-plan</span><span><i class="key ready"></i>Ready</span></div></header>
+        <header class="panel-head"><div><h2>Typical price per m²</h2><p class="note">AED, units and villas, each quarter</p></div></header>
         <div class="chart" id="price-chart"></div>
         <p class="foot">An average of each month's median price, weighted by sales. It moves when the mix of homes sold changes, not only when prices do.</p>
       </article>
@@ -58,7 +57,7 @@
           </div></header>
         <div class="chart" id="market-map"></div>
         <div class="legend wrap-legend" id="map-legend"></div>
-        <p class="foot" id="map-credit"></p>
+        <p class="foot">Each circle is one area, placed at its centre. Drag to move the map; use + and − to zoom.</p>
       </article>
       <article class="panel">
         <header class="panel-head"><div><h2>Busiest areas</h2><p class="note" id="busiest-note"></p></div></header>
@@ -68,8 +67,7 @@
     </div>
 
     <article class="panel">
-      <header class="panel-head"><div><h2>Direction of areas over time</h2><p class="note" id="direction-note"></p></div>
-        <div class="legend"><span><i class="key rising"></i>Rising</span><span><i class="key steady"></i>Steady</span><span><i class="key falling"></i>Falling</span></div></header>
+      <header class="panel-head"><div><h2>Direction of areas over time</h2><p class="note" id="direction-note"></p></div></header>
       <div class="chart" id="direction-chart"></div>
       <p class="foot">Each area is judged on its prices and sales against a year earlier. The labels describe the market as it is; they are not a forecast.</p>
     </article>
@@ -87,7 +85,6 @@
       <article class="panel">
         <header class="panel-head"><div><h2>Where the team goes</h2><p class="note">Filled circles are areas in the plan, sized by agents. Outlines are the other areas considered.</p></div></header>
         <div class="chart" id="plan-map"></div>
-        <p class="foot" id="plan-map-credit"></p>
       </article>
       <article class="panel">
         <header class="panel-head"><div><h2>The plan, area by area</h2><p class="note">Commission is for the quarter.</p></div></header>
@@ -98,8 +95,7 @@
 
     <div class="grid two">
       <article class="panel">
-        <header class="panel-head"><div><h2>Why these areas</h2><p class="note">Every area the planner could choose, by expected sales and typical deal. Both scales are logarithmic.</p></div>
-          <div class="legend"><span><i class="key dot pick"></i>In the plan</span><span><i class="key dot other"></i>Not chosen</span></div></header>
+        <header class="panel-head"><div><h2>Why these areas</h2><p class="note">Every area the planner could choose, by expected sales and typical deal. Both scales are logarithmic.</p></div></header>
         <div class="chart" id="plan-scatter"></div>
         <p class="foot">The plan favours areas that are busy, expensive or both. A very busy area with small deals can lose to a quieter one with large deals.</p>
       </article>
@@ -167,6 +163,9 @@
     </div>
   </section>
 </main>
+<script src="/vendor/leaflet.min.js"></script>
+<script src="/vendor/echarts.min.js"></script>
+<script src="/svgmap.js"></script>
 <script src="/charts.js"></script>
 <script src="/app.js"></script>
 </body>
