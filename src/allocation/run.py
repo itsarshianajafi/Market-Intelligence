@@ -217,6 +217,7 @@ def run(cfg, evaluation=True):
         'assumptions_not_from_data': {k: cfg[k] for k in ['agents', 'deals_per_agent', 'max_market_share',
                                                           'commission_rate', 'min_team_per_area', 'max_area_share',
                                                           'max_areas', 'offplan_share']},
+        'what_if_demand_change': cfg.get('demand_change', {}),
         'policy': options_of(cfg), 'max_moves_used': problem.max_moves, 'output_sha256': fingerprint(cfg['output'])}
     Path(cfg['manifest']).write_text(json.dumps(manifest, indent=2, default=float) + '\n')
     return out, manifest, result
