@@ -1,13 +1,14 @@
-// Client view. The server sends plain facts; this file only lays them out.
+// Client view. The server sends plain facts; this file lays them out and Charts draws them.
 'use strict';
 
+const C = { offplan: '#1F5A99', ready: '#C77B1F', rising: '#1F5A99', steady: '#9AA3AD', falling: '#B5372E', brand: '#12355B' };
 const $ = (id) => document.getElementById(id);
-const whole = (n) => Math.round(n).toLocaleString('en-US');
+const whole = Charts.whole;
 const percent = (x) => `${Math.abs(Math.round(x * 100))}%`;
-const money = (aed) => aed >= 1e6 ? `AED ${(aed / 1e6).toFixed(aed >= 1e7 ? 1 : 2).replace(/\.?0+$/, '')}M`
-  : `AED ${Math.round(aed / 1e3)}K`;
-const millions = (aed) => `AED ${(aed / 1e6).toFixed(1)}M`;
-const shortQuarter = (name) => name.replace(/ 20(\d\d)$/, ' $1');
+const signed = (x) => Math.abs(x) < 0.005 ? 'no change' : `${x < 0 ? '−' : '+'}${percent(x)}`;
+const millions = (aed) => `AED ${(aed / 1e6).toFixed(aed >= 1e7 ? 1 : 2)}M`;
+const money = (aed) => aed >= 1e6 ? millions(aed) : `AED ${Math.round(aed / 1e3)}K`;
+const shortQuarter = (name) => name.replace(/ 20(\d\d)$/, ' ’$1');
 
 // Text always goes in through textContent, so names from the data files can never run as markup.
 function el(tag, className, text) {
@@ -20,100 +21,177 @@ function fill(parent, children) {
   parent.replaceChildren(...children);
   return parent;
 }
-function stat(label, value, note, down) {
-  return fill(el('div', 'stat'), [el('span', 'stat-label', label), el('span', 'stat-value', value),
-    el('span', down ? 'stat-note down' : 'stat-note', note)]);
+// A stat tile: label, big value, a note, and optionally a change marker and something on the right.
+function tile(label, value, note, { change, extra } = {}) {
+  const noteLine = el('span', 'tile-note');
+  if (change !== undefined && Math.abs(change) >= 0.005) noteLine.append(el('span', change < 0 ? 'delta down' : 'delta up', percent(change)));
+  noteLine.append(document.createTextNode(note));
+  const row = fill(el('div', 'tile-row'), [el('span', 'tile-value', value)].concat(extra ? [extra] : []));
+  return fill(el('div', 'tile'), [el('span', 'tile-label', label), row, noteLine]);
 }
-const moved = (x) => `${x < 0 ? 'Down' : 'Up'} ${percent(x)}`;
+const yearTicks = (labels, pick) => labels.map((label, i) => (pick(label) ? i : -1)).filter((i) => i >= 0);
+
+let baseMap = { coast: [], roads: [], attribution: '' };
 
 function showMarket(m) {
-  $('cutoff').textContent = `Dubai home sales, from official DLD records up to ${m.cutoff}`;
-  $('market-eyebrow').textContent = `${m.quarter}, the last full quarter`;
-  const direction = m.total.change < 0 ? 'down' : 'up';
-  fill($('market-headline'), [document.createTextNode(`Sales are ${direction} `),
-    el('span', direction === 'down' ? 'down' : '', percent(m.total.change)), document.createTextNode(' on last year')]);
-  $('market-lead').textContent = `${whole(m.total.sales)} homes were sold in ${m.quarter}, against ${whole(m.total.before)} a year earlier.`;
-  fill($('market-stats'), [
-    stat(`Homes sold, ${m.quarter}`, whole(m.total.sales), `${moved(m.total.change)} on a year earlier`, m.total.change < 0),
-    stat('Off-plan homes', whole(m.offplan.sales), moved(m.offplan.change), m.offplan.change < 0),
-    stat('Ready homes', whole(m.ready.sales), moved(m.ready.change), m.ready.change < 0)]);
+  $('cutoff').textContent = `Official DLD records to ${m.cutoff}`;
+  $('market-kicker').textContent = `${m.quarter} · the last full quarter`;
+  $('market-headline').textContent = `Sales are ${m.total.change < 0 ? 'down' : 'up'} ${percent(m.total.change)} on a year earlier`;
+  $('market-lead').textContent = `${whole(m.total.sales)} homes were sold in ${m.quarter}, against ${whole(m.total.before)} in ${m.year_ago}.`;
 
-  const tallest = Math.max(...m.history.map((q) => q.offplan + q.ready));
-  const height = (n) => `${Math.round(220 * n / tallest)}px`;
-  const peak = m.history.reduce((a, b) => (a.offplan + a.ready > b.offplan + b.ready ? a : b));
-  $('market-bars').setAttribute('aria-label', `Homes sold per quarter from ${m.history[0].quarter} to ${m.quarter}. ` +
-    `The highest was ${whole(peak.offplan + peak.ready)} in ${peak.quarter}; ${m.quarter} had ${whole(m.total.sales)}.`);
-  fill($('market-bars'), m.history.map((q) => {
-    const ready = el('div', 'bar-part ready'), offplan = el('div', 'bar-part offplan');
-    ready.style.height = height(q.ready);
-    offplan.style.height = height(q.offplan);
-    return fill(el('div', 'bar'), [el('span', 'bar-total', whole(q.offplan + q.ready)), ready, offplan,
-      el('span', 'bar-label', shortQuarter(q.quarter))]);
-  }));
+  const price = m.prices[m.prices.length - 1], priceBefore = m.prices[m.prices.length - 5];
+  fill($('market-tiles'), [
+    tile('Homes sold', whole(m.total.sales), ' on a year earlier',
+      { change: m.total.change, extra: Charts.spark(m.history.map((q) => q.offplan + q.ready), C.brand) }),
+    tile('Off-plan homes', whole(m.offplan.sales), ' on a year earlier', { change: m.offplan.change }),
+    tile('Ready homes', whole(m.ready.sales), ' on a year earlier', { change: m.ready.change }),
+    tile('Off-plan price per m²', `AED ${whole(price.offplan)}`, priceBefore ? ' on a year earlier' : 'typical, this quarter',
+      priceBefore ? { change: price.offplan / priceBefore.offplan - 1 } : {}),
+    tile('Ready price per m²', `AED ${whole(price.ready)}`, priceBefore ? ' on a year earlier' : 'typical, this quarter',
+      priceBefore ? { change: price.ready / priceBefore.ready - 1 } : {})]);
 
-  const d = m.direction, judged = d.steady + d.rising + d.falling;
-  const most = Object.entries(d).sort((a, b) => b[1] - a[1])[0][0];
-  $('direction-title').textContent = { steady: 'Most areas are holding steady', rising: 'Most areas are rising', falling: 'Most areas are falling' }[most];
-  $('direction-note').textContent = `Each area is checked on its prices and sales over the last year. ${judged} had enough sales to judge.`;
-  fill($('direction-meters'), [['Steady', 'steady'], ['Rising', 'rising'], ['Falling', 'falling']].map(([label, key]) => {
-    const bar = el('div', `meter-fill ${key}`);
-    bar.style.width = `${100 * d[key] / Math.max(judged, 1)}%`;
-    return fill(el('div', 'meter'), [el('span', 'meter-name', label), fill(el('div', 'meter-track'), [bar]),
-      el('span', 'meter-value', String(d[key]))]);
-  }));
+  const months = m.monthly.map((row) => new Date(`${row.month}-01T00:00:00`).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }));
+  $('monthly-note').textContent = `${months[0]} to ${months[months.length - 1]}`;
+  $('monthly-foot').textContent = `Units, villas and all other property types. A last month the records only partly cover is left out.`;
+  Charts.line($('monthly-chart'), {
+    labels: months, xTicks: yearTicks(m.monthly.map((r) => r.month), (month) => month.endsWith('-01')).filter((_, i) => i % 2 === 0),
+    tickText: (i) => m.monthly[i].month.slice(0, 4),
+    series: [{ name: 'Off-plan', color: C.offplan, values: m.monthly.map((r) => r.offplan) },
+      { name: 'Ready', color: C.ready, values: m.monthly.map((r) => r.ready) }],
+    label: `Homes sold each month from ${months[0]} to ${months[months.length - 1]}, off-plan and ready.` });
+  const quarters = m.prices.map((p) => p.quarter);
+  Charts.line($('price-chart'), {
+    labels: quarters, xTicks: yearTicks(quarters, (q) => q.startsWith('Jan')).filter((_, i) => i % 2 === 0),
+    tickText: (i) => quarters[i].slice(-4),
+    series: [{ name: 'Off-plan', color: C.offplan, values: m.prices.map((p) => p.offplan) },
+      { name: 'Ready', color: C.ready, values: m.prices.map((p) => p.ready) }],
+    tipFormat: (v) => `AED ${whole(v)}`, label: 'Typical price per square metre each quarter, off-plan and ready.' });
 
-  $('busiest-title').textContent = `Where sales are expected, ${m.forecast_quarter}`;
-  const biggest = Math.max(...m.busiest.map((a) => a.forecast));
-  fill($('busiest-rows'), m.busiest.map((a) => {
-    const name = fill(el('div', 'area-name'), [el('strong', '', a.name)].concat(a.dld ? [el('span', '', `DLD: ${a.dld}`)] : []));
-    const bar = el('div', 'area-fill');
-    bar.style.width = `${100 * a.forecast / biggest}%`;
-    const change = a.change === null ? '' : Math.abs(a.change) < 0.005 ? 'no change' : `${a.change < 0 ? '−' : '+'}${percent(a.change)}`;
-    const value = fill(el('div', 'area-value'), [el('strong', '', whole(a.forecast)), document.createTextNode(' '),
-      el('span', a.change !== null && a.change <= -0.1 ? 'down' : '', change)]);
-    return fill(el('div', 'area-row'), [name, fill(el('div', 'area-track'), [bar]), value]);
+  // map, with a switch between two readings of the same areas
+  $('map-title').textContent = `Where sales are expected, ${m.forecast_quarter}`;
+  $('map-credit').textContent = `Each circle is one area, placed at its centre. Map lines ${baseMap.attribution}.`;
+  const detail = (a) => [['expected sales', whole(a.forecast)]]
+    .concat(a.low !== null ? [['rough range', `${whole(a.low)} – ${whole(a.high)}`]] : [])
+    .concat(a.change !== null ? [[`on ${m.quarter}`, signed(a.change)]] : [])
+    .concat([['direction', a.direction || 'too few sales to say']]).concat(a.dld ? [['DLD name', a.dld]] : []);
+  const drawMap = (mode) => {
+    const colour = (a) => mode === 'sales' ? C.offplan : a.direction ? C[a.direction] : C.steady;
+    Charts.map($('market-map'), { base: baseMap, label: `Map of Dubai with a circle for each of ${m.areas.length} areas, sized by expected sales.`,
+      points: m.areas.map((a, i) => ({ lat: a.lat, lon: a.lon, size: a.forecast, color: colour(a), ring: mode === 'direction' && !a.direction,
+        name: a.name, detail: detail(a), label: i < 8 ? a.name : null })) });
+    $('map-note').textContent = mode === 'sales' ? 'Circle size is the number of homes expected to sell.'
+      : 'Circle size is expected sales. Colour is how the area moved over the last year.';
+    fill($('map-legend'), mode === 'sales' ? [] : [['rising', 'Rising'], ['steady', 'Steady'], ['falling', 'Falling']]
+      .map(([key, text]) => {
+        const dot = el('i', 'key dot');
+        dot.style.background = C[key];
+        return fill(el('span'), [dot, document.createTextNode(text)]);
+      }).concat([fill(el('span'), [el('i', 'key dot none'), document.createTextNode('Too few sales to say')])]));
+  };
+  for (const button of document.querySelectorAll('.switch button')) {
+    button.addEventListener('click', () => {
+      for (const other of document.querySelectorAll('.switch button')) other.setAttribute('aria-pressed', String(other === button));
+      drawMap(button.dataset.mode);
+    });
+  }
+  drawMap('sales');
+
+  const top = m.areas.slice(0, 8), widest = Math.max(...top.map((a) => a.high ?? a.forecast));
+  $('busiest-note').textContent = `Homes expected to sell in ${m.forecast_quarter}, with the change on ${m.quarter}`;
+  fill($('busiest'), top.map((a, i) => {
+    const name = fill(el('span', 'rank-name'), [document.createTextNode(a.name)].concat(a.dld ? [el('small', '', a.dld)] : []));
+    const value = fill(el('span', 'rank-value'), [document.createTextNode(whole(a.forecast))].concat(a.change !== null ? [el('small', '', signed(a.change))] : []));
+    const bar = el('div', 'rank-bar');
+    bar.append(el('i', 'rank-track'));
+    if (a.low !== null) {
+      const range = el('i', 'rank-range');
+      range.style.left = `${100 * a.low / widest}%`;
+      range.style.width = `${100 * (a.high - a.low) / widest}%`;
+      bar.append(range);
+    }
+    const dot = el('i', 'rank-dot');
+    dot.style.left = `${100 * a.forecast / widest}%`;
+    bar.append(dot);
+    return fill(el('div', 'rank'), [el('span', 'rank-no', String(i + 1)), name, value, bar]);
   }));
   const check = m.forecast_check;
-  $('forecast-note').textContent = check.inside === null ? 'These are rough sizes.'
-    : `These are rough sizes. On past quarters, about ${percent(check.inside)} of the time real sales landed between ` +
-      `${percent(Math.expm1(check.low))} below and ${percent(Math.expm1(check.high))} above the forecast.`;
+  $('forecast-note').textContent = check.inside === null ? 'The dot is the forecast. These are rough sizes.'
+    : `The dot is the forecast and the band is its rough range. On past quarters about ${percent(check.inside)} of forecasts landed inside such a band.`;
+
+  const history = m.direction_history, last = history[history.length - 1];
+  $('direction-note').textContent = `Share of areas each quarter. In ${last.quarter}: ${last.steady} steady, ${last.rising} rising, ${last.falling} falling.`;
+  Charts.shares($('direction-chart'), {
+    labels: history.map((h) => h.quarter), xTicks: yearTicks(history.map((h) => h.quarter), (q) => q.startsWith('Jan')),
+    parts: [{ name: 'Falling', color: C.falling, values: history.map((h) => h.falling) },
+      { name: 'Steady', color: C.steady, values: history.map((h) => h.steady) },
+      { name: 'Rising', color: C.rising, values: history.map((h) => h.rising) }],
+    tickText: (i) => history[i].quarter.slice(-4), label: 'Share of areas rising, steady and falling each quarter since 2020.' });
 }
 
-function pickCard(card) {
-  const single = card.teams.length === 1;
-  const count = fill(el('div', single && card.teams[0].type === 'Ready' ? 'pick-count ready' : 'pick-count'),
-    [el('strong', '', String(card.agents)), el('span', '', card.agents === 1 ? 'agent' : 'agents')]);
-  const kind = single ? card.teams[0].type.replace('Off-Plan', 'Off-plan')
-    : card.teams.map((t) => `${t.agents} on ${t.type === 'Ready' ? 'ready' : 'off-plan'}`).join(', ');
-  const deal = single ? `A typical deal is ${millions(card.deal_low)}.`
-    : `Deals here are around ${millions(card.deal_low)} to ${millions(card.deal_high)}.`;
-  const sales = single ? `${whole(card.sales)} ${card.teams[0].type === 'Ready' ? 'ready' : 'off-plan'} sales` : `${whole(card.sales)} sales`;
-  const body = fill(el('div', 'pick-body'), [
-    el('h2', '', card.name), el('span', 'pick-sub', card.dld ? `${kind} · DLD: ${card.dld}` : kind),
-    el('p', 'pick-why', `About ${sales} expected${card.rising ? ', and the area is rising' : ''}. ${deal}`),
-    fill(el('div', 'pick-foot'), [el('span', '', `${money(card.commission)} commission`),
-      el('span', card.firm ? 'tag firm' : 'tag close', card.firm ? 'Firm pick' : 'Close call')])]);
-  return fill(el('article', 'card pick'), [count, body]);
-}
+function showPlan(plan, backtest, m) {
+  $('plan-kicker').textContent = `Team plan · ${m.forecast_quarter}`;
+  $('plan-headline').textContent = `${plan.agents} agents across ${plan.areas} areas`;
+  const split = el('div', 'split-bar');
+  for (const [count, colour] of [[plan.offplan_agents, C.offplan], [plan.ready_agents, C.ready]]) {
+    const part = el('i');
+    part.style.width = `${100 * count / plan.agents}%`;
+    part.style.background = colour;
+    split.append(part);
+  }
+  const splitTile = tile('Off-plan / ready agents', `${plan.offplan_agents} / ${plan.ready_agents}`, '');
+  splitTile.append(split);
+  fill($('plan-tiles'), [
+    tile('Expected commission', millions(plan.commission), 'for the quarter, an estimate'),
+    tile('Expected deals', whole(plan.deals), `about ${(plan.deals / plan.agents).toFixed(1)} per agent`),
+    tile('Areas covered', String(plan.areas), `of ${new Set(plan.segments.map((s) => s.name)).size} considered`),
+    splitTile]);
 
-function showPlan(plan, backtest, quarter) {
-  $('plan-eyebrow').textContent = `Team plan for ${quarter}`;
-  $('plan-headline').textContent = `Put ${plan.agents} agents in these ${plan.areas} areas`;
-  fill($('plan-stats'), [
-    stat('Expected commission', millions(plan.commission), 'for the quarter, an estimate'),
-    stat('Expected deals', whole(plan.deals), `about ${(plan.deals / plan.agents).toFixed(1)} per agent`),
-    stat('Off-plan and ready', `${plan.offplan_agents} and ${plan.ready_agents}`, 'agents on each')]);
-  const key = fill(el('aside', 'card key'), [el('h2', '', 'How to read the tags'),
-    el('p', '', 'Firm pick: still chosen when the forecast is shaken by its past mistakes.'),
-    el('p', '', 'Close call: a good choice, but another area could take its place if sales come in differently.'),
-    el('p', '', 'Blue squares are off-plan teams and green squares are ready teams.')]);
-  fill($('plan-cards'), plan.cards.map(pickCard).concat([key]));
-  const a = plan.assumptions;
-  $('plan-assumptions').textContent = `${a.agents} agents · ${a.deals_per_agent} deals per agent each quarter · ` +
-    `${+(a.ready_rate * 100).toFixed(1)}% commission on ready and ${+(a.offplan_rate * 100).toFixed(1)}% on off-plan · ` +
-    `a team can win up to ${+(a.market_share * 100).toFixed(1)}% of an area's sales.`;
-  $('plan-evidence').textContent = `Tested on the last ${backtest.quarters} quarters: plans made this way earned ${percent(backtest.optimiser)} ` +
-    `of the best possible commission. Splitting agents in proportion to forecast value earned ${percent(backtest.rule)}.`;
+  $('plan-map-credit').textContent = `Map lines ${baseMap.attribution}.`;
+  Charts.map($('plan-map'), { base: baseMap, maxRadius: 20, height: 520, label: `Map of Dubai showing the ${plan.areas} areas in the plan, sized by agents.`,
+    points: m.areas.map((a) => ({ lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.brand : C.steady, ring: !a.agents,
+      name: a.name, label: a.agents ? `${a.name} (${a.agents})` : null,
+      detail: [['agents', String(a.agents)], ['expected sales', whole(a.forecast)]].concat(a.dld ? [['DLD name', a.dld]] : []) })) });
+
+  fill($('plan-picks'), plan.cards.map((card) => {
+    const single = card.teams.length === 1;
+    const kind = single ? (card.teams[0].type === 'Ready' ? 'ready' : 'off-plan')
+      : card.teams.map((t) => `${t.agents} ${t.type === 'Ready' ? 'ready' : 'off-plan'}`).join(' + ');
+    const deal = single ? millions(card.deal_low) : `${millions(card.deal_low)}–${(card.deal_high / 1e6).toFixed(1)}M`;
+    const count = el('span', 'pick-count', String(card.agents));
+    count.title = `${card.agents} agents`;
+    return fill(el('div', 'pick'), [count, el('span', 'pick-name', card.name), el('span', 'pick-money', money(card.commission)),
+      el('span', 'pick-why', `${kind} · about ${whole(card.sales)} sales · typical deal ${deal}${card.rising ? ' · rising' : ''}`),
+      el('span', card.firm ? 'tag firm' : 'tag close', card.firm ? 'Firm' : 'Close call')]);
+  }));
+
+  Charts.scatter($('plan-scatter'), {
+    xTitle: `Homes expected to sell, ${m.forecast_quarter}`, yTitle: 'Typical deal, AED', yFormat: (v) => `${+(v / 1e6).toFixed(1)}M`,
+    label: `Scatter of ${plan.segments.length} area segments by expected sales and typical deal value; the ones in the plan are highlighted.`,
+    points: plan.segments.map((s) => ({ x: s.sales, y: s.deal, strong: s.agents > 0, color: s.agents > 0 ? C.brand : C.steady,
+      name: `${s.name} · ${s.type === 'Ready' ? 'ready' : 'off-plan'}`, label: s.agents > 0 ? s.name : null,
+      detail: [['expected sales', whole(s.sales)], ['typical deal', millions(s.deal)], ['agents', String(s.agents)]] })) });
+
+  const curve = plan.team_curve;
+  if (curve.length > 1) {
+    Charts.line($('team-chart'), { labels: curve.map((c) => `${c.agents} agents`), xTicks: curve.map((_, i) => i), xValues: curve.map((c) => c.agents),
+      series: [{ name: 'Expected commission', color: C.brand, values: curve.map((c) => c.commission) }],
+      tickText: (i) => String(curve[i].agents), tipFormat: millions,
+      label: 'Expected commission per quarter for team sizes from 5 to 50 agents.' });
+    const first = curve[0], second = curve[1], lastTwo = curve.slice(-2);
+    const early = (second.commission - first.commission) / (second.agents - first.agents);
+    const late = (lastTwo[1].commission - lastTwo[0].commission) / (lastTwo[1].agents - lastTwo[0].agents);
+    $('team-note').textContent = `Each extra agent adds less: about ${money(early)} a quarter going from ${first.agents} to ${second.agents} agents, ` +
+      `and about ${money(late)} going from ${lastTwo[0].agents} to ${lastTwo[1].agents}.`;
+  }
+
+  $('backtest-note').textContent = `Share of the best possible commission, average of the last ${backtest.quarters} quarters`;
+  Charts.bars($('backtest-chart'), { max: 1, label: 'Share of the best possible commission by planning method.',
+    rows: backtest.methods.map((method, i) => ({ label: method.label, value: method.share, text: percent(method.share), color: i === 0 ? C.brand : C.steady })) });
+
+  const a = plan.assumptions, pct = (x) => `${+(x * 100).toFixed(1)}%`;
+  fill($('plan-assumptions'), [['Agents', a.agents], ['Deals per agent each quarter', a.deals_per_agent], ['Commission on ready', pct(a.ready_rate)],
+    ['Commission on off-plan', pct(a.offplan_rate)], ['Largest share of an area\'s sales a team can win', pct(a.market_share)]]
+    .flatMap(([term, value]) => [el('dt', '', term), el('dd', '', String(value))]));
 }
 
 // ---- What if ----
@@ -121,11 +199,7 @@ const marketWords = (v) => v === 0 ? 'as forecast' : `${Math.abs(v)}% ${v < 0 ? 
 function syncOutputs() {
   $('agents-out').textContent = $('agents').value;
   $('deals-out').textContent = $('deals').value;
-  for (const id of ['offplan-change', 'ready-change']) {
-    const value = Number($(id).value);
-    $(`${id}-out`).textContent = marketWords(value);
-    $(`${id}-out`).className = value < 0 ? 'down' : '';
-  }
+  for (const id of ['offplan-change', 'ready-change']) $(`${id}-out`).textContent = marketWords(Number($(id).value));
 }
 function setForm(a) {
   $('agents').value = a.agents;
@@ -148,61 +222,57 @@ function scenario(sent, saved) {
 }
 function showWhatIf(result, sent, saved) {
   const { plan, compare } = result, change = compare.commission_change;
-  const money_line = Math.abs(change) < 0.005 ? 'Expected commission stays about the same.'
+  const moneyLine = Math.abs(change) < 0.005 ? 'Expected commission stays about the same.'
     : `Expected commission ${change < 0 ? 'drops' : 'rises'} by ${percent(change)}.`;
   let what, more;
   if (plan.agents !== saved.agents) {
     what = `A team of ${plan.agents} would work in ${plan.areas} areas.`;
-    more = `${money_line} The comparison is with the saved plan for ${saved.agents} agents.`;
+    more = `${moneyLine} The comparison is with the saved plan for ${saved.agents} agents.`;
   } else if (compare.moved === 0) {
     what = 'The plan stays the same.';
-    more = `No agent needs to move. ${money_line}`;
+    more = `No agent needs to move. ${moneyLine}`;
   } else if (compare.moved <= plan.agents / 5) {
     what = `The plan barely changes: ${compare.moved} of ${plan.agents} agents move.`;
-    more = `The same areas stay the best ones. ${money_line}`;
+    more = `The same areas stay the best ones. ${moneyLine}`;
   } else {
     what = `The plan changes: ${compare.moved} of ${plan.agents} agents move.`;
-    more = money_line;
+    more = moneyLine;
   }
-  const verdict = fill(el('div', 'verdict'), [el('span', 'verdict-when', scenario(sent, saved)),
+  const verdict = fill(el('article', 'panel verdict'), [el('span', 'verdict-when', scenario(sent, saved)),
     el('p', 'verdict-what', what), el('p', 'verdict-more', more)]);
-  const stats = fill(el('div', 'stats'), [
-    stat('Expected commission', millions(plan.commission),
-      Math.abs(change) < 0.005 ? `Same as the saved plan` : `${moved(change)} from ${millions(compare.commission_before)}`, change <= -0.005),
-    plan.agents === saved.agents
-      ? stat('Agents in a new place', `${compare.moved} of ${plan.agents}`, `${plan.areas} areas in this plan`)
-      : stat('Team', `${plan.agents} agents`, `${plan.areas} areas in this plan · the saved plan has ${saved.agents} agents`)]);
-  const rows = compare.rows.map((r) => {
-    const diff = r.after - r.before;
-    const words = diff === 0 ? 'Same' : r.before === 0 ? `New: ${r.after} agents` : r.after === 0 ? 'No longer used'
-      : `${Math.abs(diff)} ${Math.abs(diff) === 1 ? 'agent' : 'agents'} ${diff < 0 ? 'fewer' : 'more'}`;
-    return fill(el('div', 'compare-row'), [el('strong', '', r.name), el('span', 'num', String(r.before)),
-      el('span', 'num after', String(r.after)), el('span', diff === 0 ? 'change' : diff < 0 ? 'change less' : 'change more', words)]);
-  });
-  const table = fill(el('div', 'card compare'), [el('h2', '', 'Agents per area, saved plan and this one'),
-    fill(el('div', 'compare-head'), [el('span', '', 'Area'), el('span', 'num', 'Saved'), el('span', 'num', 'Now'), el('span', '', 'Change')]),
-    ...rows]);
-  fill($('whatif-results'), [verdict, stats, table]);
+  const tiles = fill(el('div', 'tiles pair-tiles'), [
+    tile('Expected commission', millions(plan.commission), Math.abs(change) < 0.005 ? 'same as the saved plan' : ` from ${millions(compare.commission_before)}`, { change }),
+    plan.agents === saved.agents ? tile('Agents in a new place', `${compare.moved} of ${plan.agents}`, `${plan.areas} areas in this plan`)
+      : tile('Team', `${plan.agents} agents`, `${plan.areas} areas · the saved plan has ${saved.agents} agents`)]);
+  const chart = el('div', 'chart');
+  const legend = fill(el('div', 'legend'), [fill(el('span'), [el('i', 'key dot none'), document.createTextNode('Saved plan')]),
+    fill(el('span'), [el('i', 'key dot pick'), document.createTextNode('This plan')])]);
+  const panel = fill(el('article', 'panel'), [
+    fill(el('header', 'panel-head'), [fill(el('div'), [el('h2', '', 'Agents per area'), el('p', 'note', 'Areas that change are in bold.')]), legend]), chart]);
+  fill($('whatif-results'), [verdict, tiles, panel]);
+  Charts.dumbbell(chart, { rows: compare.rows.map((r) => ({ label: r.name, before: r.before, after: r.after })),
+    colors: { before: C.steady, after: C.brand }, label: 'Agents per area in the saved plan and in this plan.' });
+}
+
+async function getJson(url, options) {
+  const response = await fetch(url, options);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error);
+  return data;
 }
 
 async function start() {
   let data;
   try {
-    const response = await fetch('/api/summary');
-    data = await response.json();
-    if (!response.ok) throw new Error(data.error);
+    [data, baseMap] = await Promise.all([getJson('/api/summary'), getJson('/api/map')]);
   } catch (error) {
     $('status').textContent = `The results could not be loaded. ${error.message || ''}`;
     $('status').className = 'status error';
     return;
   }
   $('status').hidden = true;
-  showMarket(data.market);
-  showPlan(data.plan, data.backtest, data.market.forecast_quarter);
-  $('market-next').textContent = `So where should your team work in ${data.market.forecast_quarter}? See the plan for ${data.plan.agents} agents.`;
   const saved = data.plan.assumptions;
   setForm(saved);
-
   for (const id of ['agents', 'deals', 'offplan-change', 'ready-change']) $(id).addEventListener('input', syncOutputs);
   const empty = $('whatif-empty');
   $('whatif-reset').addEventListener('click', () => { setForm(saved); fill($('whatif-results'), [empty]); });
@@ -215,27 +285,29 @@ async function start() {
     button.disabled = true;
     button.textContent = 'Working out the plan…';
     try {
-      const response = await fetch('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sent) });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error);
-      showWhatIf(result, sent, saved);
+      showWhatIf(await getJson('/api/plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sent) }), sent, saved);
     } catch (error) {
-      fill($('whatif-results'), [fill(el('div', 'card'), [el('h2', '', 'That plan could not be worked out'),
-        el('p', 'muted', error.message || 'Please try again.')])]);
+      fill($('whatif-results'), [fill(el('article', 'panel'), [el('h2', '', 'That plan could not be worked out'),
+        el('p', 'note', error.message || 'Please try again.')])]);
     } finally {
       button.disabled = false;
       button.textContent = 'Update the plan';
     }
   });
 
+  // Charts measure their container, so a screen is drawn the first time it is shown.
+  const drawn = new Set();
+  const draw = { market: () => showMarket(data.market), plan: () => showPlan(data.plan, data.backtest, data.market), whatif: () => {} };
   const show = () => {
     const tab = ['market', 'plan', 'whatif'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'market';
     for (const section of document.querySelectorAll('.screen')) section.hidden = section.id !== tab;
     for (const link of document.querySelectorAll('.tabs a')) {
       if (link.dataset.tab === tab) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
     }
+    if (!drawn.has(tab)) { drawn.add(tab); draw[tab](); }
     window.scrollTo(0, 0);
   };
+  $('cutoff').textContent = `Official DLD records to ${data.market.cutoff}`;
   window.addEventListener('hashchange', show);
   show();
 }

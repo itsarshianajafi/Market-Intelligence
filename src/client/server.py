@@ -17,7 +17,8 @@ from . import view
 
 STATIC = Path(__file__).with_name('static')
 FILES = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.css': ('app.css', 'text/css; charset=utf-8'),
-         '/app.js': ('app.js', 'text/javascript; charset=utf-8')}
+         '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
+         '/charts.js': ('charts.js', 'text/javascript; charset=utf-8')}
 MAX_BODY = 10_000
 PLANNING = threading.Lock()     # one custom plan at a time; each run takes a few seconds of CPU
 
@@ -25,9 +26,10 @@ PLANNING = threading.Lock()     # one custom plan at a time; each run takes a fe
 def summary():
     """Everything the Market and Team plan screens need, checked the same way the dashboard checks it."""
     bundle = load_bundle()
-    return {'market': view.market(bundle),
-            'plan': view.plan(bundle['allocation'], bundle['allocation_manifest'], bundle['names']),
-            'backtest': view.backtest(load_evidence())}
+    plan = view.plan(bundle['allocation'], bundle['allocation_manifest'], bundle['names'])
+    plan['segments'] = view.segments(bundle['allocation'], bundle['names'])
+    plan['team_curve'] = view.team_curve()
+    return {'market': view.market(bundle), 'plan': plan, 'backtest': view.backtest(load_evidence())}
 
 
 def custom_plan(settings):
@@ -71,6 +73,8 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split('?')[0]
         if path == '/api/summary':
             self.answer(summary)
+        elif path == '/api/map':
+            self.answer(lambda: {k: v for k, v in view.base_map().items() if k != 'places'})
         elif path == '/favicon.ico':
             self.send(204, b'', 'image/x-icon')
         elif path in FILES:     # a fixed list, so a request can never reach other files
