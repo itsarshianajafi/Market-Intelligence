@@ -6,7 +6,7 @@ from http.server import ThreadingHTTPServer
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-from src.client import view
+from src.client import basemap, view
 from src.client.server import Handler, summary
 from src.dashboard.data import load_bundle, load_evidence
 
@@ -51,6 +51,51 @@ class ViewTests(unittest.TestCase):
         self.assertEqual(view.compare(saved, moved, self.bundle['names'])['moved'], 1)
 
 
+    def test_charts_get_complete_series(self):
+        market = view.market(self.bundle)
+        months = [row['month'] for row in market['monthly']]
+        self.assertEqual(months[0], '2020-01')
+        self.assertEqual(months, sorted(set(months)))
+        self.assertLess(months[-1], self.bundle['quality']['date_max'][:7])      # the half-covered last month is left out
+        self.assertEqual(market['prices'][-1]['quarter'], market['quarter'])
+        self.assertTrue(all(row['offplan'] > 0 and row['ready'] > 0 for row in market['prices']))
+        last = market['direction_history'][-1]
+        self.assertEqual({k: last[k] for k in ('steady', 'rising', 'falling')}, market['direction'])
+
+    def test_every_area_on_the_map_is_a_forecast_area_with_a_place(self):
+        points = view.area_points(self.bundle)
+        places = view.base_map()['places']
+        names = self.bundle['names']
+        known = {names.get(area, area) for area in places}
+        self.assertTrue(points)
+        self.assertTrue(all(point['name'] in known for point in points))
+        self.assertEqual(sum(point['agents'] for point in points), self.bundle['allocation_manifest']['agents'])
+        self.assertTrue(all(24.7 < point['lat'] < 25.4 and 54.8 < point['lon'] < 55.7 for point in points))     # inside Dubai
+        segments = view.segments(self.bundle['allocation'], names)
+        self.assertEqual(sum(s['agents'] for s in segments), self.bundle['allocation_manifest']['agents'])
+
+
+class BasemapTests(unittest.TestCase):
+    def test_names_match_only_when_they_are_the_same_name(self):
+        self.assertEqual(basemap.key('Al Barsha South Fourth'), basemap.key('Al Barsha South 4'))
+        self.assertEqual(basemap.key("Me'Aisem First"), basemap.key('Me Aisem 1'))
+        self.assertNotEqual(basemap.key('Al Barsha South Fourth'), basemap.key('Al Barsha South 5'))
+        elements = [{'type': 'node', 'lat': 25.057, 'lon': 55.208, 'tags': {'place': 'suburb', 'name:en': 'Al Barsha South 4'}},
+                    {'type': 'node', 'lat': 25.9, 'lon': 55.9, 'tags': {'place': 'neighbourhood', 'name': 'Al Barsha South 4'}},
+                    {'type': 'way', 'center': {'lat': 25.079, 'lon': 55.135}, 'tags': {'place': 'suburb', 'name': 'Dubai Marina'}}]
+        found = basemap.match_places(['Al Barsha South Fourth', 'Marsa Dubai', 'Al Barsha South Fifth'], elements,
+                                     {'Marsa Dubai': 'Dubai Marina'})
+        self.assertEqual(found['Al Barsha South Fourth'], {'lat': 25.057, 'lon': 55.208, 'osm_name': 'Al Barsha South 4', 'match': 'name'})
+        self.assertEqual(found['Marsa Dubai']['match'], 'alias')
+        self.assertNotIn('Al Barsha South Fifth', found)        # no similar-name guessing
+
+    def test_simplify_keeps_corners_and_drops_points_on_a_line(self):
+        straight = [(0, 0), (1, 0.00001), (2, 0), (3, 0)]
+        self.assertEqual(basemap.simplify(straight, 0.001), [(0, 0), (3, 0)])
+        corner = [(0, 0), (1, 0), (1, 1)]
+        self.assertEqual(basemap.simplify(corner, 0.001), corner)
+
+
 class ServerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -78,6 +123,12 @@ class ServerTests(unittest.TestCase):
         self.assertIn(b'Market Intelligence', page)
         status, body = self.fetch('/api/summary')
         self.assertEqual((status, json.loads(body)), (200, summary()))
+        self.assertEqual(self.fetch('/charts.js')[0], 200)
+        status, body = self.fetch('/api/map')
+        shape = json.loads(body)
+        self.assertEqual(status, 200)
+        self.assertTrue(shape['coast'] and shape['roads'] and 'OpenStreetMap' in shape['attribution'])
+        self.assertNotIn('places', shape)
 
     def test_only_listed_files_are_served(self):
         for path in ['/../README.md', '/server.py', '/static/app.js', '/api/unknown']:
