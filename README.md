@@ -15,8 +15,9 @@ off-plan and ready sales are always kept apart.
 
 ## Client view
 
-Three plain screens for an agency: how the market is doing, where the team should work, and what
-happens if the team or the market changes.
+Three screens for an agency: how the market is doing (sales, prices, a map of where sales are
+expected, the direction of areas), where the team should work and why, and what happens if the team
+or the market changes.
 
 ```bash
 python -m src.client        # then open http://localhost:8600
@@ -27,7 +28,17 @@ plain HTML, CSS and JavaScript in `src/client/static/`). It reads the same share
 dashboard below, runs the same consistency checks, and uses the same custom planner for the What if
 screen, which takes a few seconds per plan. It listens on this machine only. `src/client/view.py`
 turns the shared results into the facts the screens show; `tests/test_client.py` checks them against
-the files and exercises the server.
+the files and exercises the server. The charts are drawn by `src/client/static/charts.js` as plain
+SVG, with no chart library.
+
+The map shows Dubai's coastline and motorways and one circle per area. These come from OpenStreetMap
+(© OpenStreetMap contributors, ODbL) and are stored in `data/reference/dubai_map.json`, so the view
+needs no network for them. `python -m src.client.basemap` fetches them again. A DLD area is placed at
+the centre of the OpenStreetMap place with the same name, after number words are normalised
+("Al Barsha South Fourth" is "Al Barsha South 4"). Where the two sources spell a name differently,
+`data/area_place_aliases.csv` says which place is meant (21 areas, for example "Al Goze First" is
+"Al Quoz 1"). Nothing is matched by similarity. 161 of 243 areas are placed, including all 72 that
+have a forecast; an area without a match is left off the map.
 
 ## Analyst dashboard
 

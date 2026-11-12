@@ -2,9 +2,15 @@
 
 Everything here is read from the files Parts 1 to 4 already wrote. Nothing is recomputed.
 """
+import json
+
+import numpy as np
 import pandas as pd
 
-from src.dashboard.data import SALES, quarter_name
+from src.dashboard.data import PRICE, ROOT, SALES, quarter_name
+
+MAP = ROOT / 'data/reference/dubai_map.json'
+START = '2020-01'       # the analysis window of Parts 2 to 4
 
 KEYS = ['area', 'registration_type']
 FIRM = 0.9      # a segment still picked in 90% of the stress tests is a firm pick
@@ -13,6 +19,58 @@ FIRM = 0.9      # a segment still picked in 90% of the stress tests is a firm pi
 def display(area, names):
     """(name people use, DLD name or '' when they are the same)."""
     return (names[area], area) if area in names else (area, '')
+
+
+def base_map():
+    """Coastline, motorways and a point per area, fetched once from OpenStreetMap by src.client.basemap."""
+    return json.loads(MAP.read_text()) if MAP.exists() else {'coast': [], 'roads': [], 'places': {}, 'attribution': ''}
+
+
+def monthly_series(monthly, cutoff):
+    """Sales per month since 2020 by registration type. A last month the export cuts short is left out."""
+    recent = monthly[monthly.month >= START]
+    cutoff = pd.Timestamp(cutoff)
+    if cutoff < cutoff + pd.offsets.MonthEnd(0):
+        recent = recent[recent.month < cutoff.strftime('%Y-%m')]
+    table = recent.groupby(['month', 'registration_type']).transaction_count.sum().unstack(fill_value=0)
+    return [{'month': month, 'offplan': int(row['Off-Plan']), 'ready': int(row['Ready'])} for month, row in table.iterrows()]
+
+
+def price_series(monthly, scope, latest):
+    """Typical price per m2 each quarter: the sales-weighted geometric mean of the monthly medians,
+    the same measure Part 3 forecasts. It is not adjusted for the mix of homes sold."""
+    rows = monthly[monthly.property_type.isin(scope) & (monthly.month >= START) & monthly.median_price_per_m2_aed.gt(0)]
+    quarter = pd.PeriodIndex(rows.month, freq='Q').astype(str)
+    rows = rows.assign(quarter=quarter, weighted=np.log(rows.median_price_per_m2_aed) * rows.transaction_count)
+    sums = rows[rows.quarter <= latest].groupby(['quarter', 'registration_type'])[['weighted', 'transaction_count']].sum()
+    price = np.exp(sums.weighted / sums.transaction_count).unstack()
+    return [{'quarter': quarter_name(q), 'offplan': float(row['Off-Plan']), 'ready': float(row['Ready'])}
+            for q, row in price.iterrows()]
+
+
+def area_points(bundle):
+    """Every area that has a forecast and a place on the map: expected sales, direction and agents in the plan."""
+    forecasts, trends, plan = bundle['forecasts'], bundle['trends'], bundle['allocation']
+    places = base_map()['places']
+    sales = forecasts[forecasts.target.eq(SALES) & forecasts.forecast_value.notna()]
+    latest = trends[trends.quarter.eq(bundle['forecast_manifest']['origin_quarter']) & trends.status.eq('ok')]
+    agents = plan[plan.agents.gt(0)].groupby('area').agents.sum()
+    words = {'Rising': 'rising', 'Stable': 'steady', 'Declining': 'falling'}
+    out = []
+    for area, rows in sales.groupby('area'):
+        if area not in places:
+            continue
+        name, dld = display(area, bundle['names'])
+        own = latest[latest.area.eq(area)].sort_values('sales_count', ascending=False)     # the busier segment decides
+        last = rows.last_actual.sum(min_count=1)
+        out.append({'name': name, 'dld': dld, 'lat': places[area]['lat'], 'lon': places[area]['lon'],
+                    'forecast': float(rows.forecast_value.sum()),
+                    'low': float(rows.range_low.sum(min_count=1)) if rows.range_low.notna().all() else None,
+                    'high': float(rows.range_high.sum(min_count=1)) if rows.range_high.notna().all() else None,
+                    'change': float(rows.forecast_value.sum() / last - 1) if last and last > 0 else None,
+                    'direction': words[own.trend_label.iloc[0]] if len(own) else None,
+                    'agents': int(agents.get(area, 0))})
+    return sorted(out, key=lambda point: -point['forecast'])
 
 
 def market(bundle):
@@ -29,6 +87,9 @@ def market(bundle):
 
     history = by_type.loc[str(pd.Period(latest, freq='Q') - 7):latest]
     labelled = trends[trends.quarter.eq(latest) & trends.status.eq('ok')].trend_label.value_counts()
+    counts = trends[trends.status.eq('ok')].groupby(['quarter', 'trend_label']).size().unstack(fill_value=0)
+    counts = counts.reindex(columns=['Rising', 'Stable', 'Declining'], fill_value=0)
+    prices = price_series(monthly, bundle['forecasts'].property_scope.iloc[0].split('|'), latest)
     forecasts = bundle['forecasts']
     sales = forecasts[forecasts.target.eq(SALES)].groupby('area')[['forecast_value', 'last_actual']].sum(min_count=1)
     busiest = sales.dropna(subset=['forecast_value']).nlargest(5, 'forecast_value')
@@ -47,6 +108,11 @@ def market(bundle):
                      'change': float(row.forecast_value / row.last_actual - 1) if row.last_actual > 0 else None}
                     for area, row in busiest.iterrows()],
         'forecast_check': {'inside': held['test_coverage'], 'level': held['level'], 'low': held['low'], 'high': held['high']},
+        'monthly': monthly_series(monthly, bundle['quality']['date_max']),
+        'prices': prices,
+        'direction_history': [{'quarter': quarter_name(q), 'rising': int(row.Rising), 'steady': int(row.Stable),
+                               'falling': int(row.Declining)} for q, row in counts.iterrows()],
+        'areas': area_points(bundle),
     }
 
 
@@ -78,12 +144,34 @@ def plan(table, manifest, names):
                         'ready_change': manifest.get('what_if_demand_change', {}).get('Ready', 0.0)}}
 
 
+METHODS = [('selected', 'This planner'), ('share_of_forecast_value', 'Agents by forecast value'),
+           ('even_split', 'Even split, biggest areas'), ('share_of_last_sales', 'Agents by last quarter\'s sales')]
+
+
 def backtest(evidence):
-    """How plans made this way did on past quarters, against the best rule of thumb."""
+    """How plans made this way did on past quarters, against simple rules of thumb."""
     score = evidence['backtest'].set_index('method')
     return {'optimiser': float(score.share_of_oracle['selected']),
             'rule': float(score.share_of_oracle['share_of_forecast_value']),
-            'quarters': int(score.quarters['selected'])}
+            'quarters': int(score.quarters['selected']),
+            'methods': [{'label': label, 'share': float(score.share_of_oracle[method])}
+                        for method, label in METHODS if method in score.index]}
+
+
+def segments(table, names):
+    """Every segment the planner could choose from: expected sales, typical deal and agents given."""
+    rows = table[table.ticket_aed.notna() & table.forecast_sales.gt(0)]
+    return [{'name': display(r.area, names)[0], 'type': r.registration_type, 'sales': float(r.forecast_sales),
+             'deal': float(r.ticket_aed), 'agents': int(r.agents)} for r in rows.itertuples()]
+
+
+def team_curve():
+    """Expected commission for different team sizes, from Part 4's report."""
+    path = ROOT / 'reports/part4/team_size.csv'
+    if not path.exists():
+        return []
+    curve = pd.read_csv(path)
+    return [{'agents': int(r.agents), 'commission': float(r.expected_commission_aed)} for r in curve.itertuples()]
 
 
 def compare(saved, custom, names):

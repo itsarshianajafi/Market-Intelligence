@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Market Intelligence</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-<header class="top">
-  <div class="wrap top-row">
+<header class="masthead">
+  <div class="wrap masthead-row">
     <div class="brand">
-      <span class="brand-name">Imza · Market Intelligence</span>
-      <span class="brand-note" id="cutoff">Dubai home sales, from official DLD records</span>
+      <span class="brand-name">Imza Premium Properties</span>
+      <span class="brand-product">Market Intelligence</span>
     </div>
     <nav aria-label="Sections" class="tabs">
       <a href="#market" data-tab="market">Market</a>
       <a href="#plan" data-tab="plan">Team plan</a>
       <a href="#whatif" data-tab="whatif">What if</a>
     </nav>
+    <span class="source" id="cutoff"></span>
   </div>
 </header>
 
@@ -26,59 +27,112 @@
   <p id="status" class="status" role="status">Loading the latest results…</p>
 
   <section id="market" class="screen" hidden>
-    <p class="eyebrow" id="market-eyebrow"></p>
-    <h1 id="market-headline"></h1>
-    <p class="lead" id="market-lead"></p>
-    <div class="stats" id="market-stats"></div>
-    <div class="split">
-      <div class="card grow-3">
-        <div class="card-head">
-          <h2>Homes sold each quarter</h2>
-          <div class="legend"><span><i class="dot offplan"></i>Off-plan</span><span><i class="dot ready"></i>Ready</span></div>
-        </div>
-        <div class="bars" id="market-bars" role="img"></div>
-      </div>
-      <div class="card grow-2">
-        <h2 id="direction-title"></h2>
-        <p class="muted" id="direction-note"></p>
-        <div class="meters" id="direction-meters"></div>
-      </div>
+    <div class="title">
+      <p class="kicker" id="market-kicker"></p>
+      <h1 id="market-headline"></h1>
+      <p class="lead" id="market-lead"></p>
     </div>
-    <div class="card">
-      <h2 id="busiest-title"></h2>
-      <p class="muted">The five busiest areas in the forecast, with the change from the last full quarter.</p>
-      <div class="rows" id="busiest-rows"></div>
-      <p class="muted small" id="forecast-note"></p>
+    <div class="tiles" id="market-tiles"></div>
+
+    <div class="grid two">
+      <article class="panel">
+        <header class="panel-head"><div><h2>Homes sold each month</h2><p class="note" id="monthly-note"></p></div>
+          <div class="legend"><span><i class="key offplan"></i>Off-plan</span><span><i class="key ready"></i>Ready</span></div></header>
+        <div class="chart" id="monthly-chart"></div>
+        <p class="foot" id="monthly-foot"></p>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2>Typical price per m²</h2><p class="note">AED, units and villas, each quarter</p></div>
+          <div class="legend"><span><i class="key offplan"></i>Off-plan</span><span><i class="key ready"></i>Ready</span></div></header>
+        <div class="chart" id="price-chart"></div>
+        <p class="foot">An average of each month's median price, weighted by sales. It moves when the mix of homes sold changes, not only when prices do.</p>
+      </article>
     </div>
-    <div class="banner">
-      <p id="market-next"></p>
-      <a class="button light" href="#plan">See the team plan</a>
+
+    <div class="grid map-row">
+      <article class="panel">
+        <header class="panel-head"><div><h2 id="map-title"></h2><p class="note" id="map-note"></p></div>
+          <div class="switch" role="group" aria-label="What the map shows">
+            <button type="button" data-mode="sales" aria-pressed="true">Expected sales</button>
+            <button type="button" data-mode="direction" aria-pressed="false">Direction</button>
+          </div></header>
+        <div class="chart" id="market-map"></div>
+        <div class="legend wrap-legend" id="map-legend"></div>
+        <p class="foot" id="map-credit"></p>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2>Busiest areas</h2><p class="note" id="busiest-note"></p></div></header>
+        <div class="ranked" id="busiest"></div>
+        <p class="foot" id="forecast-note"></p>
+      </article>
     </div>
+
+    <article class="panel">
+      <header class="panel-head"><div><h2>Direction of areas over time</h2><p class="note" id="direction-note"></p></div>
+        <div class="legend"><span><i class="key rising"></i>Rising</span><span><i class="key steady"></i>Steady</span><span><i class="key falling"></i>Falling</span></div></header>
+      <div class="chart" id="direction-chart"></div>
+      <p class="foot">Each area is judged on its prices and sales against a year earlier. The labels describe the market as it is; they are not a forecast.</p>
+    </article>
   </section>
 
   <section id="plan" class="screen" hidden>
-    <p class="eyebrow" id="plan-eyebrow"></p>
-    <h1 id="plan-headline"></h1>
-    <p class="lead">This split is expected to earn the most commission, given how many homes should sell in each area, what a typical deal is worth and your commission rates.</p>
-    <div class="stats" id="plan-stats"></div>
-    <div class="cards" id="plan-cards"></div>
-    <div class="card row-between">
-      <div>
-        <h2>This plan uses these numbers</h2>
-        <p id="plan-assumptions"></p>
-        <p class="muted small">If these are not your real numbers, change them and the plan is worked out again.</p>
-      </div>
-      <a class="button dark" href="#whatif">Change the numbers</a>
+    <div class="title">
+      <p class="kicker" id="plan-kicker"></p>
+      <h1 id="plan-headline"></h1>
+      <p class="lead">The split expected to earn the most commission, given how many homes should sell in each area, what a typical deal is worth and your commission rates.</p>
     </div>
-    <p class="muted small" id="plan-evidence"></p>
+    <div class="tiles" id="plan-tiles"></div>
+
+    <div class="grid map-row">
+      <article class="panel">
+        <header class="panel-head"><div><h2>Where the team goes</h2><p class="note">Filled circles are areas in the plan, sized by agents. Outlines are the other areas considered.</p></div></header>
+        <div class="chart" id="plan-map"></div>
+        <p class="foot" id="plan-map-credit"></p>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2>The plan, area by area</h2><p class="note">Commission is for the quarter.</p></div></header>
+        <div class="picks" id="plan-picks"></div>
+        <p class="foot"><strong>Firm</strong>: still chosen when the forecast is shaken by its past mistakes. <strong>Close call</strong>: a good choice, but another area could take its place.</p>
+      </article>
+    </div>
+
+    <div class="grid two">
+      <article class="panel">
+        <header class="panel-head"><div><h2>Why these areas</h2><p class="note">Every area the planner could choose, by expected sales and typical deal. Both scales are logarithmic.</p></div>
+          <div class="legend"><span><i class="key dot pick"></i>In the plan</span><span><i class="key dot other"></i>Not chosen</span></div></header>
+        <div class="chart" id="plan-scatter"></div>
+        <p class="foot">The plan favours areas that are busy, expensive or both. A very busy area with small deals can lose to a quieter one with large deals.</p>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2>What a bigger team is worth</h2><p class="note">Expected commission per quarter by team size, AED</p></div></header>
+        <div class="chart" id="team-chart"></div>
+        <p class="foot" id="team-note"></p>
+      </article>
+    </div>
+
+    <div class="grid two">
+      <article class="panel">
+        <header class="panel-head"><div><h2>Tested on past quarters</h2><p class="note" id="backtest-note"></p></div></header>
+        <div id="backtest-chart"></div>
+        <p class="foot">Each past quarter was planned with what was known at the time and scored on what then happened. 100% would be the best possible plan with hindsight.</p>
+      </article>
+      <article class="panel">
+        <header class="panel-head"><div><h2>The numbers behind this plan</h2></div></header>
+        <dl class="facts" id="plan-assumptions"></dl>
+        <p class="foot">If these are not your real numbers, change them and the plan is worked out again.</p>
+        <a class="button" href="#whatif">Change the numbers</a>
+      </article>
+    </div>
   </section>
 
   <section id="whatif" class="screen" hidden>
-    <p class="eyebrow">Try your own numbers</p>
-    <h1>What if things change?</h1>
-    <p class="lead">Change the team or the market and see the new plan. The forecast only knows past sales, so this is how to test something it cannot see, such as a conflict or a change in interest rates.</p>
-    <div class="split start">
-      <form class="card grow-2 form" id="whatif-form">
+    <div class="title">
+      <p class="kicker">Try your own numbers</p>
+      <h1>What if things change?</h1>
+      <p class="lead">Change the team or the market and see the new plan. The forecast only knows past sales, so this is how to test something it cannot see, such as a conflict or a change in interest rates.</p>
+    </div>
+    <div class="grid form-row">
+      <form class="panel form" id="whatif-form">
         <h2>Your team</h2>
         <div class="field">
           <div class="field-head"><label for="agents">Agents</label><output id="agents-out" for="agents"></output></div>
@@ -92,8 +146,7 @@
           <div class="field"><label for="ready-rate">Ready commission</label><div class="unit"><input id="ready-rate" type="number" min="0.1" max="20" step="0.1"><span>%</span></div></div>
           <div class="field"><label for="offplan-rate">Off-plan commission</label><div class="unit"><input id="offplan-rate" type="number" min="0.1" max="20" step="0.1"><span>%</span></div></div>
         </div>
-        <hr>
-        <h2>The market</h2>
+        <h2 class="divided">The market</h2>
         <div class="field">
           <div class="field-head"><label for="offplan-change">Off-plan sales</label><output id="offplan-change-out" for="offplan-change"></output></div>
           <input id="offplan-change" type="range" min="-90" max="100" step="5" value="0">
@@ -102,18 +155,19 @@
           <div class="field-head"><label for="ready-change">Ready sales</label><output id="ready-change-out" for="ready-change"></output></div>
           <input id="ready-change" type="range" min="-90" max="100" step="5" value="0">
         </div>
-        <button class="button dark" type="submit" id="whatif-submit">Update the plan</button>
-        <button class="button plain" type="button" id="whatif-reset">Back to the saved numbers</button>
+        <button class="button" type="submit" id="whatif-submit">Update the plan</button>
+        <button class="button quiet" type="button" id="whatif-reset">Back to the saved numbers</button>
       </form>
-      <div class="grow-3 results" id="whatif-results" aria-live="polite">
-        <div class="card empty" id="whatif-empty">
+      <div class="results" id="whatif-results" aria-live="polite">
+        <article class="panel" id="whatif-empty">
           <h2>Change a number, then press Update the plan</h2>
-          <p class="muted">The new plan takes a few seconds to work out. It is compared with the saved plan on the Team plan screen.</p>
-        </div>
+          <p class="note">The new plan takes a few seconds to work out. It is compared with the saved plan on the Team plan screen.</p>
+        </article>
       </div>
     </div>
   </section>
 </main>
+<script src="/charts.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>
