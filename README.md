@@ -18,7 +18,8 @@ off-plan and ready sales are always kept apart.
 The Streamlit interface provides Overview, Data Explorer, Market Trends, Forecasts,
 Agent Allocation and Evidence pages. Market Trends replays the fuzzy rules for any segment
 (inputs, membership degrees, rules fired), and Evidence shows each part's test results
-against its baselines, read from `reports/`. Quarters are shown as months (Oct–Dec 2026). When the
+against its baselines, read from `reports/`. Quarters are shown as months (Oct–Dec 2026), and areas
+also carry the name people use (Marsa Dubai is shown as Dubai Marina). When the
 forecast quarter has already started, Forecasts shows the sales recorded so far beside each forecast. It reads the existing shared outputs; an official
 portal connection is not needed to browse the supplied analysis.
 
@@ -177,6 +178,25 @@ Notes:
 - The 2026 slowdown is real: existing/ready sales fell from ~6.5k to under 4k a month since March 2026, and off-plan fell from ~13k to ~7.5-8.5k (an independent second export matched).
 - Data before ~2019 is sparse; model from 2019/2020 onwards.
 - October 2026 is partial (ends 27 Oct 2026).
+
+## Area names people use
+
+DLD's areas are land names: Marsa Dubai is Dubai Marina and Al Barsha South Fourth is Jumeirah
+Village Circle. `data/shared/area_names.csv` gives each area the master project that holds most of
+its sales since 2020, taken from the export's own `master_project_en` column, so nothing is guessed:
+
+```bash
+python -m src.dld_data.area_names --input data/raw/export_1.csv data/raw/export_2.csv
+```
+
+`common_name` is the top master project when it has at least half of the area's unit and villa
+sales, or the projects with at least a fifth each when together they reach half. Otherwise it is
+blank and the dashboard shows the DLD name alone. Of 65 areas with a master project, 58 get a name.
+The analysis itself still uses DLD's names; the common name is only shown beside them.
+
+Some official names are not the ones agents say (Al Thanyah Fifth comes out as "DMCC Master
+Community", which people call JLT). Put corrections in `data/area_name_overrides.csv`
+(`area,common_name`); they win over the data the next time the command runs.
 
 ## How to update the data
 
