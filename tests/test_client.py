@@ -123,7 +123,8 @@ class ServerTests(unittest.TestCase):
         self.assertIn(b'Market Intelligence', page)
         status, body = self.fetch('/api/summary')
         self.assertEqual((status, json.loads(body)), (200, summary()))
-        self.assertEqual(self.fetch('/charts.js')[0], 200)
+        for path in ['/charts.js', '/svgmap.js', '/vendor/leaflet.min.js', '/vendor/leaflet.min.css', '/vendor/echarts.min.js']:
+            self.assertEqual(self.fetch(path)[0], 200, path)
         status, body = self.fetch('/api/map')
         shape = json.loads(body)
         self.assertEqual(status, 200)

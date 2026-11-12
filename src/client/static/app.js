@@ -58,7 +58,7 @@ function showMarket(m) {
     tickText: (i) => m.monthly[i].month.slice(0, 4),
     series: [{ name: 'Off-plan', color: C.offplan, values: m.monthly.map((r) => r.offplan) },
       { name: 'Ready', color: C.ready, values: m.monthly.map((r) => r.ready) }],
-    label: `Homes sold each month from ${months[0]} to ${months[months.length - 1]}, off-plan and ready.` });
+    zoom: true, height: 320, label: `Homes sold each month from ${months[0]} to ${months[months.length - 1]}, off-plan and ready.` });
   const quarters = m.prices.map((p) => p.quarter);
   Charts.line($('price-chart'), {
     labels: quarters, xTicks: yearTicks(quarters, (q) => q.startsWith('Jan')).filter((_, i) => i % 2 === 0),
@@ -69,7 +69,6 @@ function showMarket(m) {
 
   // map, with a switch between two readings of the same areas
   $('map-title').textContent = `Where sales are expected, ${m.forecast_quarter}`;
-  $('map-credit').textContent = `Each circle is one area, placed at its centre. Map lines ${baseMap.attribution}.`;
   const detail = (a) => [['expected sales', whole(a.forecast)]]
     .concat(a.low !== null ? [['rough range', `${whole(a.low)} – ${whole(a.high)}`]] : [])
     .concat(a.change !== null ? [[`on ${m.quarter}`, signed(a.change)]] : [])
@@ -146,7 +145,6 @@ function showPlan(plan, backtest, m) {
     tile('Areas covered', String(plan.areas), `of ${new Set(plan.segments.map((s) => s.name)).size} considered`),
     splitTile]);
 
-  $('plan-map-credit').textContent = `Map lines ${baseMap.attribution}.`;
   Charts.map($('plan-map'), { base: baseMap, maxRadius: 20, height: 520, label: `Map of Dubai showing the ${plan.areas} areas in the plan, sized by agents.`,
     points: m.areas.map((a) => ({ lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.brand : C.steady, ring: !a.agents,
       name: a.name, label: a.agents ? `${a.name} (${a.agents})` : null,
@@ -166,6 +164,7 @@ function showPlan(plan, backtest, m) {
 
   Charts.scatter($('plan-scatter'), {
     xTitle: `Homes expected to sell, ${m.forecast_quarter}`, yTitle: 'Typical deal, AED', yFormat: (v) => `${+(v / 1e6).toFixed(1)}M`,
+    strongName: 'In the plan', weakName: 'Not chosen',
     label: `Scatter of ${plan.segments.length} area segments by expected sales and typical deal value; the ones in the plan are highlighted.`,
     points: plan.segments.map((s) => ({ x: s.sales, y: s.deal, strong: s.agents > 0, color: s.agents > 0 ? C.brand : C.steady,
       name: `${s.name} · ${s.type === 'Ready' ? 'ready' : 'off-plan'}`, label: s.agents > 0 ? s.name : null,
@@ -245,10 +244,8 @@ function showWhatIf(result, sent, saved) {
     plan.agents === saved.agents ? tile('Agents in a new place', `${compare.moved} of ${plan.agents}`, `${plan.areas} areas in this plan`)
       : tile('Team', `${plan.agents} agents`, `${plan.areas} areas · the saved plan has ${saved.agents} agents`)]);
   const chart = el('div', 'chart');
-  const legend = fill(el('div', 'legend'), [fill(el('span'), [el('i', 'key dot none'), document.createTextNode('Saved plan')]),
-    fill(el('span'), [el('i', 'key dot pick'), document.createTextNode('This plan')])]);
   const panel = fill(el('article', 'panel'), [
-    fill(el('header', 'panel-head'), [fill(el('div'), [el('h2', '', 'Agents per area'), el('p', 'note', 'Areas that change are in bold.')]), legend]), chart]);
+    fill(el('header', 'panel-head'), [fill(el('div'), [el('h2', '', 'Agents per area'), el('p', 'note', 'Areas that change are in bold.')])]), chart]);
   fill($('whatif-results'), [verdict, tiles, panel]);
   Charts.dumbbell(chart, { rows: compare.rows.map((r) => ({ label: r.name, before: r.before, after: r.after })),
     colors: { before: C.steady, after: C.brand }, label: 'Agents per area in the saved plan and in this plan.' });
