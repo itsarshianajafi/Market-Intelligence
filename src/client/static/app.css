@@ -150,7 +150,17 @@ input[type="range"] { width: 100%; height: 36px; accent-color: var(--brand); mar
 .verdict-what { font-size: 24px; line-height: 1.25; font-weight: 600; }
 .verdict-more { color: var(--text); }
 
+/* maps (Leaflet) */
+.chart .leaflet-container { font-family: inherit; background: #F2F4F6; border-radius: 4px; }
+.leaflet-control-attribution { font-size: 11px; }
+.map-tooltip { background: var(--ink); color: #FFFFFF; border: 0; border-radius: 4px; padding: 8px 10px; font-size: 13px; line-height: 1.45;
+  box-shadow: 0 2px 8px rgba(23, 32, 42, 0.25); white-space: normal; width: max-content; max-width: 260px; }
+.map-tooltip::before { border-top-color: var(--ink); }
+.map-name { font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; pointer-events: none;
+  text-shadow: 0 0 3px #FFFFFF, 0 0 3px #FFFFFF, 0 0 3px #FFFFFF; }
+
 /* tooltip */
+.tip, .map-tip { line-height: 1.45; }
 .tip { position: fixed; z-index: 10; pointer-events: none; background: var(--ink); color: #FFFFFF; border-radius: 4px; padding: 8px 10px; font-size: 13px;
   line-height: 1.45; max-width: 260px; box-shadow: 0 2px 8px rgba(23, 32, 42, 0.25); }
 .tip-title { font-weight: 600; margin-bottom: 2px; }
