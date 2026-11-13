@@ -20,6 +20,7 @@ FILES = {'/': ('index.html', 'text/html; charset=utf-8'), '/app.css': ('app.css'
          '/app.js': ('app.js', 'text/javascript; charset=utf-8'),
          '/charts.js': ('charts.js', 'text/javascript; charset=utf-8'),
          '/svgmap.js': ('svgmap.js', 'text/javascript; charset=utf-8'),
+         '/theme.js': ('theme.js', 'text/javascript; charset=utf-8'),
          '/vendor/leaflet.min.js': ('vendor/leaflet.min.js', 'text/javascript; charset=utf-8'),
          '/vendor/leaflet.min.css': ('vendor/leaflet.min.css', 'text/css; charset=utf-8'),
          '/vendor/echarts.min.js': ('vendor/echarts.min.js', 'text/javascript; charset=utf-8')}

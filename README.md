@@ -23,7 +23,9 @@ or the market changes.
 python -m src.client        # then open http://localhost:8600
 ```
 
-It needs nothing beyond the core requirements: the server is Python's standard library and the pages
+There is a light and a dark theme: the button in the header switches them, the choice is remembered
+in that browser, and without a choice the computer's own setting decides. It needs nothing beyond the
+core requirements: the server is Python's standard library and the pages
 are HTML, CSS and JavaScript in `src/client/static/`. Charts use Apache ECharts 5.6.0 and maps use
 Leaflet 1.9.4; both are kept in `src/client/static/vendor/`, so no CDN is needed. It reads the same shared files as the
 dashboard below, runs the same consistency checks, and uses the same custom planner for the What if

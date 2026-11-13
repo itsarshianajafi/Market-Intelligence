@@ -4,7 +4,8 @@
 
 const SvgMap = (() => {
   const NS = 'http://www.w3.org/2000/svg';
-  const INK = '#17202A', SURFACE = '#FFFFFF';
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  let INK = '#17202A', SURFACE = '#FFFFFF';
   function svg(tag, attrs = {}, text) {
     const node = document.createElementNS(NS, tag);
     for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
@@ -62,9 +63,11 @@ const SvgMap = (() => {
       const ox = (width - (east - west) * squeeze * scale) / 2, oy = (h - (north - south) * scale) / 2;
       const X = (lon) => ox + (lon - west) * squeeze * scale, Y = (lat) => oy + (north - lat) * scale;
       const path = (ways) => ways.map((way) => way.map(([lon, lat], i) => `${i ? 'L' : 'M'}${X(lon).toFixed(1)},${Y(lat).toFixed(1)}`).join('')).join('');
-      root.append(svg('rect', { width, height: h, fill: '#F7F9FB' }));
-      root.append(svg('path', { d: path(base.roads), fill: 'none', stroke: '#DADFE6', 'stroke-width': 1.5, 'stroke-linejoin': 'round' }));
-      root.append(svg('path', { d: path(base.coast), fill: 'none', stroke: '#9FB3C8', 'stroke-width': 1, 'stroke-linejoin': 'round' }));
+      [INK, SURFACE] = [css('--ink'), css('--surface')];
+      const ground = css('--map-ground');
+      root.append(svg('rect', { width, height: h, fill: ground }));
+      root.append(svg('path', { d: path(base.roads), fill: 'none', stroke: css('--map-road'), 'stroke-width': 1.5, 'stroke-linejoin': 'round' }));
+      root.append(svg('path', { d: path(base.coast), fill: 'none', stroke: css('--map-coast'), 'stroke-width': 1, 'stroke-linejoin': 'round' }));
       const biggest = Math.max(...points.map((p) => p.size), 1);
       const radius = (size) => Math.max(3.5, maxRadius * Math.sqrt(size / biggest));      // area, not radius, carries the value
       const ordered = points.slice().sort((a, b) => b.size - a.size);
@@ -77,7 +80,7 @@ const SvgMap = (() => {
         if (placed.some(([qx, qy]) => Math.abs(qx - px) < 110 && Math.abs(qy - py) < 13)) continue;
         placed.push([px, py]);
         root.append(svg('text', { x: right ? px + r + 5 : px - r - 5, y: py + 4, 'text-anchor': right ? 'start' : 'end', fill: INK,
-          'font-size': 12, 'font-weight': 500, 'paint-order': 'stroke', stroke: '#F7F9FB', 'stroke-width': 3 }, p.label));
+          'font-size': 12, 'font-weight': 500, 'paint-order': 'stroke', stroke: ground, 'stroke-width': 3 }, p.label));
       }
       const hit = svg('rect', { width, height: h, fill: 'transparent' });
       hit.addEventListener('pointermove', (event) => {

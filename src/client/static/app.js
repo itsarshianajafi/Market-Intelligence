@@ -1,8 +1,14 @@
 // Client view. The server sends plain facts; this file lays them out and Charts draws them.
 'use strict';
 
-const C = { offplan: '#1F5A99', ready: '#C77B1F', rising: '#1F5A99', steady: '#9AA3AD', falling: '#B5372E', brand: '#12355B' };
-const RAMP = ['#B7D3F6', '#6DA7EC', '#2A78D6', '#1C5CAB', '#104281'];      // one hue, light to dark: more expected sales
+// Data colours come from the stylesheet's theme variables (app.css), read again whenever the theme changes.
+// pick = the plan's own marks, other = everything it did not choose; RAMP is one hue for more expected sales.
+let C = {}, RAMP = [];
+function readTheme() {
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(`--${name}`).trim();
+  C = Object.fromEntries(['offplan', 'ready', 'rising', 'steady', 'falling', 'pick', 'other', 'muted', 'surface'].map((k) => [k, css(k)]));
+  RAMP = [1, 2, 3, 4, 5].map((step) => css(`ramp-${step}`));
+}
 
 // Five classes holding about the same number of areas, so the colours spread over the whole map.
 function classes(values) {
@@ -42,6 +48,7 @@ function tile(label, value, note, { change, extra } = {}) {
 const yearTicks = (labels, pick) => labels.map((label, i) => (pick(label) ? i : -1)).filter((i) => i >= 0);
 
 let baseMap = { coast: [], roads: [], attribution: '' };
+let redrawMarketMap = () => {};
 
 function showMarket(m) {
   $('cutoff').textContent = `Official DLD records to ${m.cutoff}`;
@@ -52,7 +59,7 @@ function showMarket(m) {
   const price = m.prices[m.prices.length - 1], priceBefore = m.prices[m.prices.length - 5];
   fill($('market-tiles'), [
     tile('Homes sold', whole(m.total.sales), ' on a year earlier',
-      { change: m.total.change, extra: Charts.spark(m.history.map((q) => q.offplan + q.ready), C.brand) }),
+      { change: m.total.change, extra: Charts.spark(m.history.map((q) => q.offplan + q.ready), C.pick) }),
     tile('Off-plan homes', whole(m.offplan.sales), ' on a year earlier', { change: m.offplan.change }),
     tile('Ready homes', whole(m.ready.sales), ' on a year earlier', { change: m.ready.change }),
     tile('Off-plan price per m²', `AED ${whole(price.offplan)}`, priceBefore ? ' on a year earlier' : 'typical, this quarter',
@@ -86,8 +93,8 @@ function showMarket(m) {
   const scale = classes(m.areas.map((a) => a.forecast));
   const swatch = (colour, text, hollow) => {
     const box = el('i', 'swatch');
-    box.style.background = hollow ? '#FFFFFF' : colour;
-    if (hollow) box.style.border = '1px solid #8D97A3';
+    box.style.background = hollow ? C.surface : colour;
+    if (hollow) box.style.border = `1px solid ${C.muted}`;
     return fill(el('span'), [box, document.createTextNode(text)]);
   };
   const drawMap = (mode) => {
@@ -105,13 +112,8 @@ function showMarket(m) {
       : [['rising', 'Rising'], ['steady', 'Steady'], ['falling', 'Falling']].map(([key, text]) => swatch(C[key], text))
         .concat([swatch(null, 'too few sales to say', true)]));
   };
-  for (const button of document.querySelectorAll('.switch button')) {
-    button.addEventListener('click', () => {
-      for (const other of document.querySelectorAll('.switch button')) other.setAttribute('aria-pressed', String(other === button));
-      drawMap(button.dataset.mode);
-    });
-  }
-  drawMap('sales');
+  redrawMarketMap = drawMap;      // the mode switch (wired once, in start) always calls the latest one
+  drawMap(document.querySelector('.switch button[aria-pressed="true"]').dataset.mode);
 
   const top = m.areas.slice(0, 8), widest = Math.max(...top.map((a) => a.high ?? a.forecast));
   $('busiest-note').textContent = `Homes expected to sell in ${m.forecast_quarter}, with the change on ${m.quarter}`;
@@ -165,7 +167,7 @@ function showPlan(plan, backtest, m) {
 
   Charts.map($('plan-map'), { base: baseMap, shapes: baseMap.communities.features, maxRadius: 20, height: 520,
     label: `Map of Dubai with the ${plan.areas} areas in the plan shaded.`,
-    points: m.areas.map((a) => ({ area: a.area, lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.brand : C.steady, ring: !a.agents,
+    points: m.areas.map((a) => ({ area: a.area, lat: a.lat, lon: a.lon, size: a.agents, color: a.agents ? C.pick : C.other, ring: !a.agents,
       name: a.name, label: a.agents ? `${a.name} (${a.agents})` : null,
       detail: [['agents', String(a.agents)], ['expected sales', whole(a.forecast)]].concat(a.dld ? [['DLD name', a.dld]] : []) })) });
 
@@ -185,14 +187,14 @@ function showPlan(plan, backtest, m) {
     xTitle: `Homes expected to sell, ${m.forecast_quarter}`, yTitle: 'Typical deal, AED', yFormat: (v) => `${+(v / 1e6).toFixed(1)}M`,
     strongName: 'In the plan', weakName: 'Not chosen',
     label: `Scatter of ${plan.segments.length} area segments by expected sales and typical deal value; the ones in the plan are highlighted.`,
-    points: plan.segments.map((s) => ({ x: s.sales, y: s.deal, strong: s.agents > 0, color: s.agents > 0 ? C.brand : C.steady,
+    points: plan.segments.map((s) => ({ x: s.sales, y: s.deal, strong: s.agents > 0, color: s.agents > 0 ? C.pick : C.other,
       name: `${s.name} · ${s.type === 'Ready' ? 'ready' : 'off-plan'}`, label: s.agents > 0 ? s.name : null,
       detail: [['expected sales', whole(s.sales)], ['typical deal', millions(s.deal)], ['agents', String(s.agents)]] })) });
 
   const curve = plan.team_curve;
   if (curve.length > 1) {
     Charts.line($('team-chart'), { labels: curve.map((c) => `${c.agents} agents`), xTicks: curve.map((_, i) => i), xValues: curve.map((c) => c.agents),
-      series: [{ name: 'Expected commission', color: C.brand, values: curve.map((c) => c.commission) }],
+      series: [{ name: 'Expected commission', color: C.pick, values: curve.map((c) => c.commission) }],
       tickText: (i) => String(curve[i].agents), tipFormat: millions,
       label: 'Expected commission per quarter for team sizes from 5 to 50 agents.' });
     const first = curve[0], second = curve[1], lastTwo = curve.slice(-2);
@@ -204,7 +206,7 @@ function showPlan(plan, backtest, m) {
 
   $('backtest-note').textContent = `Share of the best possible commission, average of the last ${backtest.quarters} quarters`;
   Charts.bars($('backtest-chart'), { max: 1, label: 'Share of the best possible commission by planning method.',
-    rows: backtest.methods.map((method, i) => ({ label: method.label, value: method.share, text: percent(method.share), color: i === 0 ? C.brand : C.steady })) });
+    rows: backtest.methods.map((method, i) => ({ label: method.label, value: method.share, text: percent(method.share), color: i === 0 ? C.pick : C.other })) });
 
   const a = plan.assumptions, pct = (x) => `${+(x * 100).toFixed(1)}%`;
   fill($('plan-assumptions'), [['Agents', a.agents], ['Deals per agent each quarter', a.deals_per_agent], ['Commission on ready', pct(a.ready_rate)],
@@ -238,7 +240,9 @@ function scenario(sent, saved) {
   if (Math.abs(sent.ready_rate - saved.ready_rate) > 1e-9 || Math.abs(sent.offplan_rate - saved.offplan_rate) > 1e-9) parts.push('commission rates change');
   return parts.length ? `If ${parts.join(' and ')}` : 'With the saved numbers';
 }
+let lastWhatIf = null;
 function showWhatIf(result, sent, saved) {
+  lastWhatIf = [result, sent, saved];
   const { plan, compare } = result, change = compare.commission_change;
   const moneyLine = Math.abs(change) < 0.005 ? 'Expected commission stays about the same.'
     : `Expected commission ${change < 0 ? 'drops' : 'rises'} by ${percent(change)}.`;
@@ -267,7 +271,7 @@ function showWhatIf(result, sent, saved) {
     fill(el('header', 'panel-head'), [fill(el('div'), [el('h2', '', 'Agents per area'), el('p', 'note', 'Areas that change are in bold.')])]), chart]);
   fill($('whatif-results'), [verdict, tiles, panel]);
   Charts.dumbbell(chart, { rows: compare.rows.map((r) => ({ label: r.name, before: r.before, after: r.after })),
-    colors: { before: C.steady, after: C.brand }, label: 'Agents per area in the saved plan and in this plan.' });
+    colors: { before: C.other, after: C.pick }, label: 'Agents per area in the saved plan and in this plan.' });
 }
 
 async function getJson(url, options) {
@@ -277,7 +281,24 @@ async function getJson(url, options) {
   return data;
 }
 
+// Small line icons for the theme button, drawn as SVG so they take the text colour.
+function icon(name) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const root = document.createElementNS(NS, 'svg');
+  for (const [k, v] of Object.entries({ viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2,
+    'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' })) root.setAttribute(k, v);
+  const shapes = name === 'moon' ? [['path', { d: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z' }]]
+    : [['circle', { cx: 12, cy: 12, r: 4 }], ['path', { d: 'M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' }]];
+  for (const [tag, attrs] of shapes) {
+    const part = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) part.setAttribute(k, v);
+    root.append(part);
+  }
+  return root;
+}
+
 async function start() {
+  readTheme();
   let data;
   try {
     [data, baseMap] = await Promise.all([getJson('/api/summary'), getJson('/api/map')]);
@@ -291,7 +312,7 @@ async function start() {
   setForm(saved);
   for (const id of ['agents', 'deals', 'offplan-change', 'ready-change']) $(id).addEventListener('input', syncOutputs);
   const empty = $('whatif-empty');
-  $('whatif-reset').addEventListener('click', () => { setForm(saved); fill($('whatif-results'), [empty]); });
+  $('whatif-reset').addEventListener('click', () => { setForm(saved); lastWhatIf = null; fill($('whatif-results'), [empty]); });
   $('whatif-form').addEventListener('submit', async (event) => {
     event.preventDefault();
     const sent = { agents: Number($('agents').value), deals_per_agent: Number($('deals').value),
@@ -314,8 +335,9 @@ async function start() {
   // Charts measure their container, so a screen is drawn the first time it is shown.
   const drawn = new Set();
   const draw = { market: () => showMarket(data.market), plan: () => showPlan(data.plan, data.backtest, data.market), whatif: () => {} };
+  const current = () => (['market', 'plan', 'whatif'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'market');
   const show = () => {
-    const tab = ['market', 'plan', 'whatif'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'market';
+    const tab = current();
     for (const section of document.querySelectorAll('.screen')) section.hidden = section.id !== tab;
     for (const link of document.querySelectorAll('.tabs a')) {
       if (link.dataset.tab === tab) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
@@ -323,6 +345,34 @@ async function start() {
     if (!drawn.has(tab)) { drawn.add(tab); draw[tab](); }
     window.scrollTo(0, 0);
   };
+  for (const button of document.querySelectorAll('.switch button')) {
+    button.addEventListener('click', () => {
+      for (const other of document.querySelectorAll('.switch button')) other.setAttribute('aria-pressed', String(other === button));
+      redrawMarketMap(button.dataset.mode);
+    });
+  }
+
+  // Light and dark: redraw what is on screen in the new colours; other screens redraw when next shown.
+  const themeButton = $('theme');
+  const labelTheme = () => {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    themeButton.setAttribute('aria-pressed', String(isDark));
+    themeButton.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    themeButton.replaceChildren(icon(isDark ? 'sun' : 'moon'), document.createTextNode(isDark ? 'Light' : 'Dark'));
+  };
+  themeButton.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch (error) { /* private window: the choice lasts this visit only */ }
+    labelTheme();
+    readTheme();
+    drawn.clear();
+    drawn.add(current());
+    draw[current()]();
+    if (lastWhatIf) showWhatIf(...lastWhatIf);
+  });
+  labelTheme();
+
   $('cutoff').textContent = `Official DLD records to ${data.market.cutoff}`;
   window.addEventListener('hashchange', show);
   show();

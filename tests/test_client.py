@@ -135,6 +135,21 @@ class BoundaryTests(unittest.TestCase):
         return load_bundle()['forecasts']
 
 
+class ThemeTests(unittest.TestCase):
+    def test_light_and_dark_define_the_same_colours(self):
+        import re
+        static = Path(__file__).resolve().parents[1] / 'src/client/static'
+        css = (static / 'app.css').read_text()
+        blocks = dict(re.findall(r'(:root(?:\[data-theme="dark"\])?) \{(.*?)\}', css, re.S))
+        light, dark = (set(re.findall(r'(--[a-z0-9-]+):', blocks[key])) for key in (':root', ':root[data-theme="dark"]'))
+        self.assertTrue(light)
+        self.assertEqual(light, dark)       # a colour missing from one theme would silently fall back to the other
+        used = set(re.findall(r"var\((--[a-z0-9-]+)\)", css))
+        scripts = ''.join((static / name).read_text() for name in ('app.js', 'charts.js', 'svgmap.js'))
+        used |= set(re.findall(r"css\('(--[a-z0-9-]+)'\)", scripts))
+        self.assertEqual(used - light, set())
+
+
 class ServerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -162,7 +177,7 @@ class ServerTests(unittest.TestCase):
         self.assertIn(b'Market Intelligence', page)
         status, body = self.fetch('/api/summary')
         self.assertEqual((status, json.loads(body)), (200, summary()))
-        for path in ['/charts.js', '/svgmap.js', '/vendor/leaflet.min.js', '/vendor/leaflet.min.css', '/vendor/echarts.min.js']:
+        for path in ['/charts.js', '/svgmap.js', '/theme.js', '/vendor/leaflet.min.js', '/vendor/leaflet.min.css', '/vendor/echarts.min.js']:
             self.assertEqual(self.fetch(path)[0], 200, path)
         status, body = self.fetch('/api/map')
         shape = json.loads(body)
