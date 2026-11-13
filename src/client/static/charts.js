@@ -5,7 +5,25 @@
 
 const Charts = (() => {
   const FONT = "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif";
-  const INK = '#17202A', TEXT = '#3B4654', MUTED = '#66717F', GRID = '#E6E9EE', AXIS = '#C5CCD4', SURFACE = '#FFFFFF';
+  // Colours come from the stylesheet's theme variables, read again before every drawing, so a chart
+  // drawn after a theme switch picks up the new theme.
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  let INK, TEXT, MUTED, GRID, AXIS, SURFACE, TIP, TIP_TEXT, TIP_MUTED, TIP_BORDER, base, axisText;
+  function refresh() {
+    [INK, TEXT, MUTED, GRID, AXIS, SURFACE] = ['--ink', '--text', '--muted', '--hair', '--axis', '--surface'].map(css);
+    [TIP, TIP_TEXT, TIP_MUTED, TIP_BORDER] = ['--tip', '--tip-text', '--tip-muted', '--tip-border'].map(css);
+    axisText = { color: MUTED, fontSize: 12 };
+    base = {
+      textStyle: { fontFamily: FONT, color: TEXT },
+      animationDuration: 400,
+      tooltip: { backgroundColor: TIP, borderColor: TIP_BORDER, borderWidth: TIP_BORDER === 'transparent' ? 0 : 1, padding: [8, 10],
+        textStyle: { color: TIP_TEXT, fontFamily: FONT, fontSize: 13 }, extraCssText: 'border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.25);' },
+      legend: { top: 0, left: 0, icon: 'roundRect', itemWidth: 14, itemHeight: 4, itemGap: 16, textStyle: { color: TEXT, fontSize: 13 } },
+      toolbox: { right: 0, top: -4, itemSize: 14, iconStyle: { borderColor: MUTED },
+        feature: { saveAsImage: { title: 'Save as image', pixelRatio: 2, backgroundColor: SURFACE } } },
+    };
+  }
+  const dark = () => document.documentElement.dataset.theme === 'dark';
   const compact = (n) => n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e4 ? `${Math.round(n / 1e3)}K` : Math.round(n).toLocaleString('en-US');
   const whole = (n) => Math.round(n).toLocaleString('en-US');
   // Names come from the data files: anything put into an HTML tooltip is escaped first.
@@ -19,16 +37,6 @@ const Charts = (() => {
   }
 
   // ---- ECharts plumbing ----
-  const base = {
-    textStyle: { fontFamily: FONT, color: TEXT },
-    animationDuration: 400,
-    tooltip: { backgroundColor: INK, borderWidth: 0, padding: [8, 10], textStyle: { color: '#FFFFFF', fontFamily: FONT, fontSize: 13 },
-      extraCssText: 'border-radius:4px;box-shadow:0 2px 8px rgba(23,32,42,.25);' },
-    legend: { top: 0, left: 0, icon: 'roundRect', itemWidth: 14, itemHeight: 4, itemGap: 16, textStyle: { color: TEXT, fontSize: 13 } },
-    toolbox: { right: 0, top: -4, itemSize: 14, iconStyle: { borderColor: MUTED },
-      feature: { saveAsImage: { title: 'Save as image', pixelRatio: 2, backgroundColor: SURFACE } } },
-  };
-  const axisText = { color: MUTED, fontSize: 12 };
   const valueAxis = (format, extra = {}) => ({ type: 'value', axisLabel: { ...axisText, formatter: format },
     splitLine: { lineStyle: { color: GRID } }, axisLine: { show: false }, axisTick: { show: false }, ...extra });
 
@@ -48,13 +56,14 @@ const Charts = (() => {
   }
   const row = (color, value, name) => `<div style="display:flex;align-items:baseline;gap:6px">`
     + (color ? `<i style="width:10px;height:3px;border-radius:2px;background:${color};align-self:center"></i>` : '')
-    + `<strong>${esc(value)}</strong><span style="color:#C9D1DA">${esc(name)}</span></div>`;
+    + `<strong>${esc(value)}</strong><span style="color:${TIP_MUTED}">${esc(name)}</span></div>`;
   const title = (text) => `<div style="font-weight:600;margin-bottom:2px">${esc(text)}</div>`;
 
   // ---- line chart: one or more series, crosshair tooltip ----
   // series: [{name, color, values}], labels: [string]; xValues places points by value (team sizes 5..50)
   function line(container, { series, labels, xTicks, xValues, tickText = (i) => labels[i], format = compact, tipFormat = whole,
     height = 280, label, zoom = false }) {
+    refresh();
     container.setAttribute('aria-label', label);
     const n = labels.length, shown = new Set(xTicks);
     const lastDot = (value, params) => (params.dataIndex === n - 1 ? 8 : 0);
@@ -71,7 +80,7 @@ const Charts = (() => {
         : { type: 'category', data: labels, boundaryGap: false, axisLine: { lineStyle: { color: AXIS } }, axisTick: { show: false },
             axisLabel: { ...axisText, interval: (i) => shown.has(i), formatter: (_, i) => tickText(i) } },
       yAxis: valueAxis(format),
-      dataZoom: zoom ? [{ type: 'slider', height: 18, bottom: 6, borderColor: GRID, fillerColor: 'rgba(31,90,153,0.08)',
+      dataZoom: zoom ? [{ type: 'slider', height: 18, bottom: 6, borderColor: GRID, fillerColor: dark() ? 'rgba(63,134,214,0.18)' : 'rgba(31,90,153,0.08)',
         handleStyle: { color: SURFACE, borderColor: AXIS }, moveHandleSize: 0, showDetail: false, brushSelect: false,
         dataBackground: { lineStyle: { color: AXIS }, areaStyle: { color: GRID } } }] : [],
       series: series.map((s) => ({ name: s.name, type: 'line', data: data(s), color: s.color, symbol: 'circle', symbolSize: lastDot,
@@ -82,13 +91,14 @@ const Charts = (() => {
 
   // ---- stacked columns as shares of each column's total ----
   function shares(container, { parts, labels, xTicks, tickText = (i) => labels[i], height = 240, label }) {
+    refresh();
     container.setAttribute('aria-label', label);
     const totals = labels.map((_, i) => parts.reduce((sum, p) => sum + p.values[i], 0) || 1), shown = new Set(xTicks);
     chart(container, {
       grid: { left: 40, right: 8, top: 36, bottom: 28 },
       legend: { data: parts.slice().reverse().map((p) => p.name), icon: 'rect', itemWidth: 10, itemHeight: 10 },
       toolbox: base.toolbox,
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(23,32,42,0.05)' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: dark() ? 'rgba(255,255,255,0.05)' : 'rgba(23,32,42,0.05)' } },
         formatter: (points) => title(labels[points[0].dataIndex]) + points.slice().reverse()
           .map((p) => row(p.color, `${parts[p.seriesIndex].values[p.dataIndex]} (${Math.round(p.value * 100)}%)`, p.seriesName)).join('') },
       xAxis: { type: 'category', data: labels, axisLine: { lineStyle: { color: AXIS } }, axisTick: { show: false },
@@ -101,6 +111,7 @@ const Charts = (() => {
 
   // ---- scatter on log axes; picks are larger, darker and labelled ----
   function scatter(container, { points, xTitle, yTitle, xFormat = compact, yFormat = compact, height = 340, label, strongName, weakName }) {
+    refresh();
     container.setAttribute('aria-label', label);
     const pick = (strong) => points.filter((p) => !!p.strong === strong);
     const labelled = new Set();     // an area with two picked segments is named once, at its bigger one
@@ -134,13 +145,14 @@ const Charts = (() => {
 
   // ---- before and after per row: a hollow dot for the saved plan, a filled one for the new plan ----
   function dumbbell(container, { rows, colors, label }) {
+    refresh();
     container.setAttribute('aria-label', label);
     const ordered = rows.slice().reverse();      // category axes run bottom to top
     const names = ordered.map((r) => r.label);
     chart(container, {
       grid: { left: 8, right: 56, top: 32, bottom: 8, containLabel: true },
       legend: { data: ['Saved plan', 'This plan'], icon: 'circle', itemWidth: 9, itemHeight: 9 },
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(23,32,42,0.05)' } },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: dark() ? 'rgba(255,255,255,0.05)' : 'rgba(23,32,42,0.05)' } },
         formatter: (points) => { const r = ordered[points[0].dataIndex]; return title(r.label) + row(null, String(r.before), 'saved plan') + row(null, String(r.after), 'this plan'); } },
       xAxis: valueAxis((v) => v, { minInterval: 1, position: 'top' }),
       yAxis: { type: 'category', data: names, axisLine: { show: false }, axisTick: { show: false },
@@ -165,11 +177,12 @@ const Charts = (() => {
   // Basemaps in order of preference. Stadia needs no key on localhost; a hosted copy needs a free Stadia
   // account. Esri's light grey canvas is the backup, and the saved OpenStreetMap lines the last resort.
   const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-  const BASEMAPS = [
-    { layers: ['https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png'],
+  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas';
+  const basemaps = (night) => [
+    { layers: [`https://tiles.stadiamaps.com/tiles/${night ? 'alidade_smooth_dark' : 'alidade_smooth'}/{z}/{x}/{y}{r}.png`],
       credit: `&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> ${OSM}` },
-    { layers: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}'],
+    { layers: [`${ESRI}/${night ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`,
+      `${ESRI}/${night ? 'World_Dark_Gray_Reference' : 'World_Light_Gray_Reference'}/MapServer/tile/{z}/{y}/{x}`],
       credit: 'Tiles &copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors', maxZoom: 16 },
   ];
 
@@ -185,6 +198,8 @@ const Charts = (() => {
   }
 
   function map(container, { base: lines, points, shapes = [], height = 460, label, maxRadius = 22 }) {
+    refresh();
+    const BASEMAPS = basemaps(dark());
     const h = container.clientWidth < 520 ? 360 : height;
     if (!window.L) return SvgMap.map(container, { base: lines, points, height: h, label, maxRadius });     // Leaflet failed to load
     if (container._leaflet) { container._leaflet.off(); container._leaflet.remove(); container._leaflet = null; }
@@ -201,8 +216,8 @@ const Charts = (() => {
     const offline = () => {
       const toLatLng = (way) => way.map(([lon, lat]) => [lat, lon]);
       L.layerGroup([
-        L.polyline(lines.roads.map(toLatLng), { color: '#DADFE6', weight: 1.5, interactive: false }),
-        L.polyline(lines.coast.map(toLatLng), { color: '#9FB3C8', weight: 1, interactive: false }),
+        L.polyline(lines.roads.map(toLatLng), { color: css('--map-road'), weight: 1.5, interactive: false }),
+        L.polyline(lines.coast.map(toLatLng), { color: css('--map-coast'), weight: 1, interactive: false }),
       ]).addTo(view);
       view.attributionControl.addAttribution(`Offline map lines ${OSM}`);
     };
@@ -228,7 +243,7 @@ const Charts = (() => {
     const radius = (size) => Math.max(4, maxRadius * Math.sqrt(size / biggest));      // circle area, not radius, carries the value
     const ordered = points.slice().sort((a, b) => b.size - a.size);
     const outline = new Map(shapes.map((feature) => [feature.properties.area, feature]));
-    const look = (p) => (p.ring ? { color: '#8D97A3', weight: 1, fillColor: SURFACE, fillOpacity: 0.35 }
+    const look = (p) => (p.ring ? { color: MUTED, weight: 1, fillColor: SURFACE, fillOpacity: 0.35 }
       : { color: SURFACE, weight: 1, fillColor: p.color, fillOpacity: 0.78 });
     const layers = ordered.slice().reverse().map((p) => {
       const shape = outline.get(p.area);
